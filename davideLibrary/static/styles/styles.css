@@ -1,0 +1,80 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('..static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #000;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    background-color: purple;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.username {
+    font-size: 18px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.menu li {
+    width: 100%;
+}
+
+.menu li a {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #fff;
+    text-align: left;
+}
+
+.menu li a:hover {
+    background-color: #444;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    height: 100vh;
+}
+
+.header {
+    background-color: #d2a679;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    max-height: 60px;
+}

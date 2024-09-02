@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Log List</title>
+</head>
+<style>
+    @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+    }
+
+    .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+</style>
+<body>
+    <div class="main-content">
+    <h1>Log List</h1>
+    
+    <a href="{% url 'create-attendance' %}">New Log</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Log Number</th>
+                <th>Date Time</th>
+                <th>Borrower UID Number</th>
+                <th>Borrower Name</th>
+                <th>Grade Level</th>
+                <th>Section</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attendance in attendances %}
+                <tr>
+                    <td>{{ attendance.attendance_number }}</td>
+                    <td>{{ attendance.date_time.date }}</td>
+                    <td>{{ attendance.borrower_uid_number }}</td>
+                    <td>{{ attendance.borrower_name }}</td>
+                    <td>{{ attendance.grade_level }}</td>
+                    <td>{{ attendance.section }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+{% endblock %}

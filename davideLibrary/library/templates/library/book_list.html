@@ -1,0 +1,539 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Inventory</title>
+    <style>
+        /* Your existing styles here */
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .body {
+            font-size: small;
+        }
+
+        .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 15px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .no-results {
+            color: red;
+            margin-top: 20px;
+        }
+
+        .modal-delete {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content-delete {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .close-delete {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-delete:hover,
+        .close-delete:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .blur {
+            filter: blur(5px);
+        }
+
+        .btn-edit {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .table-container {
+            max-height: 355px; /* Adjust the height as needed */
+            overflow: auto;
+            border: 1px solid #ddd; /* Optional: Add borders for styling */
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tbody {
+            display: block;
+            overflow-y: auto;
+            max-height: 320px; /* Adjust based on the container height */
+            font-size: 13px;
+        }
+
+        tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        td {
+            word-wrap: break-word; /* Ensures long text wraps inside cells */
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .hidden {
+            display: none;
+        }
+        .blur {
+            filter: blur(4px);
+        }
+        .modal-delete{
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; 
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-details {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; 
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;  
+        }
+        .modal-content-delete{
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+        .modal-content-details {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            height: 480px;
+        }
+        .close-delete, .close-details {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-delete:hover, .close-details:hover,
+        .close-delete:focus, .close-details:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+        }
+        /* Styles for Book Details Modal */
+        .details-table {
+            width: 600px;
+            border-collapse: collapse;
+            font-size: 14px;
+            height: 450px;
+        }
+        .details-table tbody{
+            display: block;
+            overflow-y: auto;
+            max-height: 390px;
+            font-size: 13px;
+        }
+
+        .details-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .details-table td:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .details-table th {
+            background-color: #f5f5f5;
+        }
+
+        .details-table img {
+            display: block;
+            margin: 0 auto;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="main-content">
+    <h1>Book Inventory</h1>
+    <div class="search-container">
+        <form method="GET" action="{% url 'book-list' %}">
+            <label for="id_search">Search Book:</label>
+            <input type="text" name="search" id="id_search" autofocus placeholder="Enter Book Number or Title" value="{{ query|default:'' }}">
+            <button type="submit">Search</button>
+            <a href="{% url 'book-list' %}">Reset List</a>
+        </form>
+       
+        <form method="GET" action="{% url 'book-list' %}">
+            <label for="id_category">Filter by Category:</label>
+            <select name="category" id="id_category">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.name }}" {% if category.name == request.GET.category %} selected {% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Apply Filter</button>
+        </form>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: red;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if no_results %}
+        <p class="no-results">No records of "{{ query }}" found, please try to approach the librarian for more inquiries.</p>
+    {% else %}
+        <a href="{% url 'book-create' %}">Add New Book</a>
+        <form method="POST" action="{% url 'delete-selected-books' %}" id="delete-form">
+            {% csrf_token %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <label>
+                                    <input type="checkbox" id="select-all-checkbox">
+                                    Select [All List]
+                                </label>
+                            </th>
+                            <th>Book Number</th>
+                            <th>Record Date</th>
+                            <th>Author</th>
+                            <th>Book Title</th>
+                            <th>Publisher</th>
+                            <th>Year</th>
+                            <th>Quantity</th>
+                            <th>Category</th>
+                            <th>Remark</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books %}
+                            <tr>
+                                <td style="align-items: center;">
+                                    <input type="checkbox" name="selected_books" value="{{ book.book_number }}" class="book-checkbox">
+                                    <img src="{{ book.qr_code.url }}" alt="QR Code" style="width: 50px; height: 50px;">
+                                </td>
+                                <td>{{ book.book_number }}</td>
+                                <td>{{ book.record_date.date }}</td>
+                                <td>{{ book.author }}</td>
+                                <td>{{ book.book_title }}</td>
+                                <td>{{ book.publisher }}</td>
+                                <td>{{ book.year }}</td>
+                                <td>{{ book.quantity }}</td>
+                                <td>{{ book.category.name }}</td>
+                                <td>{{ book.remark }}</td>
+                                <td>
+                                    <button type="button" onclick="showDetails('{{ book.book_number }}')">Book Details</button>
+                                    <a href="{% url 'book-update' book.book_number %}" class="btn-edit">Edit</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div id="location-container" class="hidden">
+                <label for="location">Add Location:</label>
+                <input type="text" name="location" id="location" placeholder="Enter location for selected books">
+                <button type="button" id="set-location-btn" class="hidden" onclick="setLocation()">Set Location</button>
+                <button type="submit" name="action" value="delete" id="delete-btn" class="hidden" style="display: none;"></button>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                <button type="submit" formaction="{% url 'generate-selected-books-pdf' %}">Download PDF</button>
+            </div>
+        </form>
+        
+        <script>
+            document.getElementById('select-all-checkbox').addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.book-checkbox');
+                checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+            });
+        </script>
+        
+    {% endif %}
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the selected book(s)?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal for Book Details -->
+<div id="book-details" class="modal-details">
+    <div class="modal-content-details">
+        <span class="close-details" onclick="closeDetailsModal()">&times;</span>
+        <h2>Book Details</h2>
+        <div id="details-content">
+            <!-- Book details will be dynamically loaded here -->
+        </div>
+        <!-- <button type="button" onclick="closeDetailsModal()">Close</button> -->
+    </div>
+</div>
+
+
+
+
+<script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmDeleteBtn = document.getElementById('confirm-delete');
+        
+        confirmDeleteBtn.addEventListener('click', function() {
+            const form = document.getElementById('delete-form');
+            form.submit();
+        });
+    });
+
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const checkboxes = document.querySelectorAll('.book-checkbox');
+    const masterCheckbox = document.getElementById('select-all-checkbox');
+    const deleteBtn = document.getElementById('delete-btn');
+    const locationContainer = document.getElementById('location-container');
+    const locationInput = document.getElementById('location');
+    const setLocationBtn = document.getElementById('set-location-btn');
+    const generatePdfForm = document.getElementById('generate-pdf-form');
+
+    function updateButtonVisibility() {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        deleteBtn.classList.toggle('hidden', !anyChecked);
+        setLocationBtn.classList.toggle('hidden', !anyChecked);
+        locationContainer.classList.toggle('hidden', !anyChecked);
+    }
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateButtonVisibility);
+    });
+
+    masterCheckbox.addEventListener('change', () => {
+        checkboxes.forEach(checkbox => checkbox.checked = masterCheckbox.checked);
+        updateButtonVisibility();
+    });
+
+    if (generatePdfForm) {
+        generatePdfForm.addEventListener('submit', function(event) {
+            var selectedBooks = document.querySelectorAll('input[name="selected_books"]:checked');
+            if (selectedBooks.length === 0) {
+                event.preventDefault();
+                alert('Please select at least one book to generate a PDF.');
+            } else {
+                var selectedBooksInput = document.getElementById('selected-books-input');
+                var selectedBooksValues = [];
+                for (var i = 0; i < selectedBooks.length; i++) {
+                    selectedBooksValues.push(selectedBooks[i].value);
+                }
+                selectedBooksInput.value = selectedBooksValues.join(',');
+            }
+        });
+    }
+});
+
+function confirmDelete(bookTitle) {
+    var modal = document.getElementById('confirm-delete');
+    var bookTitleSpan = document.getElementById('book-title');
+    bookTitleSpan.textContent = bookTitle; // Set the text content to the book title
+    modal.style.display = 'block'; // Show the modal
+    document.querySelector('.main-content').classList.add('blur'); // Optionally blur the background
+}
+
+function closeDeleteModal() {
+    document.getElementById('confirm-delete').style.display = 'none'; // Hide the modal
+    document.querySelector('.main-content').classList.remove('blur'); // Remove background blur
+}
+
+function setLocation() {
+    const location = document.getElementById('location').value.trim();
+    if (!location) {
+        alert('Please provide a location.');
+        return;
+    }
+
+    document.getElementById('delete-form').action = "{% url 'set-location-for-books' %}";
+    document.getElementById('delete-form').submit();
+}
+
+function showDetails(bookNumber) {
+    fetch(`/book-details/${bookNumber}/`)  // Adjust URL if needed
+        .then(response => response.json())
+        .then(data => {
+            const detailsContent = document.getElementById('details-content');
+
+            // Ensure price is treated as a number if it's valid
+            let priceDisplay = 'N/A';
+            if (typeof data.price === 'number') {
+                priceDisplay = `$${data.price.toFixed(2)}`;
+            }
+
+            // Ensure the QR code URL is correctly set
+            let qrCodeHtml = 'N/A';
+            if (data.qr_code) {
+                qrCodeHtml = `<img src="${data.qr_code}" alt="QR Code" style="width: 100px; height: 100px;">`;
+            }
+
+            detailsContent.innerHTML = `
+                <table class="details-table">
+                    <tr>
+                        <td colspan="6">${qrCodeHtml}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Book Number:</strong></td>
+                        <td>${data.book_number}</td>
+                        <td><strong>Record Date:</strong></td>
+                        <td>${data.record_date}</td>
+                        <td><strong>Class Field:</strong></td>
+                        <td>${data.class_field}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Author:</strong></td>
+                        <td>${data.author}</td>
+                        <td><strong>Book Title:</strong></td>
+                        <td>${data.book_title}</td>
+                        <td><strong>Edition:</strong></td>
+                        <td>${data.edition}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Volume:</strong></td>
+                        <td>${data.volume}</td>
+                        <td><strong>Pages:</strong></td>
+                        <td>${data.pages}</td>
+                        <td><strong>Quantity:</strong></td>
+                        <td>${data.quantity}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fund Source:</strong></td>
+                        <td>${data.fund_source}</td>
+                        <td><strong>Price:</strong></td>
+                        <td>${priceDisplay}</td>
+                        <td><strong>Publisher:</strong></td>
+                        <td>${data.publisher}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Year:</strong></td>
+                        <td>${data.year}</td>
+                        <td><strong>Remark:</strong></td>
+                        <td>${data.remark}</td>
+                        <td><strong>Category:</strong></td>
+                        <td>${data.category_name}</td>
+                    </tr>
+                </table>
+            `;
+
+            document.getElementById('book-details').style.display = 'block';
+            document.querySelector('.main-content').classList.add('blur');
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function closeDetailsModal() {
+    document.getElementById('book-details').style.display = 'none';
+    document.querySelector('.main-content').classList.remove('blur');
+}
+document.getElementById('select-all-checkbox').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.book-checkbox');
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+</script>
+</body>
+</html>
+{% endblock %}

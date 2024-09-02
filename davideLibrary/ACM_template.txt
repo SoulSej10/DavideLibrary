@@ -1,0 +1,48 @@
+PREAMBLE (Based on the template)
+- Purpose: Guide ethical conduct of computing professionals.
+- Audience: Practitioners, instructors, students, influencers.
+- Goal: Support the public good and provide a basis for remediation when violations occur.
+
+Section 1: General Ethical Principles
+1. Contribute to society and human well-being: Use skills to benefit society, promote human rights, and protect the environment.
+2. Avoid harm: Minimize negative consequences, report risks, and mitigate unintended harm.
+3. Be honest and trustworthy: Provide full disclosure, avoid misleading information, and honor commitments.
+4. Be fair and take action not to discriminate:** Promote equality, tolerance, and justice.
+5. Respect the work of others: Credit creators, respect intellectual property.
+6. Respect privacy: Handle personal information responsibly.
+7. Honor confidentiality: Protect confidential information unless it involves legal or ethical violations.
+
+Section 2: Professional Responsibilities
+1. Strive for high quality: Ensure high standards in work processes and products.
+2. Maintain competence: Continuously improve skills and knowledge.
+3. Respect rules: Follow relevant laws and regulations, challenge unethical rules.
+4. Seek and provide professional review: Encourage peer review and feedback.
+5. Evaluate impacts: Assess and communicate potential risks of computing systems.
+6. Work within areas of competence: Take on tasks within one's expertise.
+7. Foster public understanding: Educate the public about computing.
+8. Access resources responsibly: Respect access controls and privacy.
+9. Design secure systems: Ensure robust security measures.
+
+Section 3: Professional Leadership Principles
+1. Public good: Make it the central concern in professional work.
+2. Social responsibilities: Encourage organizational adherence to social responsibilities.
+3. Enhance working life: Promote professional and personal development.
+4. Support ethical policies: Implement and support policies reflecting ethical principles.
+5. Create growth opportunities: Offer educational and professional development.
+6. Care in system changes: Manage system changes responsibly.
+7. Steward critical systems: Recognize and manage systems integrated into societal infrastructure.
+
+Section 4: Compliance with the Code
+1. Uphold the Code: Adhere to and improve the principles.
+2. Address violations:** Treat breaches seriously and consider reporting them.
+
+
+
+===============================Layout=======================================
+- Title: Clear and bold at the top center "ACM Code of Ethics and Professional Conduct."
+- Bulleted Lists: Summarize each principle with concise bullet points.
+- Icons
+
+Theme
+- Technology Blue 
+- Color Pallete (blue, gray, white)

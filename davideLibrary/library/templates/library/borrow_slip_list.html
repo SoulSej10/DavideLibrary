@@ -1,0 +1,146 @@
+<!-- library/templates/library/borrow_slip_list.html -->
+{% extends 'main.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Borrow Slips</title>
+</head>
+<style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+        .table-container {
+            max-height: 375px; /* Adjust the height as needed */
+            overflow: auto;
+            border: 1px solid #ddd; /* Optional: Add borders for styling */
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tbody {
+            display: block;
+            overflow-y: auto;
+            max-height: 320px; /* Adjust based on the container height */
+            font-size: 13px;
+        }
+
+        tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        td {
+            word-wrap: break-word; /* Ensures long text wraps inside cells */
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        #download-pdf-button {
+            display: none; /* Initially hide the button */
+        }
+</style>
+<body>
+    <div class="main-content">
+    <h1>Borrow Slips</h1>
+
+    <!-- Date filter -->
+    <form method="GET" action="{% url 'borrow-slip-list' %}">
+        <label for="date_filter">Filter by Date:</label>
+        <input type="date" id="date_filter" name="date_filter" value="{{ date_filter }}">
+        <button type="submit">Filter by Date</button>
+    </form>
+
+     <!-- Search form -->
+     <form method="GET" action="{% url 'borrow-slip-list' %}">
+         <span>Search by:</span>
+        <input type="text" name="search" autofocus placeholder="Book Number || UID || Librarian" value="{{ query }}">
+        <button type="submit">Search</button>
+        <a href="{% url 'borrow-slip-list' %}">Reset List</a>
+    </form>
+
+    <!-- Download selected PDF -->
+    <form method="POST" action="{% url 'download-selected-pdf' %}">
+        {% csrf_token %}
+        <button><a href="{% url 'borrow-slip-create' %}">Create New Slip</a></button>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="select-all" />Slip No.</th>
+                        <th>Book Borrowed</th>
+                        <th>Author</th>
+                        <th>Book Number</th>
+                        <th>Date Borrow</th>
+                        <th>Borrower UID Number</th>
+                        <th>Borrower Name</th>
+                        <th>Due Date</th>
+                        <th>Librarian Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for slip in borrow_slips %}
+                        <tr>
+                            <td><input type="checkbox" name="selected_slips" value="{{ slip.slip_number }}" />{{ slip.slip_number }}</td>
+                            <td>{{ slip.book_title }}</td>
+                            <td>{{ slip.author }}</td>
+                            <td>{{ slip.book_number }}</td>
+                            <td>{{ slip.date_borrow|date:"Y-m-d" }}</td>
+                            <td>{{ slip.borrower_uid_number|obfuscate }}</td>
+                            <td>{{ slip.borrower_name }}</td>
+                            <td>{{ slip.due_date|date:"Y-m-d" }}</td>
+                            <td>{{ slip.librarian_name }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button id="download-pdf-button" type="submit">Download Selected PDF</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('select-all').addEventListener('change', function(e) {
+        const checkboxes = document.querySelectorAll('input[name="selected_slips"]');
+        checkboxes.forEach(checkbox => checkbox.checked = e.target.checked);
+        toggleDownloadButton();
+    });
+
+    document.querySelectorAll('input[name="selected_slips"]').forEach(checkbox => {
+        checkbox.addEventListener('change', toggleDownloadButton);
+    });
+
+    function toggleDownloadButton() {
+        const anyChecked = document.querySelector('input[name="selected_slips"]:checked');
+        document.getElementById('download-pdf-button').style.display = anyChecked ? 'inline' : 'none';
+    }
+</script>
+</body>
+</html>
+{% endblock %}

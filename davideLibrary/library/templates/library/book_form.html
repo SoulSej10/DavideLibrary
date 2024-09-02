@@ -1,0 +1,389 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ form.instance.pk|yesno:"Edit,Add" }} Book</title>
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 0 0 calc(33.33% - 20px);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group-author{
+            width: 100%;
+            font-size: 14px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical; /* Allow vertical resizing */
+            height: 100px; /* Set a fixed height */
+        }
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            /* margin-top: 30px;
+            margin-bottom: 30px; */
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            gap: 10px;
+        }
+
+        .btncategory{
+            background-color: #777;
+            color: white;
+            padding: 7px 20px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #bbb;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .btn-save {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-back {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            padding: 7px 20px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .btn-back:hover {
+            background-color: #555;
+        }
+        .btncategory:hover {
+            background-color: #555;
+        }
+        .add-category-form {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-category-form input[type="text"] {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            margin-right: 10px;
+            width: 320px;
+        }
+
+        .add-category-form button {
+            padding: 8px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .delete-category-form {
+            display: inline-block;
+        }
+
+        .delete-category-form button {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #FF5733;
+            color: white;
+            cursor: pointer;
+        }
+
+        .delete-category-form button:hover {
+            background-color: #FF2400;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .blur {
+            filter: blur(5px);
+        }
+
+
+
+        .table-container {
+            max-height: 380px;
+            overflow: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tbody {
+            display: block;
+            overflow-y: auto;
+            max-height: 320px;
+            font-size: 13px;
+        }
+
+        tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        td {
+            word-wrap: break-word;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <h1>{{ form.instance.pk|yesno:"Edit,Add" }} Book</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_class_field">Class Field <span style="color: #555;">(Optional)</span></label>
+                {{ form.class_field }}
+            </div>
+            <div class="form-group">
+                <label for="id_firstname">[First, MI, Last] Author Name</label>
+                <div class="form-group-author">
+                {{ form.firstname }} <span>{{ form.middle_initial }}</span> <span>{{ form.lastname }}</span>
+            </div>
+            </div>
+            <div class="form-group">
+                <label for="id_book_title">Book Title</label>
+                {{ form.book_title }}
+            </div>
+            <div class="form-group">
+                <label for="id_edition">Edition <span style="color: #555;">(Optional)</span></label>
+                {{ form.edition }}
+            </div>
+            <div class="form-group">
+                <label for="id_volume">Volume <span style="color: #555;">(Optional)</span></label>
+                {{ form.volume }}
+            </div>
+            <div class="form-group">
+                <label for="id_pages">Pages</label>
+                {{ form.pages }}
+            </div>
+            <div class="form-group">
+                <label for="id_quantity">Quantity</label>
+                {{ form.quantity }}
+            </div>
+            <div class="form-group">
+                <label for="id_fund_source">Fund Source</label>
+                {{ form.fund_source }}
+            </div>
+            <div class="form-group">
+                <label for="id_price">Price <span style="color: #555;">(Optional)</span></label>
+                {{ form.price }}
+            </div>
+            <div class="form-group">
+                <label for="id_publisher">Publisher</label>
+                {{ form.publisher }}
+            </div>
+            <div class="form-group">
+                <label for="id_year">Year</label>
+                {{ form.year }}
+            </div>
+            <div class="form-group">
+                <label for="id_category">Category</label>
+                {{ form.category }}
+            </div>
+            <div class="form-group">
+                <label for="id_remark">Remark</label>
+                {{ form.remark }}
+            </div>
+            <div class="form-group">
+                <label for="id_location" aria-placeholder="Add Book Location">Shelf Location <span style="color: #555;">(Optional)</span></label>
+                {{ form.location }}
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-save">{{ form.instance.pk|yesno:"Save,Create" }}</button>
+                <a href="{% url 'book-list' %}" class="btn-back">Back to List</a>
+                <button class="btncategory" id="categoryBtn" type="button">Categories</button>
+            </div>
+            
+                
+            
+        </form>        
+
+        <!-- Category Management Modal -->
+        <div id="categoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Manage Categories</h2>
+                <div class="add-category-form">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="text" name="category_name" placeholder="Add new category" required>
+                        <button type="submit" name="add-category">Add Category</button>
+                    </form>
+                </div> 
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>{{ category.name }}</td>
+                                <td>
+                                    <form method="post" class="delete-category-form" action="{% url 'delete-category' category.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get the modal
+                var modal = document.getElementById("categoryModal");
+
+                var btn = document.getElementById("categoryBtn");
+
+                var span = document.getElementsByClassName("close")[0];
+    
+                btn.onclick = function () {
+                    modal.style.display = "block";
+                }
+
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+                
+            });
+            function closeModal() {
+                document.getElementById('categoryModal').style.display = 'none';
+            }
+        </script>
+    </div>
+</body>
+</html>
+
+
+{% endblock %}

@@ -1,0 +1,33 @@
+<!-- library/borrowers/templates/borrowers/borrower_form.html -->
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Borrower</title>
+</head>
+<style>
+    @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+    }
+    .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+</style>
+<body>
+    <div class="main-content">
+    <h1>Add Borrower</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'borrower-list' %}">Back to List</a>
+</div>
+</body>
+</html>
+{% endblock %}

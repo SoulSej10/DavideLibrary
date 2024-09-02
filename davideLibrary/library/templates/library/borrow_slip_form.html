@@ -1,0 +1,167 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Borrow Slip</title>
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+            display: flex; /* Use flexbox for layout */
+        }
+        .form-panel {
+            width: 30%;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+        .book-details-panel,
+        .borrower-details-panel {
+            width: 35%;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn-save {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-back {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        .display {
+            /* width: 65%; */
+            /* background-color: #f9f9f9; */
+            /* padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            margin-left: 20px; */
+            display: flex;
+            flex-direction: column;
+        }
+        .book-details-panel, .borrower-details-panel {
+            width: 800px;
+            height: 230px;
+            font-size: 12px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+        .enlarged-text {
+            font-size: 16px; /* Adjust the font size as needed */
+            line-height: 1.6; /* Optional: Adjust line spacing for readability */
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="form-panel">
+            <h1>Create Borrow Slip</h1>
+            <form method="post" id="borrow-slip-form">
+                <div class="form-group">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn-save">Save</button>
+                    <a href="{% url 'borrow-slip-list' %}" class="btn-back">Back to List</a>
+                </div>
+            </form>
+        </div>
+        <div class="display">
+        <div class="book-details-panel">
+            <h1>Book Details</h1>
+            <div id="book-details">
+                <!-- Book details will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <div class="borrower-details-panel">
+            <h1>Borrower Details</h1>
+            <div id="borrower-details">
+                <!-- Borrower details will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var bookNumberField = document.querySelector('input[name="book_number"]');
+            var borrowerUidField = document.querySelector('input[name="borrower_uid_number"]');
+            var bookDetailsDiv = document.getElementById('book-details');
+            var borrowerDetailsDiv = document.getElementById('borrower-details');
+
+            function fetchBookDetails(bookNumber) {
+                fetch(`/book-details/${bookNumber}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            bookDetailsDiv.innerHTML = `
+                        <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. There are <strong>${data.quantity}</strong> copy/ies available. The book is funded by <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It is published by the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>". The book is located at <strong>${data.location}</strong>.</p>
+                    `;
+                        } else {
+                            bookDetailsDiv.innerHTML = '<p>No book details found.</p>';
+                        }
+                    });
+            }
+
+            function fetchBorrowerDetails(borrowerUid) {
+                fetch(`/borrower-details/${borrowerUid}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            borrowerDetailsDiv.innerHTML = `
+                        <p class="enlarged-text">The borrower, <strong>${data.borrower_name}</strong>, with UID number <strong>${data.borrower_uid}</strong>, is currently in grade level <strong>${data.grade_level}</strong> and belongs to the section <strong>${data.section}</strong>. Their adviser is <strong>${data.adviser}</strong>.</p>
+                    `;
+                        } else {
+                            borrowerDetailsDiv.innerHTML = '<p>No borrower details found.</p>';
+                        }
+                    });
+            }
+
+            bookNumberField.addEventListener('change', function() {
+                fetchBookDetails(this.value);
+            });
+
+            borrowerUidField.addEventListener('change', function() {
+                fetchBorrowerDetails(this.value);
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

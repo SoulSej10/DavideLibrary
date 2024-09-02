@@ -1,0 +1,50 @@
+
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+    }
+    .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+    /* .search-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    .search-input {
+        width: 910px;
+        padding: 10px;
+        font-size: 18px;
+        border-radius: 5px;
+        border: 1px solid grey;
+        margin-bottom: 10px;
+    }
+    .search-button {
+        padding: 10px 20px;
+        font-size: 18px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        margin-left: 10px;
+    } */
+</style>
+
+<div class="main-content">
+<div class="search-container">
+    <p>Your Virtual Library Assistant!</p>
+    <input type="text" class="search-input" placeholder="Search book">
+    <button class="search-button" style="font-family: 'Poppins', sans-serif;">Davidelib Search</button>
+</div>
+</div>
+
+
+{% endblock content %}

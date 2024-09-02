@@ -1,0 +1,505 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    @font-face {
+        font-family: 'Poppins';
+        src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+    }
+    .main-content {
+        margin-left: 240px; /* Adjust as per your sidebar width */
+        padding: 20px;
+        margin-top: 90px; /* Adjust as per your header height */
+        display: flex;
+        flex-direction: column;
+    }
+    .table-container {
+        max-height: 460px; /* Set the height for the scrollable area */
+        overflow-y: auto; /* Add vertical scrollbar when needed */
+        border-bottom: 1px solid #ddd; /* Optional: border around the scrollable area */
+        /* position: relative; */
+    }
+    thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f2f2f2;
+        z-index: 1; /* Ensure the header is above the table body */
+        border: .1px solid #f2f2f2;
+        height: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    td {
+        font-size: 13px;
+    }
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-success {
+        background-color: #4CAF50;
+        color: white;
+    }
+    .btn-warning {
+        background-color: #ff9800;
+        color: white;
+    }
+    .custom-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 400px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .modal-header h5 {
+        margin: 0;
+        font-size: 18px;
+    }
+    .close {
+        font-size: 24px;
+        cursor: pointer;
+        border: none;
+        background: none;
+    }
+    .modal-body {
+        margin-top: 20px;
+    }
+    .modal-footer {
+        margin-top: 20px;
+        text-align: right;
+    }
+    .modal-footer .btn {
+        margin-left: 10px;
+    }
+    .d-none {
+        display: none;
+    }
+    .penalty-status {
+        color: red;
+        font-weight: bold;
+    }
+    .success-message {
+        color: green;
+        font-weight: bold;
+    }
+    .error-message {
+    color: red;
+    font-weight: bold;
+    }
+    .status-returned {
+    color: green;
+    font-weight: bold;
+    }
+    .text-danger {
+    color: red;
+    }
+</style>
+
+<div class="main-content">
+    <h1>Monitor Borrowed Books</h1>
+    <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Book No.</th>
+                <th>Book Title</th>
+                <th>Borrower</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slip in borrow_slips %}
+            <tr id="row-{{ slip.slip_number }}">
+                <td>{{ slip.book_number }}</td>
+            <td>{{ slip.book_title }}</td>
+            <td>{{ slip.borrower_name }}</td>
+            <td>{{ slip.date_borrow|date:"Y-m-d" }}</td>
+            <td>{{ slip.due_date|date:"Y-m-d" }}</td>
+            <td>
+                {% if slip.penalty %}
+                    <span class="penalty-status">UNRETURNED ({{ slip.penalty }})</span>
+                {% elif slip.status == "Returned" %}
+                    <span class="status-returned">RETURNED</span>
+                {% else %}
+                    {{ slip.status }}
+                {% endif %}
+            </td>
+
+                
+            <td id="actions-{{ slip.slip_number }}">
+                {% if slip.status != 'Returned' %}
+                    <button type="button"
+                            data-slip-number="{{ slip.slip_number }}"
+                            class="return-btn"
+                            data-book-number="{{ slip.book_number }}"
+                            onclick="openReturnBookModal(this)">
+                        Return Book
+                    </button>
+                    {% if slip.status == 'Overdue' %}
+                        <button type="button" class="btn btn-warning"
+                                data-slip-number="{{ slip.slip_number }}"
+                                onclick="openPenaltyModal('{{ slip.slip_number }}')">
+                            Set Penalty
+                        </button>
+                    {% endif %}
+                {% else %}
+                    NOT APPLICABLE
+                {% endif %}
+            </td>
+            
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+   <!-- Custom Penalty Modal -->
+<div id="penaltyModal" class="custom-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5>Set Penalty</h5>
+            <button class="close" onclick="closePenaltyModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="penaltyForm" method="post">
+                {% csrf_token %}
+                <input type="hidden" id="penaltySlipNumber" name="slip_number">
+                <div class="mb-3">
+                    <label for="action" class="form-label">Choose an action</label>
+                    <select id="action" name="action" class="form-select">
+                        <option value="replace">Replace Book</option>
+                        <option value="ban">Ban Student</option>
+                    </select>
+                </div>
+                <div class="mb-3 d-none" id="banDurationField">
+                    <label for="ban_duration" class="form-label">Ban Duration (days)</label>
+                    <input type="number" id="ban_duration" name="ban_duration" class="form-control">
+                </div>
+                <!-- Container for penalty message -->
+                <div id="penaltyMessageContainer" class="d-none">
+                    <p id="penaltyMessage" class="penalty-message text-danger"></p>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button id="cancel-penalty-btn" type="button" class="btn btn-secondary" onclick="closePenaltyModal()">Cancel</button>
+            <button id="submit-penalty-btn" type="button" class="btn btn-primary" onclick="submitPenaltyForm()">Apply Penalty</button>
+            <button id="confirm-penalty-btn" type="button" class="btn btn-success d-none" onclick="confirmPenalty()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+    <!-- Return Book Modal -->
+    <div id="returnBookModal" class="custom-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Return Book</h5>
+                <button class="close" onclick="closeReturnModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter the book number to confirm the return:</p>
+                <input type="text" id="inputBookNumber" class="form-control" autofocus placeholder="Enter book number">
+                <div id="messageContainer" class="d-none">
+                    <p id="returnMessage" class="success-message">VERIFIED! THE BOOK HAS BEEN RETURNED.</p>
+                    <p id="errorMessage" class="error-message"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-return-btn" type="button" class="btn btn-secondary" onclick="closeReturnModal()">Cancel</button>
+                <button id="submit-return-btn" type="button" class="btn btn-primary" onclick="verifyBookNumber()">Submit</button>
+                <button id="confirm-return-btn" type="button" class="btn btn-success d-none" onclick="confirmReturn()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+<script>
+        function submitReturnForm(slipNumber) {
+    const bookNumber = document.getElementById('bookNumberInput').value;
+    const submitButton = document.getElementById('submitButton');
+    
+    submitButton.disabled = true; // Disable button to prevent multiple clicks
+
+    fetch(`/return-book/${slipNumber}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ book_number: bookNumber })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the UI to reflect the new status
+            document.getElementById(`status-${bookNumber}`).textContent = 'Returned';
+            alert(data.message);
+        } else {
+            alert(`Error returning book: ${data.message}`);
+        }
+        submitButton.disabled = false; // Re-enable button
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An unexpected error occurred. Please try again later.');
+        submitButton.disabled = false; // Re-enable button
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function submitPenaltyForm() {
+    var form = document.getElementById('penaltyForm');
+    var slipNumber = document.getElementById('penaltySlipNumber').value;
+    var action = document.getElementById('action').value;
+    var banDuration = document.getElementById('ban_duration').value;
+
+    var data = {
+        action: action
+    };
+
+    if (action === 'ban') {
+        data.ban_duration = banDuration;
+    }
+
+    fetch('/set-penalty/' + slipNumber + '/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Hide the Apply Penalty and Cancel buttons
+            document.getElementById('submit-penalty-btn').style.display = 'none';
+            document.getElementById('cancel-penalty-btn').style.display = 'none';
+
+            // Show the Confirm button
+            document.getElementById('confirm-penalty-btn').style.display = 'block';
+
+            // Display the penalty message
+            var messageContainer = document.getElementById('penaltyMessageContainer');
+            var penaltyMessage = document.getElementById('penaltyMessage');
+            if (action === 'ban') {
+                penaltyMessage.textContent = 'A ban of ' + banDuration + ' days has been applied.';
+            } else {
+                penaltyMessage.textContent = 'Book replacement has been applied.';
+            }
+            messageContainer.classList.remove('d-none');
+        } else {
+            alert('Error applying penalty: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function openPenaltyModal(slipNumber) {
+    var modal = document.getElementById('penaltyModal');
+    var penaltyForm = document.getElementById('penaltyForm');
+    var actionSelect = document.getElementById('action');
+    var banDurationField = document.getElementById('banDurationField');
+    var messageContainer = document.getElementById('penaltyMessageContainer');
+
+    penaltyForm.action = '/set-penalty/' + slipNumber + '/'; 
+    document.getElementById('penaltySlipNumber').value = slipNumber;
+    modal.style.display = 'block';
+
+    // Hide the Confirm button and message container initially
+    document.getElementById('confirm-penalty-btn').style.display = 'none';
+    messageContainer.classList.add('d-none');
+
+    actionSelect.addEventListener('change', function() {
+        if (actionSelect.value === 'ban') {
+            banDurationField.classList.remove('d-none');
+        } else {
+            banDurationField.classList.add('d-none');
+        }
+    });
+}
+
+function closePenaltyModal() {
+    const modal = document.getElementById('penaltyModal');
+    modal.style.display = 'none';
+}
+
+function confirmPenalty() {
+    // Redirect or refresh the page
+    window.location.href = window.location.href;
+}
+
+// Function to get the CSRF token for AJAX requests
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+// Open the return book modal and set data attributes
+function openReturnBookModal(button) {
+    var modal = document.getElementById('returnBookModal');
+    var bookNumber = button.dataset.bookNumber;
+    var slipNumber = button.dataset.slipNumber;
+
+    modal.dataset.bookNumber = bookNumber;
+    modal.dataset.slipNumber = slipNumber;
+    modal.style.display = 'block';
+}
+
+// Close the return book modal and reset fields
+function closeReturnModal() {
+    var modal = document.getElementById('returnBookModal');
+    modal.style.display = 'none';
+    document.getElementById('inputBookNumber').value = ''; // Clear input
+    document.getElementById('returnMessage').classList.add('d-none'); // Hide success message
+
+    // Reset buttons
+    document.getElementById('submit-return-btn').style.display = 'block';
+    document.getElementById('cancel-return-btn').style.display = 'block';
+    document.getElementById('confirm-return-btn').style.display = 'none';
+
+    location.reload();
+}
+
+// Verify the book number and handle response
+function verifyBookNumber() {
+    var modal = document.getElementById('returnBookModal');
+    var inputBookNumber = document.getElementById('inputBookNumber').value;
+    var actualBookNumber = modal.dataset.bookNumber;
+    var slipNumber = modal.dataset.slipNumber;
+    var messageContainer = document.getElementById('messageContainer');
+    var returnMessage = document.getElementById('returnMessage');
+    var errorMessage = document.getElementById('errorMessage');
+
+    if (inputBookNumber === actualBookNumber) {
+        fetch(`/return-book/${slipNumber}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                book_number: actualBookNumber
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                returnMessage.textContent = 'VERIFIED! THE BOOK HAS BEEN RETURNED.'; // Set success message
+                returnMessage.classList.remove('d-none'); // Show success message
+                errorMessage.classList.add('d-none'); // Hide error message
+
+                // Hide Submit and Cancel buttons, show Confirm button
+                document.getElementById('submit-return-btn').style.display = 'none';
+                document.getElementById('cancel-return-btn').style.display = 'none';
+                document.getElementById('confirm-return-btn').style.display = 'block';
+            } else {
+                returnMessage.classList.add('d-none'); // Hide success message
+                errorMessage.textContent = 'Error returning book: ' + data.message; // Set error message
+                errorMessage.classList.remove('d-none'); // Show error message
+            }
+            messageContainer.classList.remove('d-none'); // Show message container
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            returnMessage.classList.add('d-none'); // Hide success message
+            errorMessage.textContent = 'An unexpected error occurred. Please try again later.'; // Set error message
+            errorMessage.classList.remove('d-none'); // Show error message
+            messageContainer.classList.remove('d-none'); // Show message container
+        });
+    } else {
+        returnMessage.classList.add('d-none'); // Hide success message
+        errorMessage.textContent = 'Incorrect book number'; // Set error message
+        errorMessage.classList.remove('d-none'); // Show error message
+        messageContainer.classList.remove('d-none'); // Show message container
+    }
+}
+
+// Confirm the return, close the modal, and reload the page
+function confirmReturn() {
+    var modal = document.getElementById('returnBookModal');
+    var slipNumber = modal.dataset.slipNumber;
+    var row = document.getElementById('row-' + slipNumber);
+    var actionsCell = document.getElementById('actions-' + slipNumber);
+
+    modal.style.display = 'none';
+    
+    // Update the Actions cell to display 'NOT APPLICABLE'
+    actionsCell.innerHTML = 'NOT APPLICABLE';
+
+    // Optionally reload the page or update UI to reflect changes
+    location.reload(); // If you want to reload the page to show updated status
+}
+
+
+</script>
+
+{% endblock %}

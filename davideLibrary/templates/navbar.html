@@ -1,0 +1,281 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website</title>
+    <style>
+       
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+            font-family: 'Blue';
+            src: url('/static/styles/BlueFonteSans-w1w8x.ttf') format('truetype');
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .header {
+            background-color: #D6B980;
+            height: 70px;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            padding-left: 8px;
+            align-items: center;
+        }
+
+        .dlc{
+            width: 240px; 
+            height: 90px; 
+            padding-left: 4px;
+        }
+
+        .title{
+            font-family: 'Blue';
+            padding-left: 190px;
+            font-size: 40px;
+            color: black;
+        }
+
+        .sidebar {
+            background-color: #555;
+            width: 200px;
+            position: fixed;
+            top: 110px;
+            height: calc(100% - 110px);
+            overflow: auto;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            z-index: 100; 
+        }
+
+        .sidebar p {
+            padding: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+        }
+
+        .profile {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .profile-pic {
+            margin-left: 12px;
+            width: 65px;
+            height: 65px;
+            background-image: url('/static/images/user.png');
+            background-size: cover; /* Ensure the entire image is visible */
+            background-position: center; /* Center the image */
+            border-radius: 50%; /* Make it a circle */
+            margin-bottom: 5px;
+        }
+
+
+        .username {
+            font-size: 18px;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .menu li {
+            width: 100%;
+        }
+
+        .menu li a {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #fff;
+            text-align: left;
+        }
+
+        .menu li a:hover {
+            background-color: #444;
+            border-radius: 20px;
+        }
+
+        .menu li a.active {
+            background-color: #D6B980;
+            color: black;
+            border-radius: 20px;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px); 
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            z-index: 1000; 
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn-group button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .btn-cancel {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+        }
+
+        .btn-cancel:hover {
+            opacity: 0.8;
+        }
+
+        .btn-confirm {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+        }
+
+        .btn-confirm:hover {
+            opacity: 0.8;
+        }
+
+        /* Blur Effect */
+        .blur {
+            filter: blur(5px);
+            pointer-events: none; 
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            right: 345px;
+            font-size: 13px; 
+            color: #777;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <!-- <img class="dlc" src="{% static 'images/DLClogo.png' %}" alt="logo"> -->
+        
+        <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px; ">
+        <img src="{% static 'images/ctu.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px;">
+        <img src="{% static 'images/Codesynlogo.png' %}" alt="logo" style="width: 58px; height: 68px; padding-left: 6px;">
+        <p class="title">DavideLib Connect: Colawin Library Management System</p>
+    </div>
+
+    <div class="sidebar">
+        <div class="profile">
+            <div class="profile-pic"></div>
+            <div class="username">{{ username }}</div> <!-- Display username here -->
+        </div>
+        <ul class="menu">
+            <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
+            <li><a href="{% url 'book-list' %}" class="{% if request.resolver_match.url_name == 'book-list' %}active{% endif %}">Manage Inventory</a></li>
+            <li><a href="{% url 'borrower-list' %}" class="{% if request.resolver_match.url_name == 'borrower-list' %}active{% endif %}">Manage Students</a></li>
+            <li><a href="{% url 'borrow-slip-list' %}" class="{% if request.resolver_match.url_name == 'borrow-slip-list' %}active{% endif %}">Manage Borrowings</a></li>
+            <li><a href="{% url 'monitor-borrowed-books' %}" class="{% if request.resolver_match.url_name == 'monitor-borrowed-books' %}active{% endif %}">Monitor Books</a></li>
+            <li><a href="{% url 'attendance-list' %}" class="{% if request.resolver_match.url_name == 'attendance-list' %}active{% endif %}">Manage Logs</a></li>
+            <li><a href="{% url 'register' %}" class="{% if request.resolver_match.url_name == 'register' %}active{% endif %}">Register an Account</a></li>
+            <li><a href="#" onclick="confirmLogout()">Logout</a></li>
+        </ul>
+    </div>
+    <span class="footer">DavideLib Connect © 2025 || Library Management System || Developed by CodeSync @ CTU-AC</span>
+    <!-- Logout Confirmation Modal -->
+    <div id="confirm-logout" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLogoutModal()">&times;</span>
+            <h2>Confirm Logout</h2>
+            <p>Are you sure you want to log out?</p>
+            <div class="btn-group">
+                <button type="button" class="btn-cancel" onclick="closeLogoutModal()">Cancel</button>
+                <form id="logout-form" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-confirm">Yes, log out</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmLogout() {
+            document.getElementById('confirm-logout').style.display = 'block';
+            document.body.classList.add('modal-open'); // Prevent scrolling when modal is open
+            document.querySelector('.sidebar').classList.add('blur');
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('confirm-logout').style.display = 'none';
+            document.body.classList.remove('modal-open'); // Re-enable scrolling
+            document.querySelector('.sidebar').classList.remove('blur');
+        }
+    </script>
+</body>
+</html>
+{% endblock %}
