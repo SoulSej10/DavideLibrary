@@ -1,0 +1,286 @@
+
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+
+        h1 {
+           
+            margin-top: 10px;
+            width: 300px;
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center; /* Center the content vertically */
+            padding: 15px; /* Add padding inside the div */
+            background-color: #CC8C18; /* Set the background color */
+            border-radius: 10px; /* Add rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
+            color: white; /* Set the text color */
+            margin-bottom: 20px; /* Space below the header */
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background-color: #eae0a4;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+        }
+
+        .form-group {
+            flex: 0 0 calc(33.33% - 20px);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #654321;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group-author{
+            width: 100%;
+            font-size: 14px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #654321;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical; /* Allow vertical resizing */
+            height: 100px; /* Set a fixed height */
+        }
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;  /* Make sure the actions span the full width */
+            gap: 10px;  /* Add some space between the buttons */
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            gap: 10px;
+            
+        }
+
+        .btncategory{
+            background-color: #885f12;
+            color: white;
+            padding: 7px 20px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #bbb;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .btn-save {
+            background-color: #CC8C18;
+            color: white;
+        }
+
+        .btn-save:hover {
+            opacity: 0.8;  
+        } 
+
+        .btn-back {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            padding: 7px 20px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .btn-back:hover {
+            background-color: #555;
+        }
+        .btncategory:hover {
+            opacity: 0.8; 
+        }
+
+
+
+        .add-category-form {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: center;
+            gap: 5px;
+            width: 100%;
+            
+        }
+
+        .add-category-form input[type="text"] {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            width: 250px;
+            
+        }
+
+
+        .add-category-form button {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            background-color: #CC8C18;
+            color: white;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .delete-category-form {
+            display: inline-block;
+            
+        }
+
+        .delete-category-form button {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #FF5733;
+            color: white;
+            cursor: pointer;
+
+        }
+
+        .delete-category-form button:hover {
+            background-color: #FF2400;
+        }
+        .modal {
+            margin-left: 150px;
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 15px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            margin-top: 150px
+        }
+
+        .modal-content h2{
+            background-color: #e08b4f;
+            padding: 8px;
+            margin: 0; /* Remove margin to ensure no space on top, left, and right */
+            width: 80%; /* Make sure it takes the full width of the parent form panel */
+            border-radius: 10px ; /* Match the top corners of the form panel */
+            box-sizing: border-box;
+            margin-left: 50px;
+            margin-bottom: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .blur {
+            filter: blur(5px);
+        }
+
+
+
+        .table-container {
+            max-height: 380px;
+            overflow: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tbody {
+            display: block;
+            overflow-y: auto;
+            max-height: 320px;
+            font-size: 13px;
+        }
+
+        tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        td {
+            word-wrap: break-word;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+   
