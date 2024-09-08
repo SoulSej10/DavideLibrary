@@ -7,88 +7,41 @@
 <html>
 <head>
     <title>Borrow Slips</title>
+     {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/borrow_slip_list.css' %}">
+    {% endblock %}
 </head>
-<style>
-        @font-face {
-            font-family: 'Poppins';
-            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
-        }
-        .main-content {
-            margin-left: 240px; /* Adjust as per your sidebar width */
-            padding: 20px;
-            margin-top: 90px; /* Adjust as per your header height */
-        }
-        .table-container {
-            max-height: 375px; /* Adjust the height as needed */
-            overflow: auto;
-            border: 1px solid #ddd; /* Optional: Add borders for styling */
-            border-radius: 4px;
-        }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f5f5f5;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        tbody {
-            display: block;
-            overflow-y: auto;
-            max-height: 320px; /* Adjust based on the container height */
-            font-size: 13px;
-        }
-
-        tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-
-        td {
-            word-wrap: break-word; /* Ensures long text wraps inside cells */
-        }
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        #download-pdf-button {
-            display: none; /* Initially hide the button */
-        }
-</style>
 <body>
     <div class="main-content">
-    <h1>Borrow Slips</h1>
+     <div class="head">
+        <h1>Borrow Slips</h1>
+    </div>
 
-    <!-- Date filter -->
-    <form method="GET" action="{% url 'borrow-slip-list' %}">
-        <label for="date_filter">Filter by Date:</label>
-        <input type="date" id="date_filter" name="date_filter" value="{{ date_filter }}">
-        <button type="submit">Filter by Date</button>
-    </form>
+    <div class="filter-container">
+        <!-- Date filter -->
+        <form method="GET" action="{% url 'borrow-slip-list' %}">
+            <label for="date_filter">Filter by Date:</label>
+            <input type="date" id="date_filter" name="date_filter" value="{{ date_filter }}">
+            <button type="submit">Filter by Date</button>
+        </form>
+    
+         <!-- Search form -->
+         <form method="GET" action="{% url 'borrow-slip-list' %}">
+             <span>Search by:</span>
+            <input type="text" name="search" autofocus placeholder="Book Number || UID || Librarian" value="{{ query }}">
+            <button type="submit">Search</button>
+            <a href="{% url 'borrow-slip-list' %}">Reset List</a>
+        </form>
+    </div>
 
-     <!-- Search form -->
-     <form method="GET" action="{% url 'borrow-slip-list' %}">
-         <span>Search by:</span>
-        <input type="text" name="search" autofocus placeholder="Book Number || UID || Librarian" value="{{ query }}">
-        <button type="submit">Search</button>
-        <a href="{% url 'borrow-slip-list' %}">Reset List</a>
-    </form>
-
+    <div class="create" style="max-width: 200px;">
+        <button><a href="{% url 'borrow-slip-create' %}">Create New Slip</a></button>
+    </div>
     <!-- Download selected PDF -->
     <form method="POST" action="{% url 'download-selected-pdf' %}">
         {% csrf_token %}
-        <button><a href="{% url 'borrow-slip-create' %}">Create New Slip</a></button>
+       
         <div class="table-container">
             <table>
                 <thead>
@@ -121,7 +74,7 @@
                 </tbody>
             </table>
         </div>
-        <button id="download-pdf-button" type="submit">Download Selected PDF</button>
+        <button id="download-pdf-button" type="submit" style="background-color: #CC8C18; color: white; border: none; padding: 8px 16px; text-align: center; font-size: 16px; text-decoration: none; display: inline-block; font-size: 14px; cursor: pointer; border-radius: 4px; position: relative; z-index: 1; margin-top: 20px; margin-left: 400px;">Download Selected PDF</button>
     </form>
 </div>
 
