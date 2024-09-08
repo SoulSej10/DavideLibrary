@@ -1,0 +1,497 @@
+
+        /* Your existing styles here */
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .body {
+            font-size: small;
+        }
+
+        .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 15px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+
+       
+
+        .head {
+            margin-top: 10px;
+            width: 400px;
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center; /* Center the content vertically */
+            padding: 20px; /* Add padding inside the div */
+            background-color: #CC8C18; /* Set the background color */
+            border-radius: 10px; /* Add rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
+            color: white; /* Set the text color */
+            margin-bottom: 20px; /* Space below the header */
+        }
+
+        .head h1 {
+
+            margin: 0; /* Remove default margin from the h1 */
+            font-size: 24px; /* Set the font size */
+            font-family: 'Poppins', sans-serif; /* Set the font family */
+            letter-spacing: 3px; /* Slightly increase the spacing between letters */
+            text-align: center; /* Center the text within the h1 */
+            width: 100%; 
+        }
+
+
+
+        /* .search-container {
+            margin-bottom: 20px;
+        } */
+
+        .search-container {
+            
+            display: flex;
+            flex-direction: column;
+            gap: 20px; 
+            padding: 20px;
+            max-width: 600px; 
+           
+        }
+
+        .search-container > * {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-container form,
+        .search-container a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-container form {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+            flex: 1; 
+        }
+
+        .search-container label {
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif; 
+            color: #333; 
+            width: 200px;
+            align-self: center;
+        }
+
+        
+        .search-container input[type="text"],
+        .search-container select {
+            
+            padding: 8px 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            font-family: 'Poppins', sans-serif;
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        
+        .search-container button {
+            padding: 10px 15px; 
+            background-color: #CC8C18; 
+            border: none; 
+            border-radius: 5px;
+            color: white; 
+            font-size: 14px; 
+            font-family: 'Poppins', sans-serif; 
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 180px; 
+           
+        }
+        
+        .search-container button:hover {
+            background-color: #b37512; 
+        }
+        
+        /* Style for the Reset List link */
+        .search-container a {
+            
+            align-items: center;
+            font-size: 14px; 
+            color: #CC8C18;
+            text-decoration: none; 
+            font-family: 'Poppins', sans-serif; 
+            text-wrap: nowrap;
+            
+        }
+        
+        .search-container a:hover {
+            text-decoration: underline; 
+        }
+
+
+        .no-results {
+            color: red;
+            margin-top: 20px;
+            margin-left: 200px;
+        }
+  
+
+        .add {
+            padding: 15px;
+            border-radius: 0px 30px 30px 0px; /* Rounded corners */
+            background-color: #654321;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            font-size: 14px;
+            max-width: 150px;
+            position: relative; /* Needed to position the pseudo-element */
+            
+        }
+        .add:hover{
+            opacity: 0.8;
+            cursor: pointer;  
+
+        }
+        .add a{
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+
+        }
+
+        
+       /* location container */
+       /* Container for the section below the table */
+        #location-container {
+            width: 60%;
+            margin-top: 20px; /* Space between the table and the container */
+            padding: 15px;
+            background-color: #eae0a4;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            margin-left: 170px;
+
+
+        }
+
+        /* Label and input styling */
+        #location-container label {
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            background-color: #b37512;
+            padding: 8px;
+            margin-left: 50px;
+            width: 300px;
+            border-radius: 0px 10px 10px 0px;
+            color: white;
+
+        }
+
+        #location-container input[type="text"] {
+
+            margin-bottom: 15px;
+            margin-left: 50px;
+            margin-top: 15px;
+            padding: 8px 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            font-family: 'Poppins', sans-serif;
+            width: 80%; 
+            box-sizing: border-box;
+
+        }
+
+        /* Style for the buttons */
+        #button-container {
+            display: flex;
+            justify-content: center; /* Center buttons */
+            gap: 10px; /* Space between buttons */
+           
+
+        }
+        #location-container button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+            
+        }
+
+        #location-container button:hover{
+           opacity: 0.8; ;
+        }
+
+        #location-container #set-location-btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+
+        #location-container .btn-danger {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+
+        /* Ensure hidden elements remain hidden */
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #location-container input[type="text"] {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            #location-container button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+        /* delete pop up */
+        /* Style for the close button */
+        .modal-header .close {
+            position: absolute;
+            top: 10px; /* Adjust top spacing */
+            right: 10px; /* Adjust right spacing */
+            background-color: transparent; /* Transparent background */
+            border: none; /* Remove border */
+            font-size: 20px; /* Increase the size of the close icon */
+            color: #000; /* Icon color */
+            outline: none; /* Remove the default outline */
+            cursor: pointer; /* Change cursor to pointer */
+            padding: 5px; /* Add some padding for clickability */
+            border-radius: 50%; /* Make the button circular */
+        }
+
+        .modal-header .close:hover {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+
+        
+        .modal-delete {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content-delete {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .close-delete {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-delete:hover,
+        .close-delete:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .blur {
+            filter: blur(5px);
+        }
+
+        .btn-edit {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+
+        
+        .table-container {
+            max-height: 355px; /* Adjust the height as needed */
+            overflow: auto;
+            border: 1px solid #ddd; /* Optional: Add borders for styling */
+            border-radius: 4px;
+            
+        }
+
+        
+
+        
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+           
+            
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            
+           
+        }
+
+        th {
+            background-color: #eae0a4;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tbody {
+            display: block;
+            overflow-y: auto;
+            max-height: 320px; /* Adjust based on the container height */
+            font-size: 13px;
+        }
+
+        tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        td {
+            
+            word-wrap: break-word; /* Ensures long text wraps inside cells */
+        }
+        tbody tr:nth-child(even) {
+            background-color: #eae0a4;
+        }
+        .hidden {
+            display: none;
+        }
+        .blur {
+            filter: blur(4px);
+        }
+
+
+        .modal-delete{
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; 
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-details {
+            margin-left: 150px;
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; 
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;  
+        }
+        .modal-content-delete{
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+        .modal-content-details {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            height: 480px;
+        }
+        .close-delete, .close-details {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-delete:hover, .close-details:hover,
+        .close-delete:focus, .close-details:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+        }
+        /* Styles for Book Details Modal */
+        .details-table {
+            width: 600px;
+            border-collapse: collapse;
+            font-size: 14px;
+            height: 450px;
+        }
+        .details-table tbody{
+            display: block;
+            overflow-y: auto;
+            max-height: 390px;
+            font-size: 13px;
+        }
+
+        .details-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .details-table td:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .details-table th {
+            background-color: #f5f5f5;
+        }
+
+        .details-table img {
+            display: block;
+            margin: 0 auto;
+        }
+
+        
+    

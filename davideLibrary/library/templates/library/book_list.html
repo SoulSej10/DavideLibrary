@@ -6,233 +6,19 @@
 <html>
 <head>
     <title>Book Inventory</title>
-    <style>
-        /* Your existing styles here */
-        @font-face {
-            font-family: 'Poppins';
-            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
-        }
-        .body {
-            font-size: small;
-        }
+    
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/book_list.css' %}">
+    {% endblock %}
 
-        .main-content {
-            margin-left: 240px; /* Adjust as per your sidebar width */
-            padding: 15px;
-            margin-top: 90px; /* Adjust as per your header height */
-        }
-
-        .search-container {
-            margin-bottom: 20px;
-        }
-
-        .no-results {
-            color: red;
-            margin-top: 20px;
-        }
-
-        .modal-delete {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content-delete {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .close-delete {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close-delete:hover,
-        .close-delete:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .blur {
-            filter: blur(5px);
-        }
-
-        .btn-edit {
-            background-color: #777;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-        .table-container {
-            max-height: 355px; /* Adjust the height as needed */
-            overflow: auto;
-            border: 1px solid #ddd; /* Optional: Add borders for styling */
-            border-radius: 4px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f5f5f5;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        tbody {
-            display: block;
-            overflow-y: auto;
-            max-height: 320px; /* Adjust based on the container height */
-            font-size: 13px;
-        }
-
-        tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-
-        td {
-            word-wrap: break-word; /* Ensures long text wraps inside cells */
-        }
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .hidden {
-            display: none;
-        }
-        .blur {
-            filter: blur(4px);
-        }
-        .modal-delete{
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; 
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-        .modal-details {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; 
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;  
-        }
-        .modal-content-delete{
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-        }
-        .modal-content-details {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            height: 480px;
-        }
-        .close-delete, .close-details {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close-delete:hover, .close-details:hover,
-        .close-delete:focus, .close-details:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        /* Notification Styles */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-            display: none;
-        }
-        /* Styles for Book Details Modal */
-        .details-table {
-            width: 600px;
-            border-collapse: collapse;
-            font-size: 14px;
-            height: 450px;
-        }
-        .details-table tbody{
-            display: block;
-            overflow-y: auto;
-            max-height: 390px;
-            font-size: 13px;
-        }
-
-        .details-table td {
-            padding: 8px;
-            border: 1px solid #ddd;
-        }
-
-        .details-table td:nth-child(odd) {
-            background-color: #f9f9f9;
-        }
-
-        .details-table th {
-            background-color: #f5f5f5;
-        }
-
-        .details-table img {
-            display: block;
-            margin: 0 auto;
-        }
-
-    </style>
+     
 </head>
 
 <body>
 <div class="main-content">
-    <h1>Book Inventory</h1>
+    <div class="head">
+        <h1>Book Inventory</h1>
+    </div>
     <div class="search-container">
         <form method="GET" action="{% url 'book-list' %}">
             <label for="id_search">Search Book:</label>
@@ -262,13 +48,16 @@
     {% if no_results %}
         <p class="no-results">No records of "{{ query }}" found, please try to approach the librarian for more inquiries.</p>
     {% else %}
+        
+    <div class="add">
         <a href="{% url 'book-create' %}">Add New Book</a>
+    </div>
         <form method="POST" action="{% url 'delete-selected-books' %}" id="delete-form">
             {% csrf_token %}
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr>
+                        <tr style=" background-color: #654321;">
                             <th>
                                 <label>
                                     <input type="checkbox" id="select-all-checkbox">
@@ -290,10 +79,12 @@
                     <tbody>
                         {% for book in books %}
                             <tr>
-                                <td style="align-items: center;">
-                                    <input type="checkbox" name="selected_books" value="{{ book.book_number }}" class="book-checkbox">
-                                    <img src="{{ book.qr_code.url }}" alt="QR Code" style="width: 50px; height: 50px;">
-                                </td>
+                                
+                                    <td style="align-items: center;">
+                                        <input type="checkbox" name="selected_books" value="{{ book.book_number }}" class="book-checkbox">
+                                        <img src="{{ book.qr_code.url }}" alt="QR Code" style="width: 50px; height: 50px;">
+                                    </td>
+                                
                                 <td>{{ book.book_number }}</td>
                                 <td>{{ book.record_date.date }}</td>
                                 <td>{{ book.author }}</td>
@@ -303,9 +94,17 @@
                                 <td>{{ book.quantity }}</td>
                                 <td>{{ book.category.name }}</td>
                                 <td>{{ book.remark }}</td>
-                                <td>
-                                    <button type="button" onclick="showDetails('{{ book.book_number }}')">Book Details</button>
-                                    <a href="{% url 'book-update' book.book_number %}" class="btn-edit">Edit</a>
+                                <td style="text-align: center; padding: 10px; position: relative;">
+                                    <div style="display: inline-block; position: relative;">
+                                        <button type="button" onclick="showDetails('{{ book.book_number }}')" 
+                                            style="background-color: #CC8C18; color: white; border: none; padding: 8px 16px; text-align: center; text-decoration: none; display: inline-block; font-size: 14px; cursor: pointer; border-radius: 4px; position: relative; z-index: 1;">
+                                            Book Details
+                                        </button>
+                                        <a href="{% url 'book-update' book.book_number %}" 
+                                            style=" background-color:#cea75e; border: 1px solid white; color: black; padding: 3px 6px; text-align: center; text-decoration: none; display: inline-block; font-size: 12px; cursor: pointer; border-radius: 4px; position: absolute; top: -15px; right: -10px; z-index: 1;">
+                                            Edit
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -334,19 +133,19 @@
 
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="background-color: #cea75e; border-radius: 10px; padding: 10px; ">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <h5 class="modal-title" id="deleteModalLabel" style="padding: 8px; background-color: white; font-size: 18px; border-radius: 10px; margin-top: 10px;" >Confirm Deletion</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="margin-bottom: 10px;">
                 Are you sure you want to delete the selected book(s)?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirm-delete">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" style=" padding: 8px 12px;border: none;border-radius: 5px; cursor: pointer; flex: 1; background-color: #4CAF50;">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete" style=" padding: 8px 12px;border: none;border-radius: 5px; cursor: pointer; flex: 1; background-color: #f44336;">Delete</button>
             </div>
         </div>
     </div>
@@ -358,7 +157,7 @@
 <div id="book-details" class="modal-details">
     <div class="modal-content-details">
         <span class="close-details" onclick="closeDetailsModal()">&times;</span>
-        <h2>Book Details</h2>
+        <h2 style="background-color: #CC8C18;padding: 8px; color: white; border-radius: 0px 10px 10px 0px; ">Book Details</h2>
         <div id="details-content">
             <!-- Book details will be dynamically loaded here -->
         </div>

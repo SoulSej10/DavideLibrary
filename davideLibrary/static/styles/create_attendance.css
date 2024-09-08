@@ -1,0 +1,108 @@
+
+    @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+    }
+    .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+
+        .head {
+            margin-top: 10px;
+            width: 300px;
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center; /* Center the content vertically */
+            padding: 20px; /* Add padding inside the div */
+            background-color: #CC8C18; /* Set the background color */
+            border-radius: 10px; /* Add rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
+            color: white; /* Set the text color */
+            margin-bottom: 20px; /* Space below the header */
+        }
+
+        .head h1 {
+
+            margin: 0; /* Remove default margin from the h1 */
+            font-size: 24px; /* Set the font size */
+            font-family: 'Poppins', sans-serif; /* Set the font family */
+            letter-spacing: 3px; /* Slightly increase the spacing between letters */
+            text-align: center; /* Center the text within the h1 */
+            width: 100%; 
+        }
+
+        form {
+            background-color: #eae0a4; /* Light background for the form */
+            padding: 20px; /* Padding inside the form */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+            max-width: 500px; /* Limit the width of the form */
+            margin: 0 auto; /* Center the form horizontally */
+        }
+        
+
+        form .buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        form .buttons a{
+            background-color: #ccc;
+            color: black;
+        }
+
+        form .buttons button{
+            background-color: #CC8C18; 
+            color: white;
+        }
+        
+        form .buttons button,
+        form .buttons a {
+           
+            
+            padding: 8px 16px; /* Adjusted padding */
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Rounded corners */
+            font-family: 'Poppins', sans-serif; /* Font */
+            font-size: 14px; /* Font size */
+            cursor: pointer; /* Pointer cursor for both */
+            text-align: center; /* Center text inside both */
+            text-decoration: none; /* Remove underline from the link */
+            display: inline-block; /* Ensure both behave similarly */
+            transition: background-color 0.3s ease; /* Smooth background-color transition */
+        }
+
+        
+        form .buttons a:hover{
+            background-color: #999797;
+        }
+        
+        form .buttons button:hover{
+            background-color: #A76B13; /* Darker shade for hover effect */
+        }
+        
+        
+        
+        input, select, textarea {
+            
+            width: 100%; /* Full width for inputs */
+            padding: 8px; /* Padding inside inputs */
+            margin-top: 10px; /* Space above inputs */
+            margin-bottom: 10px; /* Space below inputs */
+            border: 1px solid #ccc; /* Light border */
+            border-radius: 5px; /* Rounded corners */
+            box-sizing: border-box; /* Ensure padding doesn't affect width */
+            font-family: 'Poppins', sans-serif; /* Input font */
+            font-size: 14px; /* Font size */
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #CC8C18; /* Highlighted border color on focus */
+            outline: none; /* Remove default focus outline */
+        }
+        
+        

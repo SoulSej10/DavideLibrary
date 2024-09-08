@@ -1,133 +1,15 @@
 {% extends 'main.html' %}
+{% load static %}
 
 {% block content %}
-<style>
-    @font-face {
-        font-family: 'Poppins';
-        src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
-    }
-    .main-content {
-        margin-left: 240px; /* Adjust as per your sidebar width */
-        padding: 20px;
-        margin-top: 90px; /* Adjust as per your header height */
-        display: flex;
-        flex-direction: column;
-    }
-    .table-container {
-        max-height: 460px; /* Set the height for the scrollable area */
-        overflow-y: auto; /* Add vertical scrollbar when needed */
-        border-bottom: 1px solid #ddd; /* Optional: border around the scrollable area */
-        /* position: relative; */
-    }
-    thead th {
-        position: sticky;
-        top: 0;
-        background-color: #f2f2f2;
-        z-index: 1; /* Ensure the header is above the table body */
-        border: .1px solid #f2f2f2;
-        height: 20px;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    table, th, td {
-        border: 1px solid #ddd;
-    }
-    th, td {
-        padding: 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
-    td {
-        font-size: 13px;
-    }
-    .btn {
-        padding: 8px 16px;
-        border: none;
-        cursor: pointer;
-    }
-    .btn-success {
-        background-color: #4CAF50;
-        color: white;
-    }
-    .btn-warning {
-        background-color: #ff9800;
-        color: white;
-    }
-    .custom-modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-    .modal-content {
-        background-color: white;
-        margin: 10% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 400px;
-        border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .modal-header h5 {
-        margin: 0;
-        font-size: 18px;
-    }
-    .close {
-        font-size: 24px;
-        cursor: pointer;
-        border: none;
-        background: none;
-    }
-    .modal-body {
-        margin-top: 20px;
-    }
-    .modal-footer {
-        margin-top: 20px;
-        text-align: right;
-    }
-    .modal-footer .btn {
-        margin-left: 10px;
-    }
-    .d-none {
-        display: none;
-    }
-    .penalty-status {
-        color: red;
-        font-weight: bold;
-    }
-    .success-message {
-        color: green;
-        font-weight: bold;
-    }
-    .error-message {
-    color: red;
-    font-weight: bold;
-    }
-    .status-returned {
-    color: green;
-    font-weight: bold;
-    }
-    .text-danger {
-    color: red;
-    }
-</style>
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/monitor_borrowed_books.css' %}">
+{% endblock %}
 
 <div class="main-content">
-    <h1>Monitor Borrowed Books</h1>
+    <div class="head"> 
+        <h1>Monitor Borrowed Books</h1>
+    </div>
     <div class="table-container">
     <table>
         <thead>
@@ -160,19 +42,21 @@
             </td>
 
                 
-            <td id="actions-{{ slip.slip_number }}">
+            <td id="actions-{{ slip.slip_number }}" style="position: relative; justify-content: space-between; align-items: center; gap: 10px;">
                 {% if slip.status != 'Returned' %}
                     <button type="button"
                             data-slip-number="{{ slip.slip_number }}"
                             class="return-btn"
                             data-book-number="{{ slip.book_number }}"
-                            onclick="openReturnBookModal(this)">
+                            onclick="openReturnBookModal(this)"
+                            style="background-color: #ffcc00; color: black; border: none; padding: 10px 14px; text-align: center; text-decoration: none; display: inline-block; font-size: 14px; cursor: pointer; border-radius: 4px; position: relative; ">
                         Return Book
                     </button>
                     {% if slip.status == 'Overdue' %}
                         <button type="button" class="btn btn-warning"
                                 data-slip-number="{{ slip.slip_number }}"
-                                onclick="openPenaltyModal('{{ slip.slip_number }}')">
+                                onclick="openPenaltyModal('{{ slip.slip_number }}')"
+                            style="position: absolute; top:-5px; right: 0; padding: 5px 10px; background-color: #c93015; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; ">
                             Set Penalty
                         </button>
                     {% endif %}

@@ -1,0 +1,430 @@
+
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .container {
+            display: flex;
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            margin-top: 90px; /* Adjust as per your header height */
+            padding: 15px;
+        }
+
+        .list-panel {
+            width: 75%;
+            margin-right: 20px;
+        }
+
+        /* add or edit borrower */
+
+        .form-panel {
+            width: 25%;
+            background-color: #eae0a4;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            height: 515px;
+        }
+
+        .form-panel h1{
+            margin: 0; /* Remove default margin from the h1 */
+            font-size: 24px; /* Set the font size */
+            font-family: 'Poppins', sans-serif; /* Set the font family */
+           padding: 8px;
+           background-color: #b37512;
+           border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-panel label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+
+            
+        }
+
+        .form-panel input,
+        .form-panel select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #654321;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+
+
+
+
+        .head {
+            margin-top: 10px;
+            width: 350px;
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center; /* Center the content vertically */
+            padding: 20px; /* Add padding inside the div */
+            background-color: #CC8C18; /* Set the background color */
+            border-radius: 10px; /* Add rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
+            color: white; /* Set the text color */
+            margin-bottom: 20px; /* Space below the header */
+        }
+
+        .head h1 {
+
+            margin: 0; /* Remove default margin from the h1 */
+            font-size: 24px; /* Set the font size */
+            font-family: 'Poppins', sans-serif; /* Set the font family */
+            letter-spacing: 3px; /* Slightly increase the spacing between letters */
+            text-align: center; /* Center the text within the h1 */
+            width: 100%; 
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; 
+            padding: 20px;
+            max-width: 800px; 
+           
+        }
+
+        .search-container > * {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-container form,
+        .search-container a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-container form {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+            flex: 1; 
+        }
+
+        .search-container label {
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif; 
+            color: #333; 
+            width: 200px;
+            align-self: center;
+        }
+
+        
+        .search-container input[type="text"],
+        .search-container select {
+            
+            padding: 8px 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            font-family: 'Poppins', sans-serif;
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        
+        .search-container button {
+            padding: 8px 12px; 
+            background-color: #CC8C18; 
+            border: none; 
+            border-radius: 5px;
+            color: white; 
+            font-size: 14px; 
+            font-family: 'Poppins', sans-serif; 
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 180px; 
+           
+        }
+        
+        .search-container button:hover {
+            background-color: #b37512; 
+        }
+        
+        /* Style for the Reset List link */
+        .search-container a {
+            
+            align-items: center;
+            font-size: 14px; 
+            color: #CC8C18;
+            text-decoration: none; 
+            font-family: 'Poppins', sans-serif; 
+            text-wrap: nowrap;
+            
+        }
+        
+        .search-container a:hover {
+            text-decoration: underline; 
+        }
+
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-y: auto;
+            display: block;
+            max-height: 370px; /* Adjust the height as needed */
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        thead th{
+                background-color: #eae0a4;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        tbody{
+            font-size: 14px;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #eae0a4;
+        }
+
+        img {
+            max-width: 60px;
+        }
+
+
+        /* bulk-actions */
+
+        #bulk-actions{
+            width: 60%;
+            margin-top: 20px; /* Space between the table and the container */
+            padding: 15px;
+            background-color: #eae0a4;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            margin-left: 170px;
+        }
+
+        #button-container {
+            display: flex;
+            justify-content: center; /* Center buttons */
+            gap: 10px; /* Space between buttons */
+           
+
+        }
+        #bulk-actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+            
+        }
+
+        #bulk-actions button:hover{
+           opacity: 0.8; ;
+        }
+
+       
+
+
+
+
+        .btn-back {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .btn-back:hover {
+            background-color: #555;
+        }
+
+        
+
+        .btn-add {
+            margin-bottom: 20px;
+        }
+
+       
+
+        .search-form {
+            margin-bottom: 20px;
+        }
+
+        .search-form button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            margin-left: -2px; 
+        }
+
+        .search-form button:hover {
+            background-color: #45a049;
+        } 
+
+        /* Modal styling */
+        .modal-delete {
+            display: none;
+            position: fixed;
+            z-index: 1000; /* Ensure the modal is on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content-delete {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .close-delete {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-delete:hover,
+        .close-delete:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* To avoid scrolling when modal is open */
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .close-delete {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-delete:hover,
+        .close-delete:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .blur {
+            filter: blur(5px);
+        }
+
+        .btn-edit {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn-save {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 10px;
+        }
+        .btn-cancel {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            /* margin-left: -2px; */
+        }
+
+        
+        
+        .message {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .blur {
+            filter: blur(5px);
+        }
+
+
+        /* =========================================== */
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 5.5px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-actions button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .form-group-author{
+            width: 100%;
+            font-size: 14px;
+            display: flex;
+            gap: 5px;
+        }
+        .hidden {
+    display: none;
+}
