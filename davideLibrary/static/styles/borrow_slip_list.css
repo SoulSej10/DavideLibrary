@@ -191,7 +191,7 @@
             word-wrap: break-word; /* Ensures long text wraps inside cells */
         }
         tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #eae0a4;
         }
         #download-pdf-button {
             display: none; /* Initially hide the button */
