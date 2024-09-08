@@ -79,12 +79,12 @@
                     <tbody>
                         {% for book in books %}
                             <tr>
-                                <td >
+                                
                                     <td style="align-items: center;">
                                         <input type="checkbox" name="selected_books" value="{{ book.book_number }}" class="book-checkbox">
                                         <img src="{{ book.qr_code.url }}" alt="QR Code" style="width: 50px; height: 50px;">
                                     </td>
-                                </td>
+                                
                                 <td>{{ book.book_number }}</td>
                                 <td>{{ book.record_date.date }}</td>
                                 <td>{{ book.author }}</td>
