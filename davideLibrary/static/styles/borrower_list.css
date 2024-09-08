@@ -180,6 +180,10 @@
             border: 1px solid #ddd;
         }
 
+        thead th{
+                background-color: #eae0a4;
+        }
+
         th, td {
             padding: 8px;
             text-align: left;
