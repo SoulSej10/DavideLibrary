@@ -5,6 +5,16 @@
 <html>
 <head>
     <title>Login</title>
+
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/LogRegister.css' %}">
+    {% endblock %}
+
+    <style>
+        body{
+            background-image: url('{% static "images/hpdsback.jpg" %}');
+        }
+    </style>
    
 </head>
 <body>
