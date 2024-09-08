@@ -8,56 +8,20 @@
 <html>
 <head>
     <title>Log List</title>
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/attendance_list.css' %}">
+    {% endblock %}
 </head>
-<style>
-    @font-face {
-            font-family: 'Poppins';
-            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
-    }
 
-    .main-content {
-            margin-left: 240px; /* Adjust as per your sidebar width */
-            padding: 20px;
-            margin-top: 90px; /* Adjust as per your header height */
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 70%;
-            border-collapse: collapse;
-            overflow-y: auto;
-            display: block;
-            max-height: 370px; /* Adjust the height as needed */
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            position: sticky;
-            top: 0;
-            z-index: 2;
-        }
-        tbody{
-            font-size: 14px;
-        }
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-</style>
 <body>
     <div class="main-content">
-    <h1>Log List</h1>
+    <div class="head">
+        <h1>Log List</h1>
+    </div>
     
-    <a href="{% url 'create-attendance' %}">New Log</a>
+    <div class="add">
+        <a href="{% url 'create-attendance' %}">New Log</a>
+    </div>
     <table>
         <thead>
             <tr>
