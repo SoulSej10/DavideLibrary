@@ -1,50 +1,202 @@
-
 {% extends 'main.html' %}
 {% load static %}
 
 {% block content %}
 <style>
     @font-face {
-            font-family: 'Poppins';
-            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        font-family: 'Poppins';
+        src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
     }
+
     .main-content {
-            margin-left: 240px; /* Adjust as per your sidebar width */
-            padding: 20px;
-            margin-top: 90px; /* Adjust as per your header height */
-        }
-    /* .search-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
+        margin-left: 240px; /* Adjust according to your sidebar */
+        margin-top: 90px; /* Adjust according to your header */
+        padding: 20px;
     }
+
+    .search-container {
+        margin-bottom: 20px;
+        display: flex;
+        margin-top: 10px;
+    }
+
     .search-input {
-        width: 910px;
         padding: 10px;
-        font-size: 18px;
-        border-radius: 5px;
-        border: 1px solid grey;
-        margin-bottom: 10px;
+        font-size: 16px;
+        width: 300px;
     }
+
     .search-button {
         padding: 10px 20px;
-        font-size: 18px;
-        border-radius: 5px;
-        border: none;
+        font-size: 16px;
         cursor: pointer;
-        margin-left: 10px;
-    } */
+        font-family: 'Poppins', sans-serif;
+        text-decoration: none; /* Remove underline */
+        color: #333; /* Default color */
+    }
+
+    .search-button:hover {
+        color: #007bff; /* Change color on hover */
+        text-decoration: underline; /* Add underline on hover */
+    }
+
+    .container-wrapper {
+        display: flex;
+        justify-content: space-between; /* Align containers horizontally */
+        height: calc(100vh - 260px); /* Full viewport height minus header and search bar */
+    }
+
+    .container {
+        width: 30%; /* Set the width of each container */
+        padding: 20px;
+        margin-right: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        overflow-y: auto; /* Enable vertical scrolling within the container */
+        height: 100%;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .container:last-child {
+        margin-right: 0; /* Remove margin for the last container */
+    }
+
+    .book-title {
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer; /* Make title look clickable */
+        color: #333; /* Default color */
+        text-decoration: none; /* Remove underline */
+    }
+
+    .book-title:hover {
+        color: #007bff; /* Change color on hover */
+        text-decoration: underline; /* Add underline on hover */
+    }
+
+    .book-details {
+        font-size: 14px;
+    }
+
+    .book-status {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .status-available {
+        color: green;
+    }
+
+    .status-ongoing {
+        color: rgb(93, 93, 34);
+    }
+
+    .status-pending {
+        color: orange;
+    }
+
+    .status-lost {
+        color: red;
+    }
+
+    .button-container {
+        margin-top: 20px;
+    }
 </style>
 
 <div class="main-content">
-<div class="search-container">
-    <p>Your Virtual Library Assistant!</p>
-    <input type="text" class="search-input" placeholder="Search book">
-    <button class="search-button" style="font-family: 'Poppins', sans-serif;">Davidelib Search</button>
-</div>
-</div>
+    <!-- Search Bar -->
+    <div class="search-container">
+        <form method="GET" action="{% url 'home' %}">
+            <input type="text" class="search-input" name="q" placeholder="Search book" value="{{ query }}" autofocus>
+            <button type="submit" class="search-button">Search Book</button>
+            <button><a href="{% url 'home' %}" class="search-button" style="text-decoration: none; color: black;">Clear Searches</a></button>
+        </form>
+    </div>
 
+    <!-- Container Wrapper for 3 containers -->
+    <div class="container-wrapper">
+        <!-- First Container: Displays search results or detailed book view -->
+        <div class="container">
+            {% if book_detail %}
+                <!-- Display Book Details -->
+                <h2>{{ book_detail.book_title }}</h2>
+                <div class="book-details">
+                    <strong>Author:</strong> {{ book_detail.author }}<br>
+                    <strong>Book Number:</strong> {{ book_detail.book_number }}<br>
+                    <strong>Category:</strong> {{ book_detail.category.name }}<br>
+                    <strong>Status:</strong>
+                    {% if book_detail.status == 'Returned' %}
+                        <span class="book-status status-available">Available</span>
+                    {% elif book_detail.status == 'Borrowed' %}
+                        <span class="book-status status-ongoing">Ongoing Borrowing</span>
+                    {% elif book_detail.status == 'Overdue' %}
+                        <span class="book-status status-pending">Pending for return</span>
+                    {% else %}
+                        <span class="book-status status-lost">Lost</span>
+                    {% endif %}
+                </div>
+                <div class="button-container">
+                    <a href="{% url 'borrow-slip-create' %}" class="search-button">Borrow Book</a>
+                    <a href="{% url 'home' %}?q={{ query }}" class="search-button">Back to Search Results</a>
+                </div>
+            {% else %}
+                <!-- Display Search Results -->
+                <h2>Search Results</h2>
+                {% if query %}
+                    {% if books %}
+                        <div>
+                            {% for book in books %}
+                                <a href="{% url 'home' %}?q={{ query }}&book_number={{ book.book_number }}" class="book-item" style="text-decoration: none; color: black;">
+                                    <div class="book-title">{{ book.book_title }}</div>
+                                    <div class="book-details">
+                                        <strong>Author:</strong> {{ book.author }}<br>
+                                        <strong>Book Number:</strong> {{ book.book_number }}<br>
+                                        <strong>Status:</strong>
+                                        {% if book.status == 'Returned' %}
+                                            <span class="book-status status-available">Available</span>
+                                        {% elif book.status == 'Borrowed' %}
+                                            <span class="book-status status-ongoing">Ongoing Borrowing</span>
+                                        {% elif book.status == 'Overdue' %}
+                                            <span class="book-status status-pending">Pending for return</span>
+                                        {% else %}
+                                            <span class="book-status status-lost">Lost</span>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                                <hr>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No results found for your search.</p>
+                    {% endif %}
+                {% else %}
+                    <p>Book data is displayed here, search for a book now.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+        <!-- Second Container: Recently Added Books -->
+        <div class="container">
+            <h2>Recently Added Books</h2>
+            <div>
+                {% for recent_book in recent_books %}
+                <a href="{% url 'home' %}?book_number={{ recent_book.book_number }}" class="book-item" style="text-decoration: none; color: black;">
+                    <div class="book-title">{{ recent_book.book_title }}</div>
+                    <div class="book-details">
+                        <strong>Author:</strong> {{ recent_book.author }}<br>
+                    </div>
+                </a>
+                    <hr>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Third Container: Blank for Future Use -->
+        <div class="container">
+            <h2>Blank Container</h2>
+            <p>This section can be filled later with other data or content.</p>
+        </div>
+    </div>
+</div>
 
 {% endblock content %}

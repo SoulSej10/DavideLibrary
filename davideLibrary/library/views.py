@@ -70,7 +70,91 @@ def login_view(request):
 
 @login_required
 def home(request):
-    return render(request, 'library/home.html')
+    query = request.GET.get('q')
+    book_number = request.GET.get('book_number')  # Get book number from query params
+    books = BookInventory.objects.all()
+    
+    if query:
+        # Search by title, author, or book number
+        books = books.filter(
+            Q(book_title__icontains=query) |
+            Q(author__icontains=query) |
+            Q(book_number__icontains=query)
+        )
+
+    # Determine book status based on BorrowSlip data
+    for book in books:
+        try:
+            latest_borrow_slip = BorrowSlip.objects.filter(book_number=book.book_number).order_by('-date_borrow').first()
+            current_date = timezone.now().date()
+
+            if latest_borrow_slip:
+                if latest_borrow_slip.due_date.date() < current_date and not latest_borrow_slip.returned:
+                    book.status = 'Overdue'
+                elif latest_borrow_slip.returned:
+                    book.status = 'Returned'
+                else:
+                    book.status = 'Borrowed'
+            else:
+                book.status = 'Available'
+        except BorrowSlip.DoesNotExist:
+            book.status = 'Available'
+    
+    # Fetch the 10 most recent books
+    recent_books = BookInventory.objects.order_by('-record_date')[:10]
+
+    # Determine status for recent books
+    for book in recent_books:
+        try:
+            latest_borrow_slip = BorrowSlip.objects.filter(book_number=book.book_number).order_by('-date_borrow').first()
+            current_date = timezone.now().date()
+
+            if latest_borrow_slip:
+                if latest_borrow_slip.due_date.date() < current_date and not latest_borrow_slip.returned:
+                    book.status = 'Overdue'
+                elif latest_borrow_slip.returned:
+                    book.status = 'Returned'
+                else:
+                    book.status = 'Borrowed'
+            else:
+                book.status = 'Available'
+        except BorrowSlip.DoesNotExist:
+            book.status = 'Available'
+
+    book_detail = None
+    if book_number:
+        book_detail = get_object_or_404(BookInventory, book_number=book_number)
+        # Determine the status of the book
+        try:
+            latest_borrow_slip = BorrowSlip.objects.filter(book_number=book_number).order_by('-date_borrow').first()
+            current_date = timezone.now().date()
+
+            if latest_borrow_slip:
+                if latest_borrow_slip.due_date.date() < current_date and not latest_borrow_slip.returned:
+                    book_detail.status = 'Overdue'
+                elif latest_borrow_slip.returned:
+                    book_detail.status = 'Returned'
+                else:
+                    book_detail.status = 'Borrowed'
+            else:
+                book_detail.status = 'Available'
+        except BorrowSlip.DoesNotExist:
+            book_detail.status = 'Available'
+
+    return render(request, 'library/home.html', {
+        'books': books,
+        'query': query,
+        'recent_books': recent_books,
+        'book_detail': book_detail  # Pass book detail to template
+    })
+
+
+def book_detail(request, book_number):
+    book = get_object_or_404(BookInventory, book_number=book_number)
+    return render(request, 'home.html', {
+        'book_detail': book,
+        'query': request.GET.get('q', ''),  # Preserve the search query
+    })
 
 def logout_view(request):
     logout(request)

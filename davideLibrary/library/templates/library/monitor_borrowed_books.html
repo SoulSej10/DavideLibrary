@@ -386,7 +386,7 @@ function confirmPenalty() {
     window.location.href = window.location.href;
 }
 
-// Function to get the CSRF token for AJAX requests
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -483,7 +483,7 @@ function verifyBookNumber() {
     }
 }
 
-// Confirm the return, close the modal, and reload the page
+
 function confirmReturn() {
     var modal = document.getElementById('returnBookModal');
     var slipNumber = modal.dataset.slipNumber;
@@ -495,8 +495,8 @@ function confirmReturn() {
     // Update the Actions cell to display 'NOT APPLICABLE'
     actionsCell.innerHTML = 'NOT APPLICABLE';
 
-    // Optionally reload the page or update UI to reflect changes
-    location.reload(); // If you want to reload the page to show updated status
+  
+    location.reload(); 
 }
 
 
