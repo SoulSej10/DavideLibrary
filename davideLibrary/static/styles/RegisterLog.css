@@ -1,0 +1,75 @@
+
+        @font-face {
+            font-family: 'Poppins';
+            src: url('{% static "styles/Poppins/Poppins-Medium.ttf" %}') format('truetype');
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url('{% static "images/your-blurred-background-image.jpg" %}');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            /* font-weight: 400; */
+        }
+        .main-content {
+            display: flex;
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            margin-top: 90px; /* Adjust as per your header height */
+            justify-content: center; /* Center the content horizontally */
+            margin-top: 100px;
+            
+        }
+        h2 {
+            margin-top: -5px;
+            text-align: center;
+            padding: 10px;
+            background-color: #b37512;
+            border-radius: 10px;
+        }
+        form {
+            
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            grid-gap: 20px; /* Space between fields */
+            width: 100%;
+        }
+        .form-panel {
+            margin-top: 20px;
+            width: 50%; /* Adjust as needed */
+            background-color: #eae0a4;
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #654321;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn-register {
+            grid-column: span 2; /* Button spans both columns */
+            padding: 10px;
+            background-color: #CC8C18;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-register:hover {
+            opacity: 0.8;
+        }
+        /* .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        } */
+    
