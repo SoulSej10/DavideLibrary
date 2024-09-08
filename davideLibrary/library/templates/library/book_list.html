@@ -80,16 +80,10 @@
                         {% for book in books %}
                             <tr>
                                 <td >
-                                    <div style="display: inline-block; position: relative;">
-                                        <button type="button" onclick="showDetails('{{ book.book_number }}')" 
-                                            >
-                                            Book Details
-                                        </button>
-                                        <a href="{% url 'book-update' book.book_number %}" 
-                                            >
-                                            Edit
-                                        </a>
-                                    </div>
+                                    <td style="align-items: center;">
+                                        <input type="checkbox" name="selected_books" value="{{ book.book_number }}" class="book-checkbox">
+                                        <img src="{{ book.qr_code.url }}" alt="QR Code" style="width: 50px; height: 50px;">
+                                    </td>
                                 </td>
                                 <td>{{ book.book_number }}</td>
                                 <td>{{ book.record_date.date }}</td>
@@ -101,8 +95,16 @@
                                 <td>{{ book.category.name }}</td>
                                 <td>{{ book.remark }}</td>
                                 <td style="text-align: center; padding: 10px; position: relative;">
-                                    <button type="button" onclick="showDetails('{{ book.book_number }}')" style="background-color: #CC8C18; color: white; border: none; padding: 8px 16px; text-align: center; text-decoration: none; display: inline-block; font-size: 14px; cursor: pointer; border-radius: 4px; position: relative; z-index: 1;" >Book Details</button>
-                                    <a href="{% url 'book-update' book.book_number %}" class="btn-edit" style=" background-color:#cea75e; border: 1px solid white; color: black; padding: 3px 6px; text-align: center; text-decoration: none; display: inline-block; font-size: 12px; cursor: pointer; border-radius: 4px; position: absolute; top: -15px; right: -10px; z-index: 1;">Edit</a>
+                                    <div style="display: inline-block; position: relative;">
+                                        <button type="button" onclick="showDetails('{{ book.book_number }}')" 
+                                            style="background-color: #CC8C18; color: white; border: none; padding: 8px 16px; text-align: center; text-decoration: none; display: inline-block; font-size: 14px; cursor: pointer; border-radius: 4px; position: relative; z-index: 1;">
+                                            Book Details
+                                        </button>
+                                        <a href="{% url 'book-update' book.book_number %}" 
+                                            style=" background-color:#cea75e; border: 1px solid white; color: black; padding: 3px 6px; text-align: center; text-decoration: none; display: inline-block; font-size: 12px; cursor: pointer; border-radius: 4px; position: absolute; top: -15px; right: -10px; z-index: 1;">
+                                            Edit
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}
