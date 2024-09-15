@@ -22,7 +22,7 @@ from datetime import datetime
 from django.utils import timezone  
 from io import BytesIO
 from django.template.loader import get_template
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.utils.timezone import now
 from django.http import JsonResponse
 import qrcode
@@ -31,6 +31,11 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from django.core.files.storage import default_storage
 from django.http import FileResponse
 from django.views.decorators.csrf import csrf_exempt
+
+import matplotlib
+matplotlib.use('Agg')  # Set the backend to 'Agg' for non-interactive plotting
+import matplotlib.pyplot as plt
+import base64
 
 
 
@@ -141,11 +146,45 @@ def home(request):
         except BorrowSlip.DoesNotExist:
             book_detail.status = 'Available'
 
+    # Data for the bar graph (count books by category)
+    category_counts = BookInventory.objects.values('category__name').annotate(count=Count('book_number')).order_by('category__name')
+    categories = [entry['category__name'] for entry in category_counts]
+    counts = [entry['count'] for entry in category_counts]
+
+    # Assign a unique color to each category
+    colors = plt.get_cmap('tab20').colors  # Use a colormap with enough distinct colors
+    category_colors = dict(zip(categories, colors))
+
+    # Create the bar graph using matplotlib
+    plt.figure(figsize=(14, 6))  # Increase figure width to accommodate legend
+    bars = plt.bar(range(len(categories)), counts, color=[category_colors[cat] for cat in categories])
+    plt.xlabel('Category')
+    plt.ylabel('Number of Books')
+    plt.title('Number of Books by Category')
+
+    # Set the x-ticks and labels
+    plt.xticks(range(len(categories)), [''] * len(categories))  # Empty labels for now
+
+    # Add a legend to the plot outside the plot area
+    handles = [plt.Line2D([0], [0], color=color, lw=4) for color in category_colors.values()]
+    plt.legend(handles, category_colors.keys(), loc='center left', bbox_to_anchor=(1, 0.5))
+
+    # Save the plot to a BytesIO object
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png', bbox_inches='tight')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+
+    # Encode the image to base64 string
+    graph = base64.b64encode(image_png).decode('utf-8')
+
     return render(request, 'library/home.html', {
         'books': books,
         'query': query,
         'recent_books': recent_books,
-        'book_detail': book_detail  # Pass book detail to template
+        'book_detail': book_detail,
+        'graph': graph,  # Pass the graph image to the template
     })
 
 
