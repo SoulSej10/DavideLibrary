@@ -44,7 +44,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     middle_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30)
     password = models.CharField(max_length=128)
-    
+
     # Additional fields
     admin_id = models.CharField(max_length=255, unique=True)
     is_staff = models.BooleanField(default=False)
@@ -128,6 +128,7 @@ class BookInventory(models.Model):
     publisher = models.CharField(max_length=200, blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
     remark = models.TextField(blank=True, null=True)
+
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     location = models.TextField(blank=True, null=True)
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
