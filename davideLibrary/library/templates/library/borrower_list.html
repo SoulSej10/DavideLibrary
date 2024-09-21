@@ -12,32 +12,12 @@
 </head>
 <body>
     <div class="main-content">
-        <div class="container">
-            <div class="list-panel">
-               <div class="head">
-                    <h1>Borrowers</h1>
-                </div>
 
-                <div class="search-container">
-                    <!-- Search Form -->
-                    <form method="get" action="" class="search-form">
-                        <span style="color: rgb(105, 104, 104);">Search by:</span>
-                        <input type="text" name="search" autofocus placeholder="Enter UID" value="{{ query }}">
-                        <button type="submit" style="background-color: #CC8C18; padding: 8px 12px; ">Search</button>
-                        <a href="{% url 'borrower-list' %}">Reset List</a>
-                    </form>
-    
-                    <!-- Filter Form -->
-                    <form method="get" action="" class="filter-form">
-                        <label for="grade_filter">Filter by Grade:</label>
-                        <select name="grade">
-                            {% for grade, display in form.fields.grade_level.choices %}
-                                <option value="{{ grade }}" {% if grade_filter == grade %}selected{% endif %}>{{ display }}</option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit">Filter</button>
-                    </form>
-                </div>
+        <div class="top">
+            <span>BORROWER LIST</span>
+        </div>
+        <div class="table-side-container">
+            <div class="list-panel">
 
                 <!-- Bulk Actions Form -->
                 <form id="bulk-action-form" method="post" action="">
@@ -87,43 +67,72 @@
                     </div>                    
                 </form>
             </div>
-            <div class="form-panel">
-                <h1 style="text-align: center;">Add or Edit a Borrower </h1>
-                {% if form.instance.pk %}
-                    <form method="post" action="{% url 'edit-borrower' form.instance.pk %}">
-                {% else %}
-                    <form method="post" action="{% url 'borrower-create' %}">
-                {% endif %}
-                    {% csrf_token %}
-                
-                    <div class="form-group">
-                        <label for="id_firstname">[First, MI, Last] Author Name</label>
-                        <div class="form-group-author" aria-required="">
-                         {{ form.firstname }} <span>{{ form.middle_initial }}</span> <span>{{ form.lastname }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="id_grade_level">Grade Level</label>
-                        {{ form.grade_level }}
-                    </div>
-                    <div class="form-group">
-                        <label for="id_grade_level">Age</label>
-                        {{ form.age }}
-                    </div>
-                    <div class="form-group">
-                        <label for="id_grade_level">Section</label>
-                        {{ form.section }}
-                    </div>
-                    <div class="form-group">
-                        <label for="id_grade_level">Adviser</label>
-                        {{ form.adviser }}
-                    </div>
 
-                    <button type="submit" class="btn-save">Save</button>
+            <div class="side">
+                <div class="head">
+                    <h1>Borrowers</h1>
+                </div>
+
+                <div class="search-container">
+                    <!-- Search Form -->
+                    <form method="get" action="" class="search-form">
+                        <span style="color: rgb(105, 104, 104);">Search by:</span>
+                        <input type="text" name="search" autofocus placeholder="Enter UID" value="{{ query }}">
+                        <button type="submit" style="background-color: #CC8C18; padding: 8px 12px; ">Search</button>
+                        <a href="{% url 'borrower-list' %}">Reset List</a>
+                    </form>
+    
+                    <!-- Filter Form -->
+                    <form method="get" action="" class="filter-form">
+                        <label for="grade_filter">Filter by Grade:</label>
+                        <select name="grade">
+                            {% for grade, display in form.fields.grade_level.choices %}
+                                <option value="{{ grade }}" {% if grade_filter == grade %}selected{% endif %}>{{ display }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Filter</button>
+                    </form>
+                </div>
+
+                <div class="form-panel">
+                    <h1 style="text-align: center;">Add or Edit a Borrower </h1>
                     {% if form.instance.pk %}
-                        <button type="button" class="btn-cancel" onclick="cancelEdit()">Cancel</button>
+                        <form method="post" action="{% url 'edit-borrower' form.instance.pk %}">
+                    {% else %}
+                        <form method="post" action="{% url 'borrower-create' %}">
                     {% endif %}
-                </form>
+                        {% csrf_token %}
+                    
+                        <div class="form-group">
+                            <label for="id_firstname">[First, MI, Last] Author Name</label>
+                            <div class="form-group-author" aria-required="">
+                             {{ form.firstname }} <span>{{ form.middle_initial }}</span> <span>{{ form.lastname }}</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_grade_level">Grade Level</label>
+                            {{ form.grade_level }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_grade_level">Age</label>
+                            {{ form.age }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_grade_level">Section</label>
+                            {{ form.section }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_grade_level">Adviser</label>
+                            {{ form.adviser }}
+                        </div>
+    
+                        <button type="submit" class="btn-save">Save</button>
+                        {% if form.instance.pk %}
+                            <button type="button" class="btn-cancel" onclick="cancelEdit()">Cancel</button>
+                        {% endif %}
+                    </form>
+                </div>
             </div>
+            
         </div>
     </div>
     <div id="confirm-delete" class="modal-delete">
