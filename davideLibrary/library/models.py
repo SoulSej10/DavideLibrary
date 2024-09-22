@@ -36,20 +36,28 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, username, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('role', 'Head Librarian')
+        extra_fields.setdefault('admin_id', 'superuser-admin-id')  # Set admin_id for superuser
         return self.create_user(username, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    HEAD_LIBRARIAN = 'Head Librarian'
+    ASSISTANT_LIBRARIAN = 'Assistant Librarian'
+
+    ROLE_CHOICES = (
+        ('Head Librarian', 'Head Librarian'),
+        ('Assistant Librarian', 'Assistant Librarian'),
+    )
+
     username = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(max_length=30)
     middle_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30)
-    password = models.CharField(max_length=128)
-
-    # Additional fields
     admin_id = models.CharField(max_length=255, unique=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Assistant Librarian')
     
     objects = CustomUserManager()
 
@@ -57,7 +65,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'admin_id']
 
     def __str__(self):
-        return self.username
+        return f"{self.first_name} {self.last_name}"
 
 
 

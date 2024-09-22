@@ -14,54 +14,43 @@
             margin-top: 90px; /* Adjust as per your header height */
         }
 
-        .top{
-            letter-spacing: 1px;
-            font-size: 28px;
-            margin-top:10px;
-            font-weight: 300;
-            margin-bottom: 5px;
-        }
-
-
-        .table-side-container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .side{
-            width: 40%;
-            margin-top: -65px;
-        }
        
 
         .head {
-            margin-left: 10px;
-            margin-top: 17px;
-            width: 90%;
+            margin-top: 10px;
+            width: 400px;
             display: flex;
             justify-content: center; /* Center the content horizontally */
             align-items: center; /* Center the content vertically */
-            padding: 8px; /* Add padding inside the div */
-            background: #73532C;
+            padding: 20px; /* Add padding inside the div */
+            background-color: #CC8C18; /* Set the background color */
             border-radius: 10px; /* Add rounded corners */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
             color: white; /* Set the text color */
-           
+            margin-bottom: 20px; /* Space below the header */
         }
 
         .head h1 {
+
             margin: 0; /* Remove default margin from the h1 */
-            font-size: 16px; /* Set the font size */
+            font-size: 24px; /* Set the font size */
             font-family: 'Poppins', sans-serif; /* Set the font family */
             letter-spacing: 3px; /* Slightly increase the spacing between letters */
             text-align: center; /* Center the text within the h1 */
             width: 100%; 
         }
 
-       
-        .search-container { 
+
+
+        /* .search-container {
+            margin-bottom: 20px;
+        } */
+
+        .search-container {
+            
             display: flex;
             flex-direction: column;
+            gap: 20px; 
             padding: 20px;
             max-width: 600px; 
            
@@ -70,65 +59,47 @@
         .search-container > * {
             display: flex;
             align-items: center;
-            /* gap: 5px; */
+            gap: 10px;
         }
 
         .search-container form,
         .search-container a {
             display: flex;
             align-items: center;
-            width: 100%;
+            gap: 10px;
         }
 
         .search-container form {
             display: flex;
             align-items: center;
-            width: 100%;
-            flex: 1;
+            gap: 10px; 
+            flex: 1; 
         }
 
-        h4{
-          margin-top: -15px;
-          margin-bottom: 5px;
+        .search-container label {
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif; 
+            color: #333; 
+            width: 200px;
+            align-self: center;
         }
+
         
         .search-container input[type="text"],
         .search-container select {
             
-            padding: 5px 5px; 
+            padding: 8px 10px; 
             border: 1px solid #ccc; 
-            border-radius: 5px 0px 0px 5px; 
-            font-size: 13px; 
+            border-radius: 5px; 
+            font-size: 14px; 
             font-family: 'Poppins', sans-serif;
             width: 100%; 
             box-sizing: border-box; 
         }
         
         .search-container button {
-            padding: 5px 5px; 
-            background: #7EBC89;
-            border: none; 
-            border-radius: 0px 5px 5px 0px;
-            color: white; 
-            font-size: 13px; 
-            font-family: 'Poppins', sans-serif; 
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100px; 
-            text-align: center;
-            border: 1px solid #ccc; 
-           
-        }
-        
-        .search-container button:hover {
-            background: #7EBC89;
-        }
-        
-        /* Style for the Reset List link */
-        .search-container a {
-            
-            padding: 5px; 
-            background: #7EBC89;
+            padding: 10px 15px; 
+            background-color: #CC8C18; 
             border: none; 
             border-radius: 5px;
             color: white; 
@@ -136,15 +107,28 @@
             font-family: 'Poppins', sans-serif; 
             cursor: pointer;
             transition: background-color 0.3s ease;
-            width: 100%; 
-            margin-top: 5px;
-            margin-bottom: 5px;
-            text-decoration: none;
+            width: 180px; 
+           
+        }
+        
+        .search-container button:hover {
+            background-color: #b37512; 
+        }
+        
+        /* Style for the Reset List link */
+        .search-container a {
+            
+            align-items: center;
+            font-size: 14px; 
+            color: #CC8C18;
+            text-decoration: none; 
+            font-family: 'Poppins', sans-serif; 
+            text-wrap: nowrap;
             
         }
         
         .search-container a:hover {
-            text-decoration: none; 
+            text-decoration: underline; 
         }
 
 
@@ -156,17 +140,14 @@
   
 
         .add {
-            margin-top: -15px;
-            padding: 8px;
-            border-radius: 10px; 
-            background: #E1A95F;
-            
+            padding: 15px;
+            border-radius: 0px 30px 30px 0px; /* Rounded corners */
+            background-color: #654321;
+            margin-bottom: 10px;
             letter-spacing: 1px;
             font-size: 14px;
-            margin-left: 10px;
-            width: 90%;
-            position: relative; 
-            text-align: center;
+            max-width: 150px;
+            position: relative; /* Needed to position the pseudo-element */
             
         }
         .add:hover{
@@ -185,40 +166,44 @@
        /* location container */
        /* Container for the section below the table */
         #location-container {
-            width: 90%;
-            padding: 10px;
-            background: #ECECEC;
+            width: 60%;
+            margin-top: 20px; /* Space between the table and the container */
+            padding: 15px;
+            background-color: #eae0a4;
             border: 1px solid #ccc;
             border-radius: 8px;
-            flex-direction: column;
-            margin-left: 10px;
-            margin-top: 5px;
+            margin-bottom: 20px;
+            margin-left: 170px;
+
+
         }
 
         /* Label and input styling */
         #location-container label {
             font-weight: bold;
+            margin-right: 10px;
             margin-bottom: 15px;
-            font-size: 13px;
-            background: #73532C;
-            padding: 5px;
+            font-size: 15px;
+            background-color: #b37512;
+            padding: 8px;
+            margin-left: 50px;
             width: 300px;
             border-radius: 0px 10px 10px 0px;
             color: white;
-            margin-left: -10px;
-            margin-top: 10px;
+
         }
 
         #location-container input[type="text"] {
 
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            margin-left: 50px;
             margin-top: 15px;
-            padding: 5px 7px; 
+            padding: 8px 10px; 
             border: 1px solid #ccc; 
             border-radius: 5px; 
-            font-size: 13px; 
+            font-size: 14px; 
             font-family: 'Poppins', sans-serif;
-            width: 100%; 
+            width: 80%; 
             box-sizing: border-box;
 
         }
@@ -227,8 +212,7 @@
         #button-container {
             display: flex;
             justify-content: center; /* Center buttons */
-            width: 100%;
-            flex-direction: column; 
+            gap: 10px; /* Space between buttons */
            
 
         }
@@ -237,8 +221,8 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            background: #757575;
-            width: 100%;
+            flex: 1;
+            
         }
 
         #location-container button:hover{
@@ -246,17 +230,13 @@
         }
 
         #location-container #set-location-btn {
-            background: #7EBC89;
+            background-color: #4CAF50; /* Green */
             color: white;
-            width: 100%;
-            margin-bottom: 5px;
         }
 
         #location-container .btn-danger {
-            background: #FF2222;
+            background-color: #f44336; /* Red */
             color: white;
-            width: 100%;
-            margin-bottom: 5px;
         }
 
         /* Ensure hidden elements remain hidden */
@@ -264,7 +244,18 @@
             display: none;
         }
 
-       
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #location-container input[type="text"] {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            #location-container button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
 
         /* delete pop up */
         /* Style for the close button */
@@ -338,46 +329,47 @@
             border-radius: 4px;
         }
 
-        form{
-            width: 90%;
-        }
+
         
         .table-container {
-            max-height: 500px; /* Adjust the height as needed */
+            max-height: 355px; /* Adjust the height as needed */
             overflow: auto;
             border: 1px solid #ddd; /* Optional: Add borders for styling */
             border-radius: 4px;
-            width: 100%;
+            
         }
+
+        
+
+        
 
         table {
             width: 100%;
             border-collapse: collapse;
-            flex: 1;
+           
             
         }
 
         th, td {
-            padding: 3px;
+            padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            
            
         }
 
         th {
-            background: #D9D9D9;
+            background-color: #eae0a4;
             position: sticky;
             top: 0;
             z-index: 1;
-            font-size: 14px;
-            text-align: center;
         }
 
         tbody {
             display: block;
             overflow-y: auto;
             max-height: 320px; /* Adjust based on the container height */
-            font-size: 12px;
+            font-size: 13px;
         }
 
         tr {
@@ -387,12 +379,11 @@
         }
 
         td {
-            text-align: center;
+            
             word-wrap: break-word; /* Ensures long text wraps inside cells */
         }
         tbody tr:nth-child(even) {
-            background: #D9D9D9;
-
+            background-color: #eae0a4;
         }
         .hidden {
             display: none;
@@ -400,38 +391,6 @@
         .blur {
             filter: blur(4px);
         }
-
-        .button-container {
-            display: flex;
-            flex-direction: row; 
-            align-items: center; 
-            gap:2px ;
-        }
-        
-        .button-container button, 
-        .button-container a {
-            padding: 5px;
-            border: none;
-            background: #7EBC89;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif; /* Use your preferred font */
-        }
-        
-        .button-container button:hover,
-        .button-container a:hover {
-            opacity: .8;
-
-        }
-        
-        .button-container a {
-            display: inline-block; /* Keep the link styled as a block but inline */
-            background: #E1A95F;
-            text-align: center; /* Center text within the link */
-        }
-        
 
 
         .modal-delete{
@@ -536,23 +495,3 @@
 
         
     
- /* Responsive adjustments */
- @media (max-width: 768px) {
-    #location-container input[type="text"] {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    
-    #location-container button {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    .table-side-container {
-        flex-direction: column;
-    }
-
-    .table-container, .side {
-        width: 100%;
-    }
-}

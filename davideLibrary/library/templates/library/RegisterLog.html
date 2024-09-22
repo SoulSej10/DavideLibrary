@@ -9,45 +9,131 @@
     {% block css %}
     <link rel="stylesheet" type="text/css" href="{% static 'styles/RegisterLog.css' %}">
     {% endblock %}
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 60px;
+        }
+        .form-container, .accounts-container {
+            width: 48%;
+        }
+        .form-panel {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            width: 100%;
+        }
+        .accounts-container {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            margin-top: 20px;
+        }
+        .accounts-container h3 {
+            margin-top: 0;
+        }
+        .accounts-container ul {
+            list-style: none;
+            padding: 0;
+        }
+        .accounts-container li {
+            margin-bottom: 10px;
+        }
+        .error-list {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="main-content">
-        <div class="form-panel">
-            <h2>Register an Account</h2>
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{ form.username.label_tag }}
-                    {{ form.username }}
-                </div>
-                <div class="form-group">
-                    {{ form.first_name.label_tag }}
-                    {{ form.first_name }}
-                </div>
-                <div class="form-group">
-                    {{ form.middle_name.label_tag }}
-                    {{ form.middle_name }}
-                </div>
-                <div class="form-group">
-                    {{ form.last_name.label_tag }}
-                    {{ form.last_name }}
-                </div>
-                <div class="form-group">
-                    {{ form.admin_id.label_tag }}
-                    {{ form.admin_id }}
-                </div>
-                <div class="form-group">
-                    {{ form.password1.label_tag }}
-                    {{ form.password1 }}
-                </div>
-                <div class="form-group">
-                    {{ form.password2.label_tag }}
-                    {{ form.password2 }}
-                </div>
-                <button type="submit" class="btn-register">Register</button>
-            </form>
+    <div class="container">
+        <!-- Form Container -->
+        <div class="form-container">
+            <div class="form-panel">
+                <h2>Register an Account</h2>
+                
+                <!-- Display form errors -->
+                {% if form.errors %}
+                    <div class="error-list">
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                                <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.middle_name.label_tag }}
+                        {{ form.middle_name }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.admin_id.label_tag }}
+                        {{ form.admin_id }}
+                    </div>
+
+                    <!-- Add the role field here -->
+                    <div class="form-group">
+                        {{ form.role.label_tag }}
+                        {{ form.role }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.password1.label_tag }}
+                        {{ form.password1 }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password2.label_tag }}
+                        {{ form.password2 }}
+                    </div>
+                    <button type="submit" class="btn-register">Register</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Accounts Container -->
+        <div class="accounts-container">
+            <p style="align-items: center; font-size: 22px; font-weight: bold; text-align: center;">Registered Accounts</p>
+            <h3>Head Librarians</h3>
+            <ul>
+                {% for head_librarian in head_librarians %}
+                <li>{{ head_librarian.get_full_name }} - {{ head_librarian.username }}</li>
+                {% empty %}
+                <li>No head librarians found.</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Assistant Librarians</h3>
+            <ul>
+                {% for assistant_librarian in assistant_librarians %}
+                <li>{{ assistant_librarian.get_full_name }} - {{ assistant_librarian.username }}</li>
+                {% empty %}
+                <li>No assistant librarians found.</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
+</div>
 </body>
 </html>
 {% endblock %}

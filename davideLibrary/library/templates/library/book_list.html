@@ -16,12 +16,42 @@
 
 <body>
 <div class="main-content">
-
-     <div class="top">
-        <span>BOOK LIST</span>
+    <div class="head">
+        <h1>Book Inventory</h1>
+    </div>
+    <div class="search-container">
+        <form method="GET" action="{% url 'book-list' %}">
+            <label for="id_search">Search Book:</label>
+            <input type="text" name="search" id="id_search" autofocus placeholder="Enter Book Number or Title" value="{{ query|default:'' }}">
+            <button type="submit">Search</button>
+            <a href="{% url 'book-list' %}">Reset List</a>
+        </form>
+       
+        <form method="GET" action="{% url 'book-list' %}">
+            <label for="id_category">Filter by Category:</label>
+            <select name="category" id="id_category">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.name }}" {% if category.name == request.GET.category %} selected {% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Apply Filter</button>
+        </form>
     </div>
 
-      <div class="table-side-container">
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: red;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if no_results %}
+        <p class="no-results">No records of "{{ query }}" found, please try to approach the librarian for more inquiries.</p>
+    {% else %}
+        
+    <div class="add">
+        <a href="{% url 'book-create' %}">Add New Book</a>
+    </div>
         <form method="POST" action="{% url 'delete-selected-books' %}" id="delete-form">
             {% csrf_token %}
             <div class="table-container">
@@ -81,49 +111,6 @@
                     </tbody>
                 </table>
             </div>
-        </form>
-
-          <div class="side">
-            <div class="head">
-                <h1>Book Inventory</h1>
-            </div>
-            
-            <div class="search-container">
-                <form method="GET" action="{% url 'book-list' %}">
-                   
-                    <input type="text" name="search" id="id_search" autofocus placeholder="Enter Book Number or Title" value="{{ query|default:'' }}">
-                    <button type="submit">Search</button>
-                    
-                </form>
-
-                <a href="{% url 'book-list' %}">Reset List</a>
-            
-                <form method="GET" action="{% url 'book-list' %}">
-                   
-                    <select name="category" id="id_category">
-                        <option value="">All Categories</option>
-                        {% for category in categories %}
-                            <option value="{{ category.name }}" {% if category.name == request.GET.category %} selected {% endif %}>{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit">Apply Filter</button>
-                </form>
-            </div>
-        
-            {% if messages %}
-                {% for message in messages %}
-                    <p style="color: red;">{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-        
-            {% if no_results %}
-                <p class="no-results">No records of "{{ query }}" found, please try to approach the librarian for more inquiries.</p>
-            {% else %}
-                
-            <div class="add">
-                <a href="{% url 'book-create' %}">Add New Book</a>
-            </div>
-
             <div id="location-container" class="hidden">
                 <label for="location">Add Location:</label>
                 <input type="text" name="location" id="location" placeholder="Enter location for selected books">
@@ -132,11 +119,7 @@
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
                 <button type="submit" formaction="{% url 'generate-selected-books-pdf' %}">Download PDF</button>
             </div>
-        </div>
-
-
-          
-      </div>
+        </form>
         
         <script>
             document.getElementById('select-all-checkbox').addEventListener('change', function() {

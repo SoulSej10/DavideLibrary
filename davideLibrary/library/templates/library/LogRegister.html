@@ -13,6 +13,25 @@
     <style>
         body{
             background-image: url('{% static "images/hpdsback.jpg" %}');
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            }
+            body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: inherit;
+            filter: blur(10px);
+            z-index: -1;
         }
     </style>
    

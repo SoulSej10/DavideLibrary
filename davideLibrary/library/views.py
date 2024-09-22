@@ -4,7 +4,6 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 import os
 from django.http import HttpResponse
@@ -15,7 +14,7 @@ from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
 from django.conf import settings
 from django.db import models
-from .models import  Borrower, BookInventory, BorrowSlip, Attendance, Category
+from .models import  Borrower, BookInventory, BorrowSlip, Attendance, Category, CustomUser
 from .forms import  BorrowerForm, BookInventoryForm, BorrowSlipForm, AttendanceForm, PenaltyForm
 from django.contrib import messages
 from datetime import datetime
@@ -38,7 +37,10 @@ import matplotlib.pyplot as plt
 import base64
 
 
-
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.urls import reverse
+from django.contrib.auth.models import Group 
+from django.http import HttpResponseForbidden
 
 
 
@@ -48,30 +50,62 @@ import base64
 # ============================================================================================================================================
 # ==================================================___LOG IN/ REGISTER VIEW___===============================================================
 # ============================================================================================================================================
+# Helper function to check if user is head librarian
+def is_head_librarian(user):
+    return user.role == 'Head Librarian'
+
 def directory(request):
     return render(request, 'library/directory.html')
-
-def register(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('login')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'library/RegisterLog.html', {'form': form, 'register': True})
 
 def login_view(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            admin_id = form.cleaned_data.get('admin_id')
+            print(f"Username: {username}, Password: {password}, Admin ID: {admin_id}")
+            user = authenticate(request, username=username, password=password, admin_id=admin_id)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, 'Invalid credentials or admin ID.')
     else:
         form = CustomAuthenticationForm()
-    return render(request, 'library/LogRegister.html', {'form': form, 'register': False})
+    return render(request, 'library/LogRegister.html', {'form': form})
+
+@login_required
+@user_passes_test(is_head_librarian)
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, 'Assistant Librarian registered successfully.')
+            print("User created successfully:", user)  # Debugging message
+            return redirect('register')  # Or change to 'directory' if you have a specific route
+        else:
+            print(form.errors)  # Output form errors for debugging
+            messages.error(request, 'Registration failed. Please check the form.')
+    else:
+        form = CustomUserCreationForm()
+
+    # Fetch all users categorized by roles
+    all_users = CustomUser.objects.all()
+    head_librarians = all_users.filter(is_superuser=True)
+    assistant_librarians = all_users.exclude(is_superuser=True)
+
+    context = {
+        'form': form,
+        'head_librarians': head_librarians,
+        'assistant_librarians': assistant_librarians,
+    }
+    
+    return render(request, 'library/RegisterLog.html', context)
+def logout_view(request):
+    logout(request)
+    return redirect('directory')
 
 @login_required
 def home(request):
@@ -79,6 +113,9 @@ def home(request):
     book_number = request.GET.get('book_number')  # Get book number from query params
     books = BookInventory.objects.all()
     
+    if not request.user.is_authenticated:
+        return redirect('directory')
+
     if query:
         # Search by title, author, or book number
         books = books.filter(
@@ -195,9 +232,7 @@ def book_detail(request, book_number):
         'query': request.GET.get('q', ''),  # Preserve the search query
     })
 
-def logout_view(request):
-    logout(request)
-    return redirect('directory')
+
 
 
 

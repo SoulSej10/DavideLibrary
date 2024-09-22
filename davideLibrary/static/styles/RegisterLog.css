@@ -1,23 +1,20 @@
 
         @font-face {
             font-family: 'Poppins';
-            src: url('{% static "styles/Poppins/Poppins-Medium.ttf" %}') format('truetype');
+            src: url('{% static "styles/Poppins/Poppins-Regular.ttf" %}') format('truetype');
         }
         body {
             font-family: 'Poppins', sans-serif;
             background-image: url('{% static "images/your-blurred-background-image.jpg" %}');
             background-repeat: no-repeat;
             background-attachment: fixed;
-            background-size: cover;
-            /* font-weight: 400; */
+            background-size: cover  
         }
         .main-content {
             display: flex;
             margin-left: 240px; /* Adjust as per your sidebar width */
             margin-top: 90px; /* Adjust as per your header height */
-            justify-content: center; /* Center the content horizontally */
-            margin-top: 100px;
-            
+            padding: 10px;
         }
         h2 {
             margin-top: -5px;

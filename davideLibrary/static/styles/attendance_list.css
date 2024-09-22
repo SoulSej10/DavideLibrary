@@ -1,131 +1,117 @@
-.top{
-    letter-spacing: 1px;
-    font-size: 28px;
-    margin-top:10px;
-    font-weight: 300;
-    margin-bottom: 5px;
-}
 
-
-.table-side-container {
-    display: flex;
-    justify-content: center;
-}
-
-.side{
-    width: 40%;
-    margin-top: -65px;
-}
-
-
-.head {
-    margin-left: 10px;
-    margin-top: 17px;
-    width: 90%;
-    display: flex;
-    justify-content: center; /* Center the content horizontally */
-    align-items: center; /* Center the content vertically */
-    padding: 8px; /* Add padding inside the div */
-    background: #73532C;
-    border-radius: 10px; /* Add rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
-    color: white; /* Set the text color */
-   
-}
-
-.head h1 {
-    margin: 0; /* Remove default margin from the h1 */
-    font-size: 16px; /* Set the font size */
-    font-family: 'Poppins', sans-serif; /* Set the font family */
-    letter-spacing: 3px; /* Slightly increase the spacing between letters */
-    text-align: center; /* Center the text within the h1 */
-    width: 100%; 
-}
-
-.add {
-    margin-top: 10px;
-    padding: 8px;
-    border-radius: 10px; 
-    background: #E1A95F;
     
-    letter-spacing: 1px;
-    font-size: 14px;
-    margin-left: 10px;
-    width: 90%;
-    position: relative; 
-    text-align: center;
+
+    .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
     
-}
-.add:hover{
-    opacity: 0.8;
-    cursor: pointer;  
+        .head {
+            margin-top: 10px;
+            width: 250px;
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center; /* Center the content vertically */
+            padding: 20px; /* Add padding inside the div */
+            background-color: #CC8C18; /* Set the background color */
+            border-radius: 10px; /* Add rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
+            color: white; /* Set the text color */
+            margin-bottom: 20px; /* Space below the header */
+        }
 
-}
-.add a{
-    padding: 15px;
-    color: white;
-    text-decoration: none;
+        .head h1 {
 
-}
+            margin: 0; /* Remove default margin from the h1 */
+            font-size: 24px; /* Set the font size */
+            font-family: 'Poppins', sans-serif; /* Set the font family */
+            letter-spacing: 3px; /* Slightly increase the spacing between letters */
+            text-align: center; /* Center the text within the h1 */
+            width: 100%; 
+        }
+
+        .add {
+            padding: 15px;
+            border-radius: 0px 30px 30px 0px; /* Rounded corners */
+            background-color: #654321;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            font-size: 16px;
+            max-width: 150px;
+            position: relative; /* Needed to position the pseudo-element */
+            
+        }
+        .add:hover{
+            opacity: 0.8;
+            cursor: pointer;  
+
+        }
+        .add a{
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+
+        }
 
 
-.table-container {
-    max-height: 355px; /* Adjust the height as needed */
-    overflow: auto;
-    border: 1px solid #ddd; /* Optional: Add borders for styling */
-    border-radius: 4px;
-    
-}
+        .table-container {
+            max-height: 355px; /* Adjust the height as needed */
+            overflow: auto;
+            border: 1px solid #ddd; /* Optional: Add borders for styling */
+            border-radius: 4px;
+            
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-   
-    
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+           
+            
+        }
 
-thead th{
-    background-color: #eae0a4;
-}
+        thead th{
+            background-color: #eae0a4;
+        }
 
-th, td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    
-   
-}
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            
+           
+        }
 
-th {
-    background-color: #f5f5f5;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
+        th {
+            background-color: #f5f5f5;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
 
-tbody {
-    display: block;
-    overflow-y: auto;
-    max-height: 320px; /* Adjust based on the container height */
-    font-size: 14px;
-}
+        tbody {
+            display: block;
+            overflow-y: auto;
+            max-height: 320px; /* Adjust based on the container height */
+            font-size: 14px;
+        }
 
-tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-}
+        tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
 
-td {
-    
-    word-wrap: break-word; /* Ensures long text wraps inside cells */
-}
-tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-.hidden {
-    display: none;
-}
-.blur {
-    filter: blur(4px);
-}
+        td {
+            
+            word-wrap: break-word; /* Ensures long text wraps inside cells */
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .hidden {
+            display: none;
+        }
+        .blur {
+            filter: blur(4px);
+        }
