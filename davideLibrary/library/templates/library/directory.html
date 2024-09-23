@@ -116,13 +116,20 @@
     <div class="inner-container">
         <div class="logo-text" style="text-align: center; padding-top: 20px;">Davide<span>Lib Connect</span></div>
         <div class="title" style="text-align: center;">Your Virtual Library Assistant!</div>
-        <div class="subtitle" style="text-align: center;">Continue As -</div>
+        <div class="subtitle" style="text-align: center;">- Continue As -</div>
         <div style="margin-left: 10px; display: flex; flex-direction: column;">
-            <button class="user-btn"><a href="{% url 'login' %}" style="text-decoration: none; color: white;">Head Librarian</a></button>
-            <button class="guest-btn"><a href="{% url 'login' %}" style="text-decoration: none; color: white;">Assistant Librarian</a></button>
+            <!-- Head Librarian button -->
+            <button class="user-btn">
+                <a href="{% url 'head_librarian_login' %}" style="text-decoration: none; color: white;">Head Librarian</a>
+            </button>
+            <!-- Assistant Librarian button -->
+            <button class="guest-btn">
+                <a href="{% url 'assistant_librarian_login' %}" style="text-decoration: none; color: white;">Assistant Librarian</a>
+            </button>
         </div>
         <p style="margin-top: 20px; text-align: center;">DavideLib Connect © 2025 || Library Management System</p>
     </div>
 </div>
+
 
 {% endblock %}

@@ -6,7 +6,8 @@ from .views import book_details, generate_selected_books_pdf
 
 urlpatterns = [
     # home
-    path('', views.home, name='home'),
+    path('home/', views.home, name='home'),
+    path('', views.directory, name='directory'),
     path('book/<str:book_number>/', views.book_detail, name='book_detail'),
     # path('borrow/<str:book_number>/', views.borrow_book, name='borrow_book'),
     
@@ -14,7 +15,9 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('directory/', views.directory, name='directory'),
+    path('login/head/', views.HeadLibrarianLoginView.as_view(), name='head_librarian_login'),
+    path('login/assistant/', views.AssistantLibrarianLoginView.as_view(), name='assistant_librarian_login'),
+    
 
     # borrowers
     path('borrower-list/', views.borrower_list, name='borrower-list'),

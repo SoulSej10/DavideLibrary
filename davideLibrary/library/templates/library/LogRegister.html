@@ -11,7 +11,12 @@
     {% endblock %}
 
     <style>
-        body{
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+    }
+
+        body {
             background-image: url('{% static "images/hpdsback.jpg" %}');
             background-position: center;
             background-size: cover;
@@ -21,8 +26,8 @@
             height: 100vh;
             margin: 0;
             font-family: 'Poppins', sans-serif;
-            }
-            body::after {
+        }
+        body::after {
             content: "";
             position: absolute;
             top: 0;
@@ -33,33 +38,75 @@
             filter: blur(10px);
             z-index: -1;
         }
+        .container {
+            width: 1000px;
+            height: 500px;
+            display: flex;
+            /* border-radius: 30px; */
+            /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
+        }
+        .inner-container {
+            width: 50%;
+            background: white;
+            text-align: left;
+            padding: 20px;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+        .logo-container {
+            width: 50%;
+            background: #D6B980;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+        }
+        .logo-text {
+            color: black;
+            font-size: 50px;
+            font-family: Poppins;
+            font-weight: 700;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+        .title {
+            color: black;
+            font-size: 24px;
+            font-family: Poppins;
+            font-weight: 400;
+        }
     </style>
-   
 </head>
 <body>
-    <section id="head" class="head">
-
-        <div class="login_logo">
-            <img src="{%static 'images/hpdslogo.png'%}" alt="" >
+    <div class="container">
+        <div class="logo-container">
+            <img src="{% static 'images/hpdslogo.png' %}" alt="" style="width: 370px; height: 370px; border-radius: 50%;">
         </div>
-    
-        <div class="form-panel">
-           
+        <div class="inner-container">
+            <div class="logo-text" style="text-align: center; padding-top: 20px;">Davide<span>Lib Connect</span></div>
+            <div class="title" style="text-align: center;">Your Virtual Library Assistant!</div>
             <div class="header">
+                <h2>Login as {{ login_type }}</h2>
+            </div>
 
-                    <h2>Login</h2>
-             </div>
-            
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
             <form method="post">
                 <div class="form-group">
-                {% csrf_token %}
-                
-                {{ form.as_p }}
-            </div>
-                <button type="submit">Login</button>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </div>
+                <button type="submit" style="font-weight: bold; font-size: 18px; width: 280px; border-radius: 20px;">LOGIN</button>
+                <a href="{% url 'directory' %}" style="text-decoration: none; color: black; padding-top: 10px;">Back to Directory</a>
             </form>
-        </div>
-    </section>
+    </div>
+</div>
 </body>
 </html>
 {% endblock %}

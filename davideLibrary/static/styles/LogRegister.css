@@ -3,17 +3,6 @@
             font-family: 'Poppins';
             src: url('{% static "styles/Poppins/Poppins-Medium.ttf" %}') format('truetype');
         }
-        body {
-            
-            
-            background-size: cover;
-            background-position: center bottom;
-            font-family: 'Poppins', sans-serif;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-            font-weight: 400;
-        }
 
         .head{
             display: flex;
@@ -25,7 +14,6 @@
             gap: 15px;
             
         }
-
 
         .login_logo {
             
@@ -46,8 +34,7 @@
             width: 100%; /* Make sure it takes the full width of the parent form panel */
             border-radius: 10px ; /* Match the top corners of the form panel */
             box-sizing: border-box; /* Ensure padding doesn't add to the width */
-            
-           
+            margin-top: 10px;
         }
         
 
@@ -91,29 +78,26 @@
              
         }  
         
-        .form-panel {
+        /* .inner-container {
             align-items: center;
             justify-content: center;
             width: 40%;
             background-color: #eae0a4;
             padding: 15px;
-            border-radius: 10px;
             border: 1px solid #ddd;
           
-        }
-        .form-group input,
-        .form-group select {
-            margin-bottom: 5px;
+        }*/
+        .inner-container input,
+        .inner-container select {
             width: 100%;
-            padding: 5px;
             font-size: 14px;
             border: 1px solid #000;
-            border-radius: 4px;
+            border-radius: 5px;
             box-sizing: border-box;
-        }
+        } 
 
          /* Media queries for different screen sizes */
-        @media (max-width: 768px) {
+        /* @media (max-width: 768px) {
             .head{
                 margin-left: -50px;
             }
@@ -150,5 +134,5 @@
                 gap: 2px;
             }
             
-        }
+        } */
   

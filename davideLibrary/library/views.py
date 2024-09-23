@@ -42,6 +42,9 @@ from django.urls import reverse
 from django.contrib.auth.models import Group 
 from django.http import HttpResponseForbidden
 
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
 
 
 
@@ -53,6 +56,47 @@ from django.http import HttpResponseForbidden
 # Helper function to check if user is head librarian
 def is_head_librarian(user):
     return user.role == 'Head Librarian'
+
+class HeadLibrarianLoginView(LoginView):
+    template_name = 'library/LogRegister.html'
+    form_class = AuthenticationForm
+    success_url = reverse_lazy('home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['login_type'] = 'Head Librarian'
+        return context
+
+    def form_valid(self, form):
+        user = form.get_user()
+        if user.is_superuser:
+            messages.success(self.request, "Permission Granted, Account Authorized!")
+            login(self.request, user)
+            return redirect(self.success_url)
+        else:
+            messages.error(self.request, "Account Unauthorized, Permission Denied")
+            return self.form_invalid(form)
+
+class AssistantLibrarianLoginView(LoginView):
+    template_name = 'library/LogRegister.html'
+    form_class = AuthenticationForm
+    success_url = reverse_lazy('home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['login_type'] = 'Assistant Librarian'
+        return context
+
+    def form_valid(self, form):
+        user = form.get_user()
+        if not user.is_staff and not user.is_superuser:
+            messages.success(self.request, "Permission Granted, Account Authorized!")
+            login(self.request, user)
+            return redirect(self.success_url)
+        else:
+            messages.error(self.request, "Account Unauthorized, Permission Denied")
+            return self.form_invalid(form)
+
 
 def directory(request):
     return render(request, 'library/directory.html')
@@ -93,16 +137,17 @@ def register(request):
 
     # Fetch all users categorized by roles
     all_users = CustomUser.objects.all()
-    head_librarians = all_users.filter(is_superuser=True)
-    assistant_librarians = all_users.exclude(is_superuser=True)
+    head_librarians = all_users.filter(is_staff=True)  # Head Librarians have is_staff=True
+    assistant_librarians = all_users.filter(is_staff=False)  # Assistant Librarians have is_staff=False
 
     context = {
         'form': form,
         'head_librarians': head_librarians,
         'assistant_librarians': assistant_librarians,
     }
-    
+
     return render(request, 'library/RegisterLog.html', context)
+
 def logout_view(request):
     logout(request)
     return redirect('directory')
