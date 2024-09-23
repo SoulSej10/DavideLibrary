@@ -125,28 +125,27 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            form.save()
             messages.success(request, 'Assistant Librarian registered successfully.')
-            print("User created successfully:", user)  # Debugging message
-            return redirect('register')  # Or change to 'directory' if you have a specific route
+            return redirect('head_librarian_login')
         else:
-            print(form.errors)  # Output form errors for debugging
             messages.error(request, 'Registration failed. Please check the form.')
     else:
         form = CustomUserCreationForm()
 
-    # Fetch all users categorized by roles
     all_users = CustomUser.objects.all()
-    head_librarians = all_users.filter(is_staff=True)  # Head Librarians have is_staff=True
-    assistant_librarians = all_users.filter(is_staff=False)  # Assistant Librarians have is_staff=False
+    head_librarians = all_users.filter(is_staff=True)
+    assistant_librarians = all_users.filter(is_staff=False)
 
     context = {
         'form': form,
         'head_librarians': head_librarians,
         'assistant_librarians': assistant_librarians,
+        'user': request.user  # Make sure user object is available
     }
 
     return render(request, 'library/RegisterLog.html', context)
+
 
 def logout_view(request):
     logout(request)
@@ -480,6 +479,7 @@ def generate_selected_borrowers_pdf(selected_ids):
 # ============================================================================================================================================
 # ==================================================___BOOK MANANGEMENT VIEW___===============================================================
 # ============================================================================================================================================
+@user_passes_test(is_head_librarian)
 @login_required
 def book_list(request):
     query = request.GET.get('search', '')

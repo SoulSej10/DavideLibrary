@@ -237,12 +237,20 @@
         </div>
         <ul class="menu">
             <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
+
+            {% if user.role == 'Head Librarian' %}
             <li><a href="{% url 'book-list' %}" class="{% if request.resolver_match.url_name == 'book-list' %}active{% endif %}">Manage Inventory</a></li>
+            {% endif %}
+
             <li><a href="{% url 'borrower-list' %}" class="{% if request.resolver_match.url_name == 'borrower-list' %}active{% endif %}">Manage Students</a></li>
             <li><a href="{% url 'borrow-slip-list' %}" class="{% if request.resolver_match.url_name == 'borrow-slip-list' %}active{% endif %}">Manage Borrowings</a></li>
             <li><a href="{% url 'monitor-borrowed-books' %}" class="{% if request.resolver_match.url_name == 'monitor-borrowed-books' %}active{% endif %}">Monitor Books</a></li>
             <li><a href="{% url 'attendance-list' %}" class="{% if request.resolver_match.url_name == 'attendance-list' %}active{% endif %}">Manage Logs</a></li>
+
+            {% if user.role == 'Head Librarian' %}
             <li><a href="{% url 'register' %}" class="{% if request.resolver_match.url_name == 'register' %}active{% endif %}">Register an Account</a></li>
+            {% endif %}
+
             <li><a href="#" onclick="confirmLogout()">Logout</a></li>
         </ul>
     </div>
