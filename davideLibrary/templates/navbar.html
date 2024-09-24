@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Website</title>
     <style>
-       
         @font-face {
             font-family: 'Poppins';
             src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
@@ -37,13 +36,13 @@
             align-items: center;
         }
 
-        .dlc{
+        .dlc {
             width: 240px; 
             height: 90px; 
             padding-left: 4px;
         }
 
-        .title{
+        .title {
             font-family: 'Blue';
             padding-left: 190px;
             font-size: 40px;
@@ -67,17 +66,9 @@
             z-index: 100; 
         }
 
-        .sidebar p {
-            padding: 10px;
-            text-decoration: none;
-            font-size: 18px;
-            color: white;
-            display: block;
-        }
-
         .profile {
             margin-top: 10px;
-            text-align: center;
+            display: contents;
         }
 
         .profile-pic {
@@ -85,12 +76,11 @@
             width: 65px;
             height: 65px;
             background-image: url('/static/images/user.png');
-            background-size: cover; /* Ensure the entire image is visible */
-            background-position: center; /* Center the image */
-            border-radius: 50%; /* Make it a circle */
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
             margin-bottom: 5px;
         }
-
 
         .username {
             font-size: 18px;
@@ -210,6 +200,7 @@
             filter: blur(5px);
             pointer-events: none; 
         }
+
         .footer {
             position: fixed;
             bottom: 0;
@@ -218,70 +209,119 @@
             color: dimgray;
             z-index: 1000;
         }
+
+        /* Message Styles */
+        .message-container {
+            width: 15%;
+            text-align: center;
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px auto;
+            border-radius: 5px;
+            width: 90%; /* Adjust width for responsiveness */
+            font-family: 'Poppins', sans-serif;
+            display: inline-block; /* Keep messages inline */
+            transition: opacity 1s ease; /* Ensure smooth opacity transition */
+            opacity: 1;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <!-- <img class="dlc" src="{% static 'images/DLClogo.png' %}" alt="logo"> -->
-        
         <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px; ">
         <img src="{% static 'images/ctu.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px;">
         <img src="{% static 'images/Codesynlogo.png' %}" alt="logo" style="width: 58px; height: 68px; padding-left: 6px;">
         <p class="title">DavideLib Connect: Colawin Library Management System</p>
+        {% if messages %}
+            <div class="message-container">
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}" id="message-{{ forloop.counter }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
     <div class="sidebar">
         <div class="profile">
             <div class="profile-pic"></div>
-            <div class="username">{{ username }}</div> <!-- Display username here -->
+            <div class="username">{{ username }}</div>
         </div>
+
+        
+
         <ul class="menu">
             <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
-
             {% if user.role == 'Head Librarian' %}
             <li><a href="{% url 'book-list' %}" class="{% if request.resolver_match.url_name == 'book-list' %}active{% endif %}">Manage Inventory</a></li>
             {% endif %}
-
             <li><a href="{% url 'borrower-list' %}" class="{% if request.resolver_match.url_name == 'borrower-list' %}active{% endif %}">Manage Students</a></li>
             <li><a href="{% url 'borrow-slip-list' %}" class="{% if request.resolver_match.url_name == 'borrow-slip-list' %}active{% endif %}">Manage Borrowings</a></li>
             <li><a href="{% url 'monitor-borrowed-books' %}" class="{% if request.resolver_match.url_name == 'monitor-borrowed-books' %}active{% endif %}">Monitor Books</a></li>
             <li><a href="{% url 'attendance-list' %}" class="{% if request.resolver_match.url_name == 'attendance-list' %}active{% endif %}">Manage Logs</a></li>
-
             {% if user.role == 'Head Librarian' %}
             <li><a href="{% url 'register' %}" class="{% if request.resolver_match.url_name == 'register' %}active{% endif %}">Register an Account</a></li>
             {% endif %}
-
             <li><a href="#" onclick="confirmLogout()">Logout</a></li>
         </ul>
     </div>
-    <span class="footer">DavideLib Connect © 2025 || Library Management System || Developed by CodeSync @ CTU-AC</span>
-    <!-- Logout Confirmation Modal -->
-    <div id="confirm-logout" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLogoutModal()">&times;</span>
-            <h2>Confirm Logout</h2>
-            <p>Are you sure you want to log out?</p>
-            <div class="btn-group">
-                <button type="button" class="btn-cancel" onclick="closeLogoutModal()">Cancel</button>
-                <form id="logout-form" method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-confirm">Yes, log out</button>
-                </form>
-            </div>
-        </div>
-    </div>
+
+    <span class="footer">© 2024 DavideLib Connect</span>
 
     <script>
-        function confirmLogout() {
-            document.getElementById('confirm-logout').style.display = 'block';
-            document.body.classList.add('modal-open'); // Prevent scrolling when modal is open
-            document.querySelector('.sidebar').classList.add('blur');
+        function hideMessages() {
+            const messageElements = document.querySelectorAll('.message');
+            messageElements.forEach((message, index) => {
+                setTimeout(() => {
+                    message.style.transition = 'opacity 1s ease'; // Add transition for fading
+                    message.style.opacity = '0'; // Fade out
+                    setTimeout(() => {
+                        message.style.display = 'none'; // Hide after fade
+                    }, 1000); // Match this duration with the transition time
+                }, 2000 + index * 1000);
+            });
         }
 
-        function closeLogoutModal() {
-            document.getElementById('confirm-logout').style.display = 'none';
-            document.body.classList.remove('modal-open'); // Re-enable scrolling
-            document.querySelector('.sidebar').classList.remove('blur');
+
+        // Call the function to hide messages
+        hideMessages();
+
+        function confirmLogout() {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="close" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+                    <p style = "font-size: 18px;"><strong>Confirm Logout</strong></p>
+                    <p>Are you sure you want to logout?</p>
+                    <div class="btn-group">
+                        <button class="btn-cancel" onclick="this.parentElement.parentElement.parentElement.style.display='none'">Cancel</button>
+                        <form action="{% url 'logout' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-confirm">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
         }
     </script>
 </body>

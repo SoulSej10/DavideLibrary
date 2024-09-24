@@ -1,12 +1,12 @@
 {% load static %}
 
+
 {% block content %}
 <title>DavideLib Directory</title>
 <style>
-    
     @font-face {
-            font-family: 'Poppins';
-            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        font-family: 'Poppins';
+        src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
     }
 
     body {
@@ -33,12 +33,45 @@
         z-index: -1;
     }
 
+    .message-container {
+        width: 1000px;
+        text-align: center;
+        position: absolute;
+        top: 5%; /* Adjust as necessary */
+        z-index: 100;
+    }
+
+    .message {
+        padding: 10px;
+        margin: 10px auto;
+        border-radius: 5px;
+        width: 60%;
+        font-family: 'Poppins', sans-serif;
+        transition: opacity 1s ease; /* Ensure smooth opacity transition */
+        opacity: 1;
+    }
+
+    .message.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
     .container {
         width: 1000px;
         height: 500px;
         display: flex;
         border-radius: 30px;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        background-color: white;
+        position: relative;
+        z-index: 50;
     }
 
     .logo-container {
@@ -109,6 +142,18 @@
     }
 </style>
 
+<!-- Only render the message container if there are messages -->
+{% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}" id="message-{{ forloop.counter }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
 <div class="container">
     <div class="logo-container">
         <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 370px; height: 370px; border-radius: 50%;">
@@ -130,6 +175,22 @@
         <p style="margin-top: 20px; text-align: center;">DavideLib Connect © 2025 || Library Management System</p>
     </div>
 </div>
+<script>
+    function hideMessages() {
+        const messageElements = document.querySelectorAll('.message');
+        messageElements.forEach((message, index) => {
+            setTimeout(() => {
+                message.style.transition = 'opacity 1s ease'; // Add transition for fading
+                message.style.opacity = '0'; // Fade out
+                setTimeout(() => {
+                    message.style.display = 'none'; // Hide after fade
+                }, 1000); // Match this duration with the transition time
+            }, 2000 + index * 1000);
+        });
+    }
 
 
+    // Call the function to hide messages
+    hideMessages();
+</script>
 {% endblock %}

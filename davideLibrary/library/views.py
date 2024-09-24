@@ -54,9 +54,11 @@ from django.urls import reverse_lazy
 # ==================================================___LOG IN/ REGISTER VIEW___===============================================================
 # ============================================================================================================================================
 # Helper function to check if user is head librarian
+# Utility function to check if user is a Head Librarian
 def is_head_librarian(user):
     return user.role == 'Head Librarian'
 
+# Head Librarian Login View
 class HeadLibrarianLoginView(LoginView):
     template_name = 'library/LogRegister.html'
     form_class = AuthenticationForm
@@ -64,19 +66,20 @@ class HeadLibrarianLoginView(LoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['login_type'] = 'Head Librarian'
+        context['login_type'] = 'Head Librarian'  # Sets login type for template
         return context
 
     def form_valid(self, form):
         user = form.get_user()
         if user.is_superuser:
-            messages.success(self.request, "Permission Granted, Account Authorized!")
             login(self.request, user)
+            messages.success(self.request, "Permission Granted, Account Authorized!")
             return redirect(self.success_url)
         else:
-            messages.error(self.request, "Account Unauthorized, Permission Denied")
-            return self.form_invalid(form)
+            messages.error(self.request, "Account Unauthorized, Permission Denied.")
+            return redirect('head_librarian_login')  # Redirect to the same page to show the error message
 
+# Assistant Librarian Login View
 class AssistantLibrarianLoginView(LoginView):
     template_name = 'library/LogRegister.html'
     form_class = AuthenticationForm
@@ -84,41 +87,53 @@ class AssistantLibrarianLoginView(LoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['login_type'] = 'Assistant Librarian'
+        context['login_type'] = 'Assistant Librarian'  # Sets login type for template
         return context
 
     def form_valid(self, form):
         user = form.get_user()
         if not user.is_staff and not user.is_superuser:
-            messages.success(self.request, "Permission Granted, Account Authorized!")
             login(self.request, user)
+            messages.success(self.request, "Permission Granted, Account Authorized!")
             return redirect(self.success_url)
         else:
-            messages.error(self.request, "Account Unauthorized, Permission Denied")
-            return self.form_invalid(form)
+            messages.error(self.request, "Account Unauthorized, Permission Denied.")
+            return redirect('assistant_librarian_login') 
 
-
+# Directory view
 def directory(request):
     return render(request, 'library/directory.html')
 
+# Custom login view (if using a custom authentication form)
 def login_view(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
+        
         if form.is_valid():
+            # Retrieve cleaned data
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             admin_id = form.cleaned_data.get('admin_id')
-            print(f"Username: {username}, Password: {password}, Admin ID: {admin_id}")
-            user = authenticate(request, username=username, password=password, admin_id=admin_id)
-            if user is not None:
+            
+            # Authenticate user
+            user = authenticate(request, username=username, password=password)
+            
+            # Check if user is authenticated and if admin_id matches
+            if user is not None and user.admin_id == admin_id:  # Adjust this check based on your User model
                 login(request, user)
+                messages.success(request, 'Login successful.')
                 return redirect('home')
             else:
                 messages.error(request, 'Invalid credentials or admin ID.')
+        else:
+            messages.error(request, 'Login failed. Please check your details.')
+
     else:
         form = CustomAuthenticationForm()
+
     return render(request, 'library/LogRegister.html', {'form': form})
 
+# Registration view (only accessible to Head Librarians)
 @login_required
 @user_passes_test(is_head_librarian)
 def register(request):
@@ -127,7 +142,6 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Assistant Librarian registered successfully.')
-            return redirect('head_librarian_login')
         else:
             messages.error(request, 'Registration failed. Please check the form.')
     else:
@@ -141,14 +155,15 @@ def register(request):
         'form': form,
         'head_librarians': head_librarians,
         'assistant_librarians': assistant_librarians,
-        'user': request.user  # Make sure user object is available
+        'user': request.user  # Ensure user object is available in template
     }
 
     return render(request, 'library/RegisterLog.html', context)
 
-
+# Logout view
 def logout_view(request):
     logout(request)
+    messages.success(request, "You have been logged out successfully.")
     return redirect('directory')
 
 @login_required
