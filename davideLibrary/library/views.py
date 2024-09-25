@@ -76,7 +76,7 @@ class HeadLibrarianLoginView(LoginView):
             messages.success(self.request, "Permission Granted, Account Authorized!")
             return redirect(self.success_url)
         else:
-            messages.error(self.request, "Account Unauthorized, Permission Denied.")
+            messages.error(self.request, "Permission Denied. LOWER access level accounts can't view this page.")
             return redirect('head_librarian_login')  # Redirect to the same page to show the error message
 
 # Assistant Librarian Login View
@@ -97,7 +97,7 @@ class AssistantLibrarianLoginView(LoginView):
             messages.success(self.request, "Permission Granted, Account Authorized!")
             return redirect(self.success_url)
         else:
-            messages.error(self.request, "Account Unauthorized, Permission Denied.")
+            messages.error(self.request, "Permission Denied. HIGHER access level accounts can't view this page.")
             return redirect('assistant_librarian_login') 
 
 # Directory view
