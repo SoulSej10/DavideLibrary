@@ -50,6 +50,145 @@ from django.urls import reverse_lazy
 
 
 
+
+
+
+
+# ============================================================================================================================================
+# ==================================================___LOG IN/ REGISTER VIEW___===============================================================
+# ============================================================================================================================================
+def landing(request):
+    query = request.GET.get('q')
+    book_number = request.GET.get('book_number')  # Get book number from query params
+    books = BookInventory.objects.all()
+
+    if query:
+        # Search by title, author, or book number
+        books = books.filter(
+            Q(book_title__icontains=query) |
+            Q(author__icontains=query) |
+            Q(book_number__icontains=query)
+        )
+
+    # Determine book status based on BorrowSlip data
+    for book in books:
+        try:
+            latest_borrow_slip = BorrowSlip.objects.filter(book_number=book.book_number).order_by('-date_borrow').first()
+            current_date = timezone.now().date()
+
+            if latest_borrow_slip:
+                if latest_borrow_slip.due_date.date() < current_date and not latest_borrow_slip.returned:
+                    book.status = 'Overdue'
+                elif latest_borrow_slip.returned:
+                    book.status = 'Returned'
+                else:
+                    book.status = 'Borrowed'
+            else:
+                book.status = 'Available'
+        except BorrowSlip.DoesNotExist:
+            book.status = 'Available'
+    
+    # Fetch the 10 most recent books
+    recent_books = BookInventory.objects.order_by('-record_date')[:10]
+
+    # Determine status for recent books
+    for book in recent_books:
+        try:
+            latest_borrow_slip = BorrowSlip.objects.filter(book_number=book.book_number).order_by('-date_borrow').first()
+            current_date = timezone.now().date()
+
+            if latest_borrow_slip:
+                if latest_borrow_slip.due_date.date() < current_date and not latest_borrow_slip.returned:
+                    book.status = 'Overdue'
+                elif latest_borrow_slip.returned:
+                    book.status = 'Returned'
+                else:
+                    book.status = 'Borrowed'
+            else:
+                book.status = 'Available'
+        except BorrowSlip.DoesNotExist:
+            book.status = 'Available'
+
+    book_detail = None
+    if book_number:
+        book_detail = get_object_or_404(BookInventory, book_number=book_number)
+        # Determine the status of the book
+        try:
+            latest_borrow_slip = BorrowSlip.objects.filter(book_number=book_number).order_by('-date_borrow').first()
+            current_date = timezone.now().date()
+
+            if latest_borrow_slip:
+                if latest_borrow_slip.due_date.date() < current_date and not latest_borrow_slip.returned:
+                    book_detail.status = 'Overdue'
+                elif latest_borrow_slip.returned:
+                    book_detail.status = 'Returned'
+                else:
+                    book_detail.status = 'Borrowed'
+            else:
+                book_detail.status = 'Available'
+        except BorrowSlip.DoesNotExist:
+            book_detail.status = 'Available'
+
+    # Data for the bar graph (count books by category)
+    category_counts = BookInventory.objects.values('category__name').annotate(count=Count('book_number')).order_by('category__name')
+    categories = [entry['category__name'] for entry in category_counts]
+    counts = [entry['count'] for entry in category_counts]
+
+    # Assign a unique color to each category
+    colors = plt.get_cmap('tab20').colors  # Use a colormap with enough distinct colors
+    category_colors = dict(zip(categories, colors))
+
+    # Create the bar graph using matplotlib
+    plt.figure(figsize=(14, 6))  # Increase figure width to accommodate legend
+    bars = plt.bar(range(len(categories)), counts, color=[category_colors[cat] for cat in categories])
+    plt.xlabel('Category')
+    plt.ylabel('Number of Books')
+    plt.title('Number of Books by Category')
+
+    # Set the x-ticks and labels
+    plt.xticks(range(len(categories)), [''] * len(categories))  # Empty labels for now
+
+    # Add a legend to the plot outside the plot area
+    handles = [plt.Line2D([0], [0], color=color, lw=4) for color in category_colors.values()]
+    plt.legend(handles, category_colors.keys(), loc='center left', bbox_to_anchor=(1, 0.5))
+
+    # Save the plot to a BytesIO object
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png', bbox_inches='tight')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+
+    # Encode the image to base64 string
+    graph = base64.b64encode(image_png).decode('utf-8')
+
+    return render(request, 'library/landing.html', {
+        'books': books,
+        'query': query,
+        'recent_books': recent_books,
+        'book_detail': book_detail,
+        'graph': graph,  # Pass the graph image to the template
+    })
+
+
+def book_detail(request, book_number):
+    book = get_object_or_404(BookInventory, book_number=book_number)
+    return render(request, 'landing.html', {
+        'book_detail': book,
+        'query': request.GET.get('q', ''),  # Preserve the search query
+    })
+
+
+
+
+
+
+
+
+
+
+
+
 # ============================================================================================================================================
 # ==================================================___LOG IN/ REGISTER VIEW___===============================================================
 # ============================================================================================================================================
@@ -164,7 +303,7 @@ def register(request):
 def logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out successfully.")
-    return redirect('directory')
+    return redirect('landing')
 
 @login_required
 def home(request):

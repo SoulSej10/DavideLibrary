@@ -143,6 +143,8 @@
             text-align: center;
             position: relative;
             z-index: 1000; 
+            border-radius: 20px;
+            box-shadow: #888;
         }
 
         .close {
@@ -260,14 +262,15 @@
     </div>
 
     <div class="sidebar">
-        <div class="profile">
+        <div class="profile" {% if user.role == 'Head Librarian' %} style="display: block;" {% else %} style="display: none;" {% endif %}>
             <div class="profile-pic"></div>
             <div class="username">{{ username }}</div>
         </div>
 
         
 
-        <ul class="menu">
+        <ul class="menu" {% if user.role != 'Head Librarian' %} style="display: none;" {% endif %}>
+
             <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
             {% if user.role == 'Head Librarian' %}
             <li><a href="{% url 'book-list' %}" class="{% if request.resolver_match.url_name == 'book-list' %}active{% endif %}">Manage Inventory</a></li>
@@ -295,7 +298,7 @@
                     setTimeout(() => {
                         message.style.display = 'none'; // Hide after fade
                     }, 1000); // Match this duration with the transition time
-                }, 2000 + index * 1000);
+                }, 2500 + index * 1000);
             });
         }
 
@@ -309,7 +312,7 @@
             modal.innerHTML = `
                 <div class="modal-content">
                     <span class="close" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
-                    <p style = "font-size: 18px;"><strong>Confirm Logout</strong></p>
+                    <p style = "font-size: 30px; margin-top: 10px;"><strong>Confirm Logout</strong></p>
                     <p>Are you sure you want to logout?</p>
                     <div class="btn-group">
                         <button class="btn-cancel" onclick="this.parentElement.parentElement.parentElement.style.display='none'">Cancel</button>

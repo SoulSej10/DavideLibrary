@@ -5,9 +5,12 @@ from django.conf.urls.static import static
 from .views import book_details, generate_selected_books_pdf
 
 urlpatterns = [
+
+    path('', views.landing, name='landing'),
+
     # home
     path('home/', views.home, name='home'),
-    path('', views.directory, name='directory'),
+    path('directory/', views.directory, name='directory'),
     path('book/<str:book_number>/', views.book_detail, name='book_detail'),
     # path('borrow/<str:book_number>/', views.borrow_book, name='borrow_book'),
     
