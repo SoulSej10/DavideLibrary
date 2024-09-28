@@ -156,7 +156,7 @@
     .sidebar .book-item-container {
         overflow-y: scroll;
         scrollbar-width: none;
-        max-height: 320px;
+        max-height: 285px;
         background-color: #555;
     }
 
@@ -363,7 +363,19 @@
             display: block;                 /* Ensures no extra space below the image */
         }
 
-
+        .category-button-container{
+            overflow-y: scroll;
+            scrollbar-width: none;
+            max-height: 320px;
+        }
+        .category-button{
+            display: inline-block;
+            margin: 5px;
+            padding: 5px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: black; font-size: 12px;
+        }
 </style>
 <div class="header">
     <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px;">
@@ -392,17 +404,17 @@
     <div class="category-button-container">
         {% for category in categories %}
             <a href="{% url 'landing' %}?category={{ category.name }}" 
-            class="category-button" 
-            style="display: inline-block; margin: 5px; padding: 10px; background-color: #f0f0f0; border-radius: 5px; text-decoration: none; color: black;">
-                {{ category.name }}  <!-- Display category name -->
+            class="category-button" data-category-name="{{ category.name }}">
+                {{ category.name }}
             </a>
         {% empty %}
             <div style="margin: 5px; padding: 10px; color: gray;">No categories available</div>
         {% endfor %}
     </div>
+    
 
 
-    <div class="section-label" style="margin-top: 30px; font-weight: lighter;">Recently Added Books</div>
+    <div class="section-label" style="font-weight: lighter;">Recently Added Books</div>
     <div class="book-item-container">
         {% for recent_book in recent_books %}
             <a href="{% url 'landing' %}?book_number={{ recent_book.book_number }}" 
@@ -581,6 +593,38 @@
             }, 2000 + index * 1000);
         });
     }
+
+    const pastelColors = [
+        '#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF', '#D3B3FF',
+        '#B2F2FF', '#FFC8DD', '#BDE0FE', '#A2D2FF', '#C8E7FF', '#FFF6E0',
+        '#D5FFD3', '#FFDEDE'
+    ];
+
+    // Simple hash function to generate a numeric hash from a string
+    function hashStringToNumber(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return hash;
+    }
+
+    // Map the numeric hash to an index in the pastelColors array
+    function getColorForCategory(categoryName) {
+        const hash = hashStringToNumber(categoryName);
+        const colorIndex = Math.abs(hash) % pastelColors.length;  // Ensure the index is positive
+        return pastelColors[colorIndex];
+    }
+
+    document.addEventListener("DOMContentLoaded", function(){
+        const buttons = document.querySelectorAll('.category-button');
+        buttons.forEach(button => {
+            const categoryName = button.getAttribute('data-category-name');
+            const assignedColor = getColorForCategory(categoryName);
+            button.style.backgroundColor = assignedColor;
+        });
+    });
+
 </script>
 
 {% endblock content %}
