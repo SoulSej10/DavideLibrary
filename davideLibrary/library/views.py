@@ -55,15 +55,23 @@ from django.urls import reverse_lazy
 
 
 # ============================================================================================================================================
-# ==================================================___LOG IN/ REGISTER VIEW___===============================================================
+# ==================================================___LANDING PAGE VIEW___===============================================================
 # ============================================================================================================================================
 def landing(request):
     query = request.GET.get('q')
+    category_name = request.GET.get('category')  # Get category name from query params
     book_number = request.GET.get('book_number')  # Get book number from query params
     books = BookInventory.objects.all()
+    
+    # Fetch all categories to display in the sidebar
+    categories = Category.objects.all()
 
+    # Filter by category if provided
+    if category_name:
+        books = books.filter(category__name=category_name)  # Filter by category
+
+    # Search by title, author, or book number if query is provided
     if query:
-        # Search by title, author, or book number
         books = books.filter(
             Q(book_title__icontains=query) |
             Q(author__icontains=query) |
@@ -109,6 +117,7 @@ def landing(request):
         except BorrowSlip.DoesNotExist:
             book.status = 'Available'
 
+    # Handle book detail view
     book_detail = None
     if book_number:
         book_detail = get_object_or_404(BookInventory, book_number=book_number)
@@ -131,22 +140,23 @@ def landing(request):
 
     # Data for the bar graph (count books by category)
     category_counts = BookInventory.objects.values('category__name').annotate(count=Count('book_number')).order_by('category__name')
-    categories = [entry['category__name'] for entry in category_counts]
-    counts = [entry['count'] for entry in category_counts]
 
     # Assign a unique color to each category
+    categories_with_counts = [entry['category__name'] for entry in category_counts]
+    counts = [entry['count'] for entry in category_counts]
+
     colors = plt.get_cmap('tab20').colors  # Use a colormap with enough distinct colors
-    category_colors = dict(zip(categories, colors))
+    category_colors = dict(zip(categories_with_counts, colors))
 
     # Create the bar graph using matplotlib
     plt.figure(figsize=(14, 6))  # Increase figure width to accommodate legend
-    bars = plt.bar(range(len(categories)), counts, color=[category_colors[cat] for cat in categories])
+    bars = plt.bar(range(len(categories_with_counts)), counts, color=[category_colors[cat] for cat in categories_with_counts])
     plt.xlabel('Category')
     plt.ylabel('Number of Books')
     plt.title('Number of Books by Category')
 
     # Set the x-ticks and labels
-    plt.xticks(range(len(categories)), [''] * len(categories))  # Empty labels for now
+    plt.xticks(range(len(categories_with_counts)), [''] * len(categories_with_counts))  # Empty labels for now
 
     # Add a legend to the plot outside the plot area
     handles = [plt.Line2D([0], [0], color=color, lw=4) for color in category_colors.values()]
@@ -163,13 +173,14 @@ def landing(request):
     graph = base64.b64encode(image_png).decode('utf-8')
 
     return render(request, 'library/landing.html', {
-        'books': books,
+        'books': books,  # Pass filtered books to the template
         'query': query,
         'recent_books': recent_books,
         'book_detail': book_detail,
-        'graph': graph,  # Pass the graph image to the template
+        'graph': graph,
+        'categories': categories,
+        'category_name': category_name,  # Pass the category name to the template
     })
-
 
 def book_detail(request, book_number):
     book = get_object_or_404(BookInventory, book_number=book_number)
@@ -177,7 +188,6 @@ def book_detail(request, book_number):
         'book_detail': book,
         'query': request.GET.get('q', ''),  # Preserve the search query
     })
-
 
 
 

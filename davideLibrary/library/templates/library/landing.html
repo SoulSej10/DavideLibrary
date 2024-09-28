@@ -132,15 +132,19 @@
     }
 
     .side-container {
-        width: 40%; /* 40% width for the side container */
-        /* Adjusted height to auto to fit content */
-        height: auto;
+        width: 30.5%;
+        height: calc(100vh - 120px);
         background-color: #555;
         border-radius: 10px;
         padding: 20px;
         box-sizing: border-box;
         overflow-y: auto;
+        position: fixed;
+        top: 70px;
+        right: 0;
+        margin: 20px;
     }
+
 
     /* Recently Added Books in Sidebar */
     .sidebar .section-label {
@@ -154,7 +158,6 @@
         scrollbar-width: none;
         max-height: 320px;
         background-color: #555;
-        /* max-height: calc(100% - 50px);  */
     }
 
     .book-item-container::-webkit-scrollbar {
@@ -383,6 +386,22 @@
 
 <!-- Sidebar Section -->
 <div class="sidebar">
+    <!-- Filter by Category Section -->
+    <div class="section-label" style="margin-top: 30px; font-weight: lighter;">Filter by Category</div>
+    
+    <div class="category-button-container">
+        {% for category in categories %}
+            <a href="{% url 'landing' %}?category={{ category.name }}" 
+            class="category-button" 
+            style="display: inline-block; margin: 5px; padding: 10px; background-color: #f0f0f0; border-radius: 5px; text-decoration: none; color: black;">
+                {{ category.name }}  <!-- Display category name -->
+            </a>
+        {% empty %}
+            <div style="margin: 5px; padding: 10px; color: gray;">No categories available</div>
+        {% endfor %}
+    </div>
+
+
     <div class="section-label" style="margin-top: 30px; font-weight: lighter;">Recently Added Books</div>
     <div class="book-item-container">
         {% for recent_book in recent_books %}
@@ -392,14 +411,13 @@
                 <div class="book-title" style="font-size: 15px;">
                     {{ recent_book.book_title }}
                 </div>
-                <!-- <div class="book-details">
-                    <strong>Author:</strong> {{ recent_book.author }}<br>
-                </div> -->
             </a>
-            <!-- <hr> -->
         {% endfor %}
     </div>
 </div>
+
+
+
 
 <!-- Main Content Section -->
 <div class="main-content">
@@ -417,87 +435,123 @@
         </div>
 
         <!-- Search Results Section -->
-        <div class="section-label">Search Results</div>
-        <div class="book-item-container">
-            {% if book_detail %}
-                <!-- Display Book Details -->
-                <strong style="background-color: #73532C; color:#ECECEC; border-radius: 5px; padding-left: 5px; padding-right: 5px;">
-                    {{ book_detail.book_title }}
-                </strong>
-                <div class="book-details">
-                    <p style="text-align: justify;">
-                        This was authored by <strong>{{ book_detail.author }}</strong>. 
-                        It has the book number <strong>{{ book_detail.book_number }}</strong>. The book falls under the category of 
-                        <strong>{{ book_detail.category.name }}</strong>. This book has <strong>{{ book_detail.edition }}</strong> edition, and it comprises 
-                        <strong>{{ book_detail.volume }}</strong> volume(s) with <strong>{{ book_detail.pages }}</strong> pages. 
-                        There are only <strong>{{ book_detail.quantity }}</strong> copy/copies available. The book is funded as 
-                        <strong>{{ book_detail.fund_source }}</strong> and is priced at <strong>{{ book_detail.price }}</strong>. It was published at 
-                        <strong>{{ book_detail.publisher }}</strong> in the year <strong>{{ book_detail.year }}</strong>. The location of this book is at 
-                        <strong style="color: green;">{{ book_detail.location }}</strong>. 
-                    </p>
-                    <p>
-                        The current status of the book is: 
-                        {% if book_detail.status == 'Returned' %}
-                            <span class="book-status status-available">Available</span>.
-                        {% elif book_detail.status == 'Borrowed' %}
-                            <span class="book-status status-ongoing">Ongoing Borrowing</span>.
-                        {% elif book_detail.status == 'Overdue' %}
-                            <span class="book-status status-pending">Pending for return</span>.
-                        {% else %}
-                            <span class="book-status status-available">Available</span>.
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="button-container" style="padding-top: 20px; gap: 10px;">
-                    <a href="{% url 'landing' %}?q={{ query }}" class="search-button" style="text-decoration: none; background-color: #757575;">Back to Search Results</a>
-                </div>
-            {% else %}
-                <!-- Display Search Results -->
-                {% if query %}
+<div class="section-label">Search Results 
+    {% if category_name %}
+        : <strong>{{ category_name }}</strong>
+    {% endif %}
+</div>
+<div class="book-item-container">
+    <!-- Example of showing selected category -->
+    {% if book_detail %}
+        <!-- Display Book Details -->
+        <strong style="background-color: #73532C; color:#ECECEC; border-radius: 5px; padding-left: 5px; padding-right: 5px;">
+            {{ book_detail.book_title }}
+        </strong>
+        <div class="book-details">
+            <p style="text-align: justify;">
+                This was authored by <strong>{{ book_detail.author }}</strong>. 
+                It has the book number <strong>{{ book_detail.book_number }}</strong>. The book falls under the category of 
+                <strong>{{ book_detail.category.name }}</strong>. This book has <strong>{{ book_detail.edition }}</strong> edition, and it comprises 
+                <strong>{{ book_detail.volume }}</strong> volume(s) with <strong>{{ book_detail.pages }}</strong> pages. 
+                There are only <strong>{{ book_detail.quantity }}</strong> copy/copies available. The book is funded as 
+                <strong>{{ book_detail.fund_source }}</strong> and is priced at <strong>{{ book_detail.price }}</strong>. It was published at 
+                <strong>{{ book_detail.publisher }}</strong> in the year <strong>{{ book_detail.year }}</strong>. The location of this book is at 
+                <strong style="color: green;">{{ book_detail.location }}</strong>. 
+            </p>
+            <p>
+                The current status of the book is: 
+                {% if book_detail.status == 'Returned' %}
+                    <span class="book-status status-available">Available</span>.
+                {% elif book_detail.status == 'Borrowed' %}
+                    <span class="book-status status-ongoing">Ongoing Borrowing</span>.
+                {% elif book_detail.status == 'Overdue' %}
+                    <span class="book-status status-pending">Pending for return</span>.
+                {% else %}
+                    <span class="book-status status-available">Available</span>.
+                {% endif %}
+            </p>
+        </div>
+        <div class="button-container" style="padding-top: 20px; gap: 10px;">
+            <a href="{% url 'landing' %}?q={{ query }}" class="search-button" style="text-decoration: none; background-color: #757575;">Back to Search Results</a>
+        </div>
+    {% else %}
+        <!-- Display Search Results -->
+            <!-- Display books filtered by category -->
+            {% if request.GET.category %}
+            <div id="book-container">
+                {% for book in books %}
+                    <div>
+                        <a href="{% url 'landing' %}?q={{ query }}&book_number={{ book.book_number }}&category={{ book.category.name }}" 
+                                class="book-item {% if forloop.counter|divisibleby:2 %}even-row{% else %}odd-row{% endif %}" 
+                                style="text-decoration: none; color: black;">
+                                <div class="book-title">{{ book.book_title }}</div>
+                                <div class="book-details">
+                                    <strong>Author:</strong> {{ book.author }}<br>
+                                    <strong>Book Number:</strong> {{ book.book_number }}<br>
+                                    <strong>Status:</strong>
+                                    {% if book.status == 'Returned' %}
+                                        <span class="book-status status-available">Available</span>
+                                    {% elif book.status == 'Borrowed' %}
+                                        <span class="book-status status-ongoing">Ongoing Borrowing</span>
+                                    {% elif book.status == 'Overdue' %}
+                                        <span class="book-status status-pending">Pending for return</span>
+                                    {% else %}
+                                        <span class="book-status status-lost">Lost</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                    </div>
+                {% empty %}
+                    <p>No books found in this category.</p>
+                {% endfor %}
+            </div>
+        {% else %}
+                {% if query or category %}
                     {% if books %}
-                        <div>
-                            {% for book in books %}
-                                <a href="{% url 'landing' %}?q={{ query }}&book_number={{ book.book_number }}" 
-                                   class="book-item {% if forloop.counter|divisibleby:2 %}even-row{% else %}odd-row{% endif %}" 
-                                   style="text-decoration: none; color: black;">
-                                    <div class="book-title">{{ book.book_title }}</div>
-                                    <div class="book-details">
-                                        <strong>Author:</strong> {{ book.author }}<br>
-                                        <strong>Book Number:</strong> {{ book.book_number }}<br>
-                                        <strong>Status:</strong>
-                                        {% if book.status == 'Returned' %}
-                                            <span class="book-status status-available">Available</span>
-                                        {% elif book.status == 'Borrowed' %}
-                                            <span class="book-status status-ongoing">Ongoing Borrowing</span>
-                                        {% elif book.status == 'Overdue' %}
-                                            <span class="book-status status-pending">Pending for return</span>
-                                        {% else %}
-                                            <span class="book-status status-lost">Lost</span>
-                                        {% endif %}
-                                    </div>
-                                </a>
-                            {% endfor %}
-                        </div>
-                    {% else %}
+                    <div>
+                        {% for book in books %}
+                            <a href="{% url 'landing' %}?q={{ query }}&book_number={{ book.book_number }}&category={{ book.category.name }}" 
+                                class="book-item {% if forloop.counter|divisibleby:2 %}even-row{% else %}odd-row{% endif %}" 
+                                style="text-decoration: none; color: black;">
+                                <div class="book-title">{{ book.book_title }}</div>
+                                <div class="book-details">
+                                    <strong>Author:</strong> {{ book.author }}<br>
+                                    <strong>Book Number:</strong> {{ book.book_number }}<br>
+                                    <strong>Status:</strong>
+                                    {% if book.status == 'Returned' %}
+                                        <span class="book-status status-available">Available</span>
+                                    {% elif book.status == 'Borrowed' %}
+                                        <span class="book-status status-ongoing">Ongoing Borrowing</span>
+                                    {% elif book.status == 'Overdue' %}
+                                        <span class="book-status status-pending">Pending for return</span>
+                                    {% else %}
+                                        <span class="book-status status-lost">Lost</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                    
+                        {% endfor %}
+                    </div>
+                {% else %}
                     <div class="mess">
                         <div class="image-container">
                             <img src="{% static 'images/searchLOGO1.png' %}" alt="logo" class="image-logo">
                         </div>
                         <p style="color: dimgray;">No results found for your search.</p>
                     </div>
-                    
-                    {% endif %}
+                {% endif %}
                 {% else %}
-                <div class="mess" >
-                    
+                <div class="mess">
                     <div class="image-container">
                         <img src="{% static 'images/searchLOGO.png' %}" alt="logo" class="image-logo">
                     </div>
                     <p style="color: dimgray; text-align: center;">Book data is displayed here, search for a book now!</p>
                 </div>
                 {% endif %}
+
             {% endif %}
         </div>
+        {% endif %}
     </div>
 
     <!-- Side Container -->
