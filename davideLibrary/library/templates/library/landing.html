@@ -8,125 +8,164 @@
         src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
     }
     .header {
-            background-color: #D6B980;
-            height: 70px;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            display: flex;
-            padding-left: 8px;
-            align-items: center;
-            /* position: relative; */
-        }
+        background-color: #D6B980;
+        height: 70px;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        display: flex;
+        padding-left: 8px;
+        align-items: center;
+    }
 
-        .dlc {
-            width: 240px; 
-            height: 90px; 
-            padding-left: 4px;
-        }
+    .dlc {
+        width: 240px; 
+        height: 90px; 
+        padding-left: 4px;
+    }
 
-        .title {
-            font-family: 'Blue';
-            padding-left: 190px;
-            font-size: 40px;
-            color: black;
-        }
+    .title {
+        font-family: 'Blue';
+        padding-left: 190px;
+        font-size: 40px;
+        color: black;
+    }
 
-    .main-content {
-        margin-left: 240px; 
-        padding: 15px;
-        margin-top: 110px;
+    /* Sidebar Styling */
+    .sidebar {
+        background-color: #555;
+        width: 240px; /* Adjusted to match main-content's margin-left */
+        position: fixed;
+        top: 70px; /* Positioned below the header */
+        left: 0;
+        height: calc(100% - 70px); /* Full height minus header */
+        overflow-y: auto;
+        padding: 20px;
+        color: white;
         display: flex;
         flex-direction: column;
-        font-family: 'Poppins', sans-serif;
-        height: 83vh;
+        align-items: flex-start;
+        overflow-x: hidden;
+        z-index: 100;
+    }
+
+    .main-content {
+        margin-left: 280px;
         padding: 20px;
+        margin-top: 110px;
+        display: flex;
+        flex-direction: row;
+        font-family: 'Poppins', sans-serif;
         box-sizing: border-box;
+        gap: 20px;
+        height: calc(100vh - 120px);
+    }
+
+    /* Search Form Container */
+    .search-form-container {
+        width: 100%; /* Full width inside the left container */
     }
 
     .search-container {
         display: flex;
-        margin-bottom: 20px;
+        gap: 10px; /* Space between input and buttons */
     }
 
     .search-input {
+        flex: 1;
         padding: 10px;
         font-size: 16px;
-        border-radius: 5px;
-        margin-bottom: 5px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        border: 1px solid #757575;
     }
 
     .search-button {
-        padding: 5px 20px;
+        padding: 10px 20px;
         font-size: 16px;
         cursor: pointer;
         font-family: 'Poppins', sans-serif;
         text-decoration: none;
-        color: #333;
-        /* border: 2px solid #333; */
+        color: #fff;
+        background-color: #7EBC89; /* Better visibility */
+        border: none;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .reset-button{
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        font-family: 'Poppins', sans-serif;
+        text-decoration: none;
+        color: #fff;
+        background-color: #7EBC89; /* Better visibility */
+        border: none;
         border-radius: 10px;
         transition: background-color 0.3s, color 0.3s;
     }
 
     .search-button:hover {
-        color: white;
-        text-decoration: underline;
+        background-color: #6aa476;
+        color: #fff;
+        text-decoration: none;
     }
 
-    .container-wrapper {
+    .reset-button:hover {
+        background-color: #6aa476;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .left {
+        width: 60%; /* 60% width for the left container */
         display: flex;
-        flex: 1;
-        gap: 20px;
-    }
-
-    .first-container,
-    .side-container,
-    .bottom-container {
-        /* border: 1px solid #73532C; */
-        border-radius: 10px;
-        padding: 20px;
-        box-sizing: border-box;
-        margin-top: 10px;
-    }
-
-    .first-container {
-    width: 60%;
-    height: 220px; /* Set a fixed height for the search results container */
-    overflow-y: auto; /* Enable vertical scrolling */
-    background-color: #ECECEC;
-    }
-    .first-container p {
-        margin-block-start: 0;
-        margin-block-end: 0;
-        margin-inline-start: 0;
-        margin-inline-end: 0;
+        flex-direction: column;
+        gap: 20px; /* Space between search form and search results */
     }
 
     .side-container {
-        width: 40%;
-        height: 220px;
+        width: 40%; /* 40% width for the side container */
+        /* Adjusted height to auto to fit content */
+        height: auto;
+        background-color: #555;
+        border-radius: 10px;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
     }
 
-    .bottom-container-wrapper {
-        display: flex;
-        flex: 1;
-        gap: 20px;
+    /* Recently Added Books in Sidebar */
+    .sidebar .section-label {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
     }
 
-    .bottom-container {
-        /* width: 50%; */
-        max-height: 230px; /* Set the maximum height for the scrollable area */
-        overflow-y: auto; /* Enable vertical scrolling */
+    .sidebar .book-item-container {
+        overflow-y: scroll;
+        scrollbar-width: none;
+        max-height: 320px;
+        background-color: #555;
+        /* max-height: calc(100% - 50px);  */
+    }
+
+    .book-item-container::-webkit-scrollbar {
+        display: none; /* Hide scrollbar in Chrome, Safari, and Edge */
     }
 
     .book-item-container {
         overflow-y: auto;
-        max-height: 200px; /* Adjust this height as necessary */
+        max-height: 430px; /* Adjust this height as necessary */
+        background-color: #F2F1F1;
+        border-radius: 10px;
     }
 
     .book-title {
@@ -147,6 +186,8 @@
 
     .book-details {
         font-size: 14px;
+        padding-left: 20px;
+        padding-right: 20px;
     }
 
     .book-status {
@@ -177,27 +218,31 @@
     
     /* Responsive Design */
     @media (max-width: 768px) {
-        .container-wrapper,
-        .bottom-container-wrapper {
-            flex-direction: column;
+        .main-content {
+            flex-direction: column; /* Stack vertically on smaller screens */
+            margin-left: 0; /* Remove sidebar margin */
         }
-        .first-container,
-        .side-container {
+        .left,
+        .side-container,
+        .sidebar {
             width: 100%;
             margin-left: 0;
         }
-        .bottom-container {
-            width: 100%;
+        .sidebar {
+            position: relative;
+            top: 0;
+            height: auto;
+        }
+        .search-form-container {
+            width: 100%; /* Full width on smaller screens */
         }
     }
 
     .section-label {
         font-size: 16px;
         font-weight: bold;
-    }
 
-    .section-wrapper {
-        width: 50%; /* Ensures each section takes half of the bottom-container-wrapper width */
+        /* margin-bottom: 10px; */
     }
 
     /* Define alternating background colors */
@@ -237,7 +282,7 @@
         max-height: 100%; /* Prevents image from overflowing the container */
     }
     /* Ensure the graph container adjusts to fit the image */
-    .bottom-container img {
+    .left img {
         max-width: 100%;
     }
 
@@ -247,29 +292,10 @@
     }
 
     /* Adjust the button container styling */
-    .bottom-container img {
+    .left img {
         max-width: 100%;
         height: auto;
         display: block;
-    }
-    #view-graph {
-        text-decoration: none;
-        background-color:#757575;
-        border: none;
-        font-size: 10px;
-        padding: 5px 10px; /* Adjust padding as needed */
-        cursor: pointer;
-    }
-
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center; /* Aligns items vertically centered */
-    }
-
-    .section-label {
-        font-size: 16px;
-        font-weight: bold;
     }
 
     .button-container {
@@ -310,9 +336,34 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+
+        .mess {
+            display: flex;                   /* Enable flexbox */
+            flex-direction: column;          /* Stack items vertically */
+            align-items: center;             /* Center items horizontally */
+            justify-content: center;          /* Center items vertically */
+            text-align: center;              /* Center text */
+            height: 100%;                    /* Optional: Set height for centering */
+            padding: 20px;                   /* Optional: Add padding for aesthetics */
+            box-sizing: border-box;          /* Include padding in width/height */
+        }
+
+        .image-container {
+            display: flex;                   /* Enable flexbox for the image container */
+            justify-content: center;         /* Center the image */
+            margin-bottom: 10px;            /* Space between image and text */
+        }
+
+        .image-logo {
+            max-width: 100%;                /* Ensure image is responsive */
+            height: auto;                   /* Maintain aspect ratio */
+            display: block;                 /* Ensures no extra space below the image */
+        }
+
+
 </style>
 <div class="header">
-    <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px; ">
+    <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px;">
     <img src="{% static 'images/ctu.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px;">
     <img src="{% static 'images/Codesynlogo.png' %}" alt="logo" style="width: 58px; height: 68px; padding-left: 6px;">
     <p class="title">DavideLib Connect: Colawin Library Management System</p>
@@ -325,28 +376,67 @@
             {% endfor %}
         </div>
     {% endif %}
-    <a href="{% url 'directory' %}"><img src="{% static 'images/lock.png' %}" style="width: 50px; height: 60px; display: flex;
-    padding-left: 210px;" alt=""></a>
+    <a href="{% url 'directory' %}">
+        <img src="{% static 'images/lock2.png' %}" style="width: 80px; height: 60px; display: flex; padding-left: 190px;" alt="">
+    </a>
 </div>
 
+<!-- Sidebar Section -->
+<div class="sidebar">
+    <div class="section-label" style="margin-top: 30px; font-weight: lighter;">Recently Added Books</div>
+    <div class="book-item-container">
+        {% for recent_book in recent_books %}
+            <a href="{% url 'landing' %}?book_number={{ recent_book.book_number }}" 
+               class="book-item {% if forloop.counter|divisibleby:2 %}even-row{% else %}odd-row{% endif %}" 
+               style="text-decoration: none; color: black; margin-bottom: 5px;">
+                <div class="book-title" style="font-size: 15px;">
+                    {{ recent_book.book_title }}
+                </div>
+                <!-- <div class="book-details">
+                    <strong>Author:</strong> {{ recent_book.author }}<br>
+                </div> -->
+            </a>
+            <!-- <hr> -->
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Main Content Section -->
 <div class="main-content">
-    <!-- Search Results Section -->
-    <div class="section-label">Search Results</div>
-    <div class="container-wrapper">
-        <div class="first-container">
+    <!-- Left Container -->
+    <div class="left">
+        <!-- Search Form Section -->
+        <div class="search-form-container">
+            <div class="search-container">
+                <form method="GET" action="{% url 'landing' %}" style="flex: 1; display: flex;">
+                    <input type="text" class="search-input" name="q" placeholder="Search book" value="{{ query }}" autofocus>
+                    <button type="submit" class="search-button" style="margin-right: 5px;">Search</button>
+                    <a href="{% url 'landing' %}" class="reset-button">Reset</a>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Results Section -->
+        <div class="section-label">Search Results</div>
+        <div class="book-item-container">
             {% if book_detail %}
                 <!-- Display Book Details -->
-                <strong style="background-color: #73532C; color:#ECECEC; border-radius: 5px; padding-left: 5px; padding-right: 5px; ">{{ book_detail.book_title }}</strong>
+                <strong style="background-color: #73532C; color:#ECECEC; border-radius: 5px; padding-left: 5px; padding-right: 5px;">
+                    {{ book_detail.book_title }}
+                </strong>
                 <div class="book-details">
-                    <p style="text-align: justify;">This was authored by <strong>{{ book_detail.author }}</strong>. 
+                    <p style="text-align: justify;">
+                        This was authored by <strong>{{ book_detail.author }}</strong>. 
                         It has the book number <strong>{{ book_detail.book_number }}</strong>. The book falls under the category of 
                         <strong>{{ book_detail.category.name }}</strong>. This book has <strong>{{ book_detail.edition }}</strong> edition, and it comprises 
                         <strong>{{ book_detail.volume }}</strong> volume(s) with <strong>{{ book_detail.pages }}</strong> pages. 
-                        There are only <strong>{{ book_detail.quantity }}</strong> copy/copies available. The book is funded as <strong>{{ book_detail.fund_source }}</strong> 
-                        and is priced at <strong>{{ book_detail.price }}</strong>. It was published at <strong>{{ book_detail.publisher }}</strong> in the year 
-                        <strong>{{ book_detail.year }}</strong>. The location of this book is at <strong style="color: green;">{{ book_detail.location }}</strong>. 
-                    
-                        <p>The current status of the book is: 
+                        There are only <strong>{{ book_detail.quantity }}</strong> copy/copies available. The book is funded as 
+                        <strong>{{ book_detail.fund_source }}</strong> and is priced at <strong>{{ book_detail.price }}</strong>. It was published at 
+                        <strong>{{ book_detail.publisher }}</strong> in the year <strong>{{ book_detail.year }}</strong>. The location of this book is at 
+                        <strong style="color: green;">{{ book_detail.location }}</strong>. 
+                    </p>
+                    <p>
+                        The current status of the book is: 
                         {% if book_detail.status == 'Returned' %}
                             <span class="book-status status-available">Available</span>.
                         {% elif book_detail.status == 'Borrowed' %}
@@ -356,9 +446,9 @@
                         {% else %}
                             <span class="book-status status-available">Available</span>.
                         {% endif %}
-                        </p>
+                    </p>
                 </div>
-                <div class="button-container" style="padding-top: 20px; padding-left: 300px; gap: 10px;">
+                <div class="button-container" style="padding-top: 20px; gap: 10px;">
                     <a href="{% url 'landing' %}?q={{ query }}" class="search-button" style="text-decoration: none; background-color: #757575;">Back to Search Results</a>
                 </div>
             {% else %}
@@ -367,13 +457,14 @@
                     {% if books %}
                         <div>
                             {% for book in books %}
-                                <a href="{% url 'landing' %}?q={{ query }}&book_number={{ book.book_number }}" class="book-item" style="text-decoration: none; color: black;">
+                                <a href="{% url 'landing' %}?q={{ query }}&book_number={{ book.book_number }}" 
+                                   class="book-item {% if forloop.counter|divisibleby:2 %}even-row{% else %}odd-row{% endif %}" 
+                                   style="text-decoration: none; color: black;">
                                     <div class="book-title">{{ book.book_title }}</div>
                                     <div class="book-details">
                                         <strong>Author:</strong> {{ book.author }}<br>
                                         <strong>Book Number:</strong> {{ book.book_number }}<br>
                                         <strong>Status:</strong>
-
                                         {% if book.status == 'Returned' %}
                                             <span class="book-status status-available">Available</span>
                                         {% elif book.status == 'Borrowed' %}
@@ -385,74 +476,37 @@
                                         {% endif %}
                                     </div>
                                 </a>
-                                <hr>
                             {% endfor %}
                         </div>
                     {% else %}
-                        <p style="color: dimgray; text-align: center;">No results found for your search.</p>
+                    <div class="mess">
                         <div class="image-container">
                             <img src="{% static 'images/searchLOGO1.png' %}" alt="logo" class="image-logo">
                         </div>
+                        <p style="color: dimgray;">No results found for your search.</p>
+                    </div>
+                    
                     {% endif %}
                 {% else %}
-                <p style="color: dimgray; text-align: center;">Book data is displayed here, search for a book now!</p>
-
-                <div class="image-container">
-                    <img src="{% static 'images/searchLOGO.png' %}" alt="logo" class="image-logo">
+                <div class="mess" >
+                    
+                    <div class="image-container">
+                        <img src="{% static 'images/searchLOGO.png' %}" alt="logo" class="image-logo">
+                    </div>
+                    <p style="color: dimgray; text-align: center;">Book data is displayed here, search for a book now!</p>
                 </div>
                 {% endif %}
             {% endif %}
         </div>
-
-        <!-- Actions Section -->
-        <div class="side-container">
-            <div class="section-label">Actions</div>
-            <div class="search-container">
-                <form method="GET" action="{% url 'landing' %}">
-                    <input type="text" class="search-input" name="q" placeholder="Search book" value="{{ query }}" style="width: 117%;" autofocus>
-                    <button type="submit" class="search-button" style="text-decoration: none; width: 123%; background-color: #7EBC89; border: none;">Search Book</button>
-                </form>
-            </div>
-        </div>
     </div>
 
-    <!-- Bottom Container Wrapper for the Second and Third Containers -->
-<div class="bottom-container-wrapper">
-    <div class="section-wrapper">
-        <div class="section-label">Recently Added Books</div>
-            <div class="bottom-container">
-                {% for recent_book in recent_books %}
-                    <a href="{% url 'landing' %}?book_number={{ recent_book.book_number }}" 
-                    class="book-item {% if forloop.counter|divisibleby:2 %}even-row{% else %}odd-row{% endif %}" 
-                    style="text-decoration: none; color: black;">
-                        <div class="book-title">
-                            {{ recent_book.book_title }}
-                        </div>
-                        <div class="book-details">
-                            <strong>Author:</strong> {{ recent_book.author }}<br>
-                        </div>
-                    </a>
-                    <!-- <hr> -->
-                {% endfor %}
-            </div>
-
+    <!-- Side Container -->
+    <div class="side-container">
+        <div class="section-label" style="color: white; font-weight: lighter;"><h1 style="font-size: 18px;"> Who's Browsing?</h1></div>
+        <div class="search-container">
+            
+        </div>
     </div>
-    
-    <div class="section-wrapper">
-        <div class="section-header">
-            <div class="section-label">Book Statistics</div>
-            <div class="button-container">
-                <button id="view-graph" class="search-button">View Graph</button>
-            </div>
-        </div>
-        <div class="bottom-container">
-            <div>
-                <!-- Bar graph image -->
-                <img id="bar-graph" src="data:image/png;base64,{{ graph }}" alt="Bar Graph">
-            </div>
-        </div>
-    </div>    
-    
 </div>
 
 <!-- Add this script before the closing </body> tag -->
@@ -473,56 +527,6 @@
             }, 2000 + index * 1000);
         });
     }
-
-
-    document.getElementById('view-graph').addEventListener('click', function() {
-        // Create the modal
-        var modal = document.createElement('div');
-        modal.style.position = 'fixed';
-        modal.style.top = '0';
-        modal.style.left = '0';
-        modal.style.width = '100%';
-        modal.style.height = '100%';
-        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        modal.style.display = 'flex';
-        modal.style.alignItems = 'center';
-        modal.style.justifyContent = 'center';
-        modal.style.zIndex = '1000';
-        modal.style.overflow = 'auto';
-
-        var content = document.createElement('div');
-        content.style.backgroundColor = 'white';
-        content.style.padding = '20px';
-        content.style.borderRadius = '10px';
-        content.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.3)';
-        content.style.position = 'relative';
-
-        var closeButton = document.createElement('button');
-        closeButton.textContent = 'Close';
-        closeButton.style.position = 'absolute';
-        closeButton.style.top = '10px';
-        closeButton.style.right = '10px';
-        closeButton.style.backgroundColor = '#D6B980';
-        closeButton.style.border = 'none';
-        closeButton.style.color = 'white';
-        closeButton.style.padding = '10px 20px';
-        closeButton.style.borderRadius = '5px';
-        closeButton.style.cursor = 'pointer';
-        
-        closeButton.addEventListener('click', function() {
-            document.body.removeChild(modal);
-        });
-
-        var img = document.createElement('img');
-        img.src = "data:image/png;base64,{{ graph }}";
-        img.style.maxWidth = '100%';
-        img.style.height = 'auto';
-
-        content.appendChild(closeButton);
-        content.appendChild(img);
-        modal.appendChild(content);
-        document.body.appendChild(modal);
-    });
 </script>
 
 {% endblock content %}
