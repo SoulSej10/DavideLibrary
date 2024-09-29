@@ -145,7 +145,9 @@
         right: 0;
         margin: 20px;
     }
-
+    .side-container::-webkit-scrollbar {
+        display: none; /* Hide scrollbar in Chrome, Safari, and Edge */
+    }
 
     /* Recently Added Books in Sidebar */
     .sidebar .section-label {
@@ -578,7 +580,7 @@
                     </div>
                 {% endif %}
                 {% else %}
-                <div class="mess">
+                <div class="mess"> 
                     <div class="image-container">
                         <img src="{% static 'images/searchLOGO.png' %}" alt="logo" class="image-logo">
                     </div>
@@ -621,7 +623,8 @@
             <div id="borrow-history-container" style="color: black;">
                 <!-- Borrow history will be displayed here -->
             </div>
-            <button id="exit-button" onclick="exitView()" style="background-color: #ff4d4d; color: white; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; display: none;">Exit</button>
+            <button id="retry-button" style="background-color: #6aa476; color: white; display: none; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; font-family: 'Poppins', sans-serif;" onclick="retryInput()">Retry</button>
+            <button id="exit-button" onclick="exitView()" style="background-color: #ff4d4d; color: white; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; display: none; font-family: 'Poppins', sans-serif;">Exit</button>
         </div>
     </div>
     
@@ -696,18 +699,13 @@
                 let welcomeMessage = document.getElementById('welcome-message');
                 let qrCodeImage = document.getElementById('qr-code-image');
                 let exitButton = document.getElementById('exit-button');
+                let retryButton = document.getElementById('retry-button'); // Get the retry button
                 let uidInput = document.getElementById('uid-input');
 
-                // Clear previous content
-                welcomeMessage.innerHTML = '';   
-                qrCodeImage.src = ''; 
-
-                // Store UID and history in localStorage
-                localStorage.setItem('uid', uid);
-                localStorage.setItem('borrowHistory', JSON.stringify(data.history));
-                localStorage.setItem('fullName', data.full_name);
-                localStorage.setItem('qrCode', data.qr_code);
-
+                historyContainer.innerHTML = ''; // Clear previous content
+                welcomeMessage.innerHTML = '';   // Clear previous welcome message
+                qrCodeImage.src = ''; // Clear previous QR code image
+                
                 // Disable the UID input field
                 uidInput.disabled = true;
 
@@ -733,9 +731,20 @@
 
                     // Show the exit button
                     exitButton.style.display = 'block';
+                    retryButton.style.display = 'none'; // Hide the retry button
+
+                    // Store the data in localStorage
+                    localStorage.setItem('uid', uid);
+                    localStorage.setItem('fullName', data.full_name);
+                    localStorage.setItem('qrCode', data.qr_code);
+                    localStorage.setItem('borrowHistory', JSON.stringify(data.history));
                 } else {
                     welcomeMessage.innerHTML = "UID not found.";
-                    historyContainer.innerHTML = '<p>No books borrowed with this UID.</p>';
+                    historyContainer.innerHTML = `
+                        <p style="color: #f5c6cb; font-size: 20px; text-align: center;">No books borrowed with this UID.</p>`;
+                    
+                    // Show the retry button
+                    retryButton.style.display = 'block'; // Show the retry button
                 }
             })
             .catch(error => {
@@ -745,8 +754,23 @@
             // Show a message if the UID is not 13 characters long
             document.getElementById('welcome-message').innerHTML = "Please enter a valid UID (13 characters).";
             document.getElementById('borrow-history-container').innerHTML = ''; // Clear previous history
+
+            // Show the retry button
+            document.getElementById('retry-button').style.display = 'block'; // Show the retry button
         }
     }
+
+
+        // Function to reset the input for retrying
+        function retryInput() {
+            let uidInput = document.getElementById('uid-input');
+            uidInput.value = ''; // Clear the input field
+            uidInput.disabled = false; // Re-enable the input field
+            uidInput.focus(); // Set focus back to the input field
+            document.getElementById('retry-button').style.display = 'none'; // Hide the retry button
+        }
+
+
 
 // Function to load data from localStorage when the page loads
     function loadStoredData() {
