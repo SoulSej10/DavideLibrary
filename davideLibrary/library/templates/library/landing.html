@@ -678,6 +678,7 @@
         });
     });
 
+    // Function to fetch borrow history
     function fetchBorrowHistory() {
         let uid = document.getElementById('uid-input').value;
 
@@ -697,10 +698,16 @@
                 let exitButton = document.getElementById('exit-button');
                 let uidInput = document.getElementById('uid-input');
 
-                historyContainer.innerHTML = ''; // Clear previous content
-                welcomeMessage.innerHTML = '';   // Clear previous welcome message
-                qrCodeImage.src = ''; // Clear previous QR code image
-                
+                // Clear previous content
+                welcomeMessage.innerHTML = '';   
+                qrCodeImage.src = ''; 
+
+                // Store UID and history in localStorage
+                localStorage.setItem('uid', uid);
+                localStorage.setItem('borrowHistory', JSON.stringify(data.history));
+                localStorage.setItem('fullName', data.full_name);
+                localStorage.setItem('qrCode', data.qr_code);
+
                 // Disable the UID input field
                 uidInput.disabled = true;
 
@@ -741,9 +748,43 @@
         }
     }
 
+// Function to load data from localStorage when the page loads
+    function loadStoredData() {
+        const uid = localStorage.getItem('uid');
+        const fullName = localStorage.getItem('fullName');
+        const qrCode = localStorage.getItem('qrCode');
+        const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
 
+        if (uid && fullName && qrCode) {
+            document.getElementById('uid-input').value = uid; // Set the UID input
+            document.getElementById('uid-input').disabled = true; // Disable the input
+
+            // Update the UI with the stored data
+            document.getElementById('welcome-message').innerHTML = `Welcome ${fullName}!`;
+            document.getElementById('qr-code-image').src = qrCode;
+
+            const historyContainer = document.getElementById('borrow-history-container');
+            historyContainer.innerHTML = ''; // Clear previous content
+            history.forEach(slip => {
+                let statusClass = slip.status === 'Returned' ? 'status-returned' : 'penalty-status';
+                historyContainer.innerHTML += `
+                    <div class="borrow-slip" style="margin: 0;">
+                        <p><strong>Book No.:</strong> ${slip.book_number}</p>
+                        <p><strong>Book Title:</strong> ${slip.book_title}</p>
+                        <p><strong>Borrow Date:</strong> ${slip.date_borrow}</p>
+                        <p><strong>Due Date:</strong> ${slip.due_date}</p>
+                        <p><strong>Status:</strong> <span class="${statusClass}">${slip.status}</span></p>
+                    </div><hr>`;
+            });
+
+            // Show the exit button
+            document.getElementById('exit-button').style.display = 'block';
+        }
+    }
+
+    // Function to exit view and clear data
     function exitView() {
-    // Re-enable the UID input field and clear its value
+        // Re-enable the UID input field and clear its value
         let uidInput = document.getElementById('uid-input');
         uidInput.disabled = false;
         uidInput.value = '';  // Clear the input field
@@ -753,11 +794,18 @@
         document.getElementById('welcome-message').innerHTML = '';
         document.getElementById('qr-code-image').src = '{% static "images/hpdslogo.png" %}';
 
+        // Clear localStorage
+        localStorage.removeItem('uid');
+        localStorage.removeItem('borrowHistory');
+        localStorage.removeItem('fullName');
+        localStorage.removeItem('qrCode');
+
         // Hide the exit button
         document.getElementById('exit-button').style.display = 'none';
     }
 
-
+    // Load stored data on page load
+    window.onload = loadStoredData;
 
 
 </script>
