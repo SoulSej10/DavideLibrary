@@ -379,7 +379,7 @@
             overflow-y: scroll;
             color: black;
             font-size: 14px;
-            max-height: 320px;
+            max-height: 310px;
         }
         #borrow-history-container::-webkit-scrollbar {
             display: none; /* Hide scrollbar in Chrome, Safari, and Edge */
@@ -612,6 +612,7 @@
                         style="width: 95%; padding: 10px; border-radius: 5px; margin-bottom: 5px; font-family: 'Poppins', sans-serif;">
                         <p style="font-size: 15px; color: white; margin: 0;">Below is the History of your borrows:</p>
             </div>
+
         </div>
         </div>
             
@@ -620,6 +621,7 @@
             <div id="borrow-history-container" style="color: black;">
                 <!-- Borrow history will be displayed here -->
             </div>
+            <button id="exit-button" onclick="exitView()" style="background-color: #ff4d4d; color: white; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; display: none;">Exit</button>
         </div>
     </div>
     
@@ -691,14 +693,20 @@
                 let historyContainer = document.getElementById('borrow-history-container');
                 let welcomeMessage = document.getElementById('welcome-message');
                 let qrCodeImage = document.getElementById('qr-code-image');
+                let exitButton = document.getElementById('exit-button');
+                let uidInput = document.getElementById('uid-input');
+
                 historyContainer.innerHTML = ''; // Clear previous content
                 welcomeMessage.innerHTML = '';   // Clear previous welcome message
                 qrCodeImage.src = ''; // Clear previous QR code image
+                
+                // Disable the UID input field
+                uidInput.disabled = true;
 
                 if (data.history.length > 0) {
                     // Show the welcome message with the user's full name
                     welcomeMessage.innerHTML = `Welcome ${data.full_name}!`;
-                    
+
                     // Set QR code image source
                     qrCodeImage.src = data.qr_code;
 
@@ -714,6 +722,9 @@
                                 <p><strong>Status:</strong> <span class="${statusClass}">${slip.status}</span></p>
                             </div><hr>`;
                     });
+
+                    // Show the exit button
+                    exitButton.style.display = 'block';
                 } else {
                     welcomeMessage.innerHTML = "UID not found.";
                     historyContainer.innerHTML = '<p>No books borrowed with this UID.</p>';
@@ -724,6 +735,23 @@
             });
         }
     }
+
+    function exitView() {
+    // Re-enable the UID input field and clear its value
+        let uidInput = document.getElementById('uid-input');
+        uidInput.disabled = false;
+        uidInput.value = '';  // Clear the input field
+
+        // Clear the borrow history and related UI elements
+        document.getElementById('borrow-history-container').innerHTML = '';
+        document.getElementById('welcome-message').innerHTML = '';
+        document.getElementById('qr-code-image').src = '{% static "images/hpdslogo.png" %}';
+
+        // Hide the exit button
+        document.getElementById('exit-button').style.display = 'none';
+    }
+
+
 
 
 </script>
