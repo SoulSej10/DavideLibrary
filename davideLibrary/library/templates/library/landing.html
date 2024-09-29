@@ -608,7 +608,7 @@
                 <div id="welcome-message" style="color: white; font-size: 16px; font-weight: lighter; margin-bottom: 5px;"></div>
 
                 <div class="UID_field">
-                    <input type="text" id="uid-input" placeholder="Scan UID here..." oninput="fetchBorrowHistory()"
+                    <input type="password" id="uid-input" placeholder="Scan UID here..." oninput="fetchBorrowHistory()"
                         style="width: 95%; padding: 10px; border-radius: 5px; margin-bottom: 5px; font-family: 'Poppins', sans-serif;">
                         <p style="font-size: 15px; color: white; margin: 0;">Below is the History of your borrows:</p>
             </div>
@@ -681,7 +681,8 @@
     function fetchBorrowHistory() {
         let uid = document.getElementById('uid-input').value;
 
-        if (uid.length > 0) {
+        // Check if the UID length is exactly 13 characters
+        if (uid.length === 13) {
             fetch(`/borrow-history/?uid=${uid}`, {
                 method: 'GET',
                 headers: {
@@ -733,8 +734,13 @@
             .catch(error => {
                 console.error('Error:', error);
             });
+        } else if (uid.length > 0) {
+            // Show a message if the UID is not 13 characters long
+            document.getElementById('welcome-message').innerHTML = "Please enter a valid UID (13 characters).";
+            document.getElementById('borrow-history-container').innerHTML = ''; // Clear previous history
         }
     }
+
 
     function exitView() {
     // Re-enable the UID input field and clear its value
