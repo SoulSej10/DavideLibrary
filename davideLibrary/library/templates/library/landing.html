@@ -39,11 +39,11 @@
     /* Sidebar Styling */
     .sidebar {
         background-color: #555;
-        width: 240px; /* Adjusted to match main-content's margin-left */
+        width: 240px; 
         position: fixed;
-        top: 70px; /* Positioned below the header */
+        top: 70px; 
         left: 0;
-        height: calc(100% - 70px); /* Full height minus header */
+        height: calc(100% - 70px); 
         overflow-y: auto;
         padding: 20px;
         color: white;
@@ -68,12 +68,13 @@
 
     /* Search Form Container */
     .search-form-container {
-        width: 100%; /* Full width inside the left container */
+        width: 100%; 
     }
 
     .search-container {
         display: flex;
-        gap: 10px; /* Space between input and buttons */
+        flex-direction: column;
+        gap: 10px;
     }
 
     .search-input {
@@ -92,7 +93,7 @@
         font-family: 'Poppins', sans-serif;
         text-decoration: none;
         color: #fff;
-        background-color: #7EBC89; /* Better visibility */
+        background-color: #7EBC89; 
         border: none;
         border-top-right-radius: 10px;
         border-bottom-right-radius: 10px;
@@ -106,7 +107,7 @@
         font-family: 'Poppins', sans-serif;
         text-decoration: none;
         color: #fff;
-        background-color: #7EBC89; /* Better visibility */
+        background-color: #7EBC89;
         border: none;
         border-radius: 10px;
         transition: background-color 0.3s, color 0.3s;
@@ -125,10 +126,10 @@
     }
 
     .left {
-        width: 60%; /* 60% width for the left container */
+        width: 60%;
         display: flex;
         flex-direction: column;
-        gap: 20px; /* Space between search form and search results */
+        gap: 20px; 
     }
 
     .side-container {
@@ -166,7 +167,7 @@
 
     .book-item-container {
         overflow-y: auto;
-        max-height: 430px; /* Adjust this height as necessary */
+        max-height: 430px; 
         background-color: #F2F1F1;
         border-radius: 10px;
     }
@@ -177,9 +178,9 @@
         cursor: pointer;
         color: #333;
         text-decoration: none;
-        margin: 0; /* Remove margin */
-        padding: 0; /* Remove padding */
-        line-height: 1.2; /* Adjust line height for tighter spacing */
+        margin: 0; 
+        padding: 0; 
+        line-height: 1.2; 
     }
 
     .book-title:hover {
@@ -222,8 +223,8 @@
     /* Responsive Design */
     @media (max-width: 768px) {
         .main-content {
-            flex-direction: column; /* Stack vertically on smaller screens */
-            margin-left: 0; /* Remove sidebar margin */
+            flex-direction: column; 
+            margin-left: 0; 
         }
         .left,
         .side-container,
@@ -237,15 +238,13 @@
             height: auto;
         }
         .search-form-container {
-            width: 100%; /* Full width on smaller screens */
+            width: 100%; 
         }
     }
 
     .section-label {
         font-size: 16px;
         font-weight: bold;
-
-        /* margin-bottom: 10px; */
     }
 
     /* Define alternating background colors */
@@ -257,7 +256,6 @@
         background-color: #D9D9D9;
     }
 
-    /* Optional: Add padding and other styling for better appearance */
     .book-item {
         padding: 10px;
         display: block;
@@ -265,36 +263,32 @@
     }
 
     .book-item:hover {
-        background-color: #D6B980; /* Add a hover effect if desired */
+        background-color: #D6B980; 
     }
 
-    /* CSS for the container */
     .image-container {
         position: relative;
         width: 100%;
-        height: 155px; /* Adjust as needed */
+        height: 155px;
         text-align: center;
     }
 
-    /* CSS for the image */
     .image-logo {
-        position: relative; /* or absolute if you want precise positioning */
+        position: relative; 
         width: auto;
-        max-width: 100%; /* Ensures the image scales to fit */
+        max-width: 100%;
         height: auto;
-        max-height: 100%; /* Prevents image from overflowing the container */
+        max-height: 100%; 
     }
-    /* Ensure the graph container adjusts to fit the image */
+ 
     .left img {
         max-width: 100%;
     }
 
-    /* Hide the graph labels by default */
     .hidden-legend {
         display: none;
     }
 
-    /* Adjust the button container styling */
     .left img {
         max-width: 100%;
         height: auto;
@@ -305,26 +299,26 @@
         display: flex;
         align-items: center;
     }
-    /* Message Styles */
+ 
     .message-container {
-            position: absolute; /* Allow the messages to overlay without taking space */
-            top: 10px; /* Adjust as needed to position it in the header */
-            left: 50%; /* Center horizontally */
-            transform: translateX(-50%); /* Center adjustment */
+            position: absolute; 
+            top: 10px; 
+            left: 50%;
+            transform: translateX(-50%); 
             text-align: center;
-            width: 40%; /* Ensure it spans the header */
-            margin: 0; /* Remove margin */
-            z-index: 10; /* Bring it above other elements */
+            width: 40%; 
+            margin: 0; 
+            z-index: 10; 
         }
 
         .message {
             padding: 10px;
             margin: 5px auto;
             border-radius: 5px;
-            width: 90%; /* Adjust width for responsiveness */
+            width: 90%; 
             font-family: 'Poppins', sans-serif;
-            display: inline-block; /* Keep messages inline */
-            transition: opacity 1s ease; /* Ensure smooth opacity transition */
+            display: inline-block;
+            transition: opacity 1s ease; 
             opacity: 1;
         }
 
@@ -341,26 +335,26 @@
         }
 
         .mess {
-            display: flex;                   /* Enable flexbox */
-            flex-direction: column;          /* Stack items vertically */
-            align-items: center;             /* Center items horizontally */
-            justify-content: center;          /* Center items vertically */
-            text-align: center;              /* Center text */
-            height: 100%;                    /* Optional: Set height for centering */
-            padding: 20px;                   /* Optional: Add padding for aesthetics */
-            box-sizing: border-box;          /* Include padding in width/height */
+            display: flex;                  
+            flex-direction: column;          
+            align-items: center;             
+            justify-content: center;          
+            text-align: center;              
+            height: 100%;                    
+            padding: 20px;                  
+            box-sizing: border-box;          
         }
 
         .image-container {
-            display: flex;                   /* Enable flexbox for the image container */
-            justify-content: center;         /* Center the image */
-            margin-bottom: 10px;            /* Space between image and text */
+            display: flex;                   
+            justify-content: center;        
+            margin-bottom: 10px;           
         }
 
         .image-logo {
-            max-width: 100%;                /* Ensure image is responsive */
-            height: auto;                   /* Maintain aspect ratio */
-            display: block;                 /* Ensures no extra space below the image */
+            max-width: 100%;                
+            height: auto;                  
+            display: block;                 
         }
 
         .category-button-container{
@@ -370,8 +364,8 @@
         }
         .category-button{
             display: inline-block;
-            margin: 5px;
-            padding: 5px;
+            margin: 5px 2px 5px 2px;
+            padding: 5px 10px 5px 10px;
             border-radius: 10px;
             text-decoration: none;
             color: black; font-size: 12px;
@@ -381,6 +375,33 @@
             filter: brightness(1.15);
         }
         
+        #borrow-history-container {
+            overflow-y: scroll;
+            color: black;
+            font-size: 14px;
+            max-height: 320px;
+        }
+        #borrow-history-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar in Chrome, Safari, and Edge */
+        }
+
+        .borrow-slip {
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .borrow-slip p{
+            margin: 0;
+        }
+        .status-returned {
+            color: green;
+        }
+
+        .penalty-status {
+            color: red;
+        }
+
 </style>
 <div class="header">
     <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px;">
@@ -458,7 +479,6 @@
     {% endif %}
 </div>
 <div class="book-item-container">
-    <!-- Example of showing selected category -->
     {% if book_detail %}
         <!-- Display Book Details -->
         <strong style="background-color: #73532C; color:#ECECEC; border-radius: 5px; padding-left: 5px; padding-right: 5px;">
@@ -468,8 +488,8 @@
             <p style="text-align: justify;">
                 This was authored by <strong>{{ book_detail.author }}</strong>. 
                 It has the book number <strong>{{ book_detail.book_number }}</strong>. The book falls under the category of 
-                <strong>{{ book_detail.category.name }}</strong>. This book has <strong>{{ book_detail.edition }}</strong> edition, and it comprises 
-                <strong>{{ book_detail.volume }}</strong> volume(s) with <strong>{{ book_detail.pages }}</strong> pages. 
+                <strong>{{ book_detail.category.name }}</strong>. This book has <strong>{{ book_detail.edition }}</strong> edition/s, and it comprises of
+                <strong>{{ book_detail.volume }}</strong> volume/s with <strong>{{ book_detail.pages }}</strong> pages. 
                 There are only <strong>{{ book_detail.quantity }}</strong> copy/copies available. The book is funded as 
                 <strong>{{ book_detail.fund_source }}</strong> and is priced at <strong>{{ book_detail.price }}</strong>. It was published at 
                 <strong>{{ book_detail.publisher }}</strong> in the year <strong>{{ book_detail.year }}</strong>. The location of this book is at 
@@ -573,14 +593,40 @@
 
     <!-- Side Container -->
     <div class="side-container">
-        <div class="section-label" style="color: white; font-weight: lighter;"><h1 style="font-size: 18px;"> Who's Browsing?</h1></div>
+        <div class="section-label" style="color: white; font-weight: lighter;">
+            <h1 style="font-size: 18px;">Who's Browsing?</h1>
+        </div>
         <div class="search-container">
+            <!-- Input field for scanning UID -->
+             <!-- Container for displaying the QR code -->
+            <div class="who-container" style="display: flex;">
+                <div id="qr-code-container" style="margin-bottom: 10px; margin-right: 15px;">
+                    <img id="qr-code-image" src="{% static 'images/hpdslogo.png' %}" alt="QR Code" style="width: 100px; height: 100px; border-radius: 10px; background-color: white;"/>
+                </div>
+                <div class="side" style="width: 70%;">
+                <!-- Container for displaying the welcome message and the history of borrowed books -->
+                <div id="welcome-message" style="color: white; font-size: 16px; font-weight: lighter; margin-bottom: 5px;"></div>
+
+                <div class="UID_field">
+                    <input type="text" id="uid-input" placeholder="Scan UID here..." oninput="fetchBorrowHistory()"
+                        style="width: 95%; padding: 10px; border-radius: 5px; margin-bottom: 5px; font-family: 'Poppins', sans-serif;">
+                        <p style="font-size: 15px; color: white; margin: 0;">Below is the History of your borrows:</p>
+            </div>
+        </div>
+        </div>
             
+            
+    
+            <div id="borrow-history-container" style="color: black;">
+                <!-- Borrow history will be displayed here -->
+            </div>
         </div>
     </div>
+    
+    
+
 </div>
 
-<!-- Add this script before the closing </body> tag -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         hideMessages();
@@ -590,11 +636,11 @@
         const messageElements = document.querySelectorAll('.message');
         messageElements.forEach((message, index) => {
             setTimeout(() => {
-                message.style.transition = 'opacity 1s ease'; // Add transition for fading
-                message.style.opacity = '0'; // Fade out
+                message.style.transition = 'opacity 1s ease'; 
+                message.style.opacity = '0'; 
                 setTimeout(() => {
-                    message.style.display = 'none'; // Hide after fade
-                }, 1000); // Match this duration with the transition time
+                    message.style.display = 'none'; 
+                }, 1000); 
             }, 2000 + index * 1000);
         });
     }
@@ -605,7 +651,7 @@
         '#D5FFD3', '#FFDEDE'
     ];
 
-    // Simple hash function to generate a numeric hash from a string
+  
     function hashStringToNumber(str) {
         let hash = 0;
         for (let i = 0; i < str.length; i++) {
@@ -614,10 +660,10 @@
         return hash;
     }
 
-    // Map the numeric hash to an index in the pastelColors array
+
     function getColorForCategory(categoryName) {
         const hash = hashStringToNumber(categoryName);
-        const colorIndex = Math.abs(hash) % pastelColors.length;  // Ensure the index is positive
+        const colorIndex = Math.abs(hash) % pastelColors.length;  
         return pastelColors[colorIndex];
     }
 
@@ -629,6 +675,56 @@
             button.style.backgroundColor = assignedColor;
         });
     });
+
+    function fetchBorrowHistory() {
+        let uid = document.getElementById('uid-input').value;
+
+        if (uid.length > 0) {
+            fetch(`/borrow-history/?uid=${uid}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let historyContainer = document.getElementById('borrow-history-container');
+                let welcomeMessage = document.getElementById('welcome-message');
+                let qrCodeImage = document.getElementById('qr-code-image');
+                historyContainer.innerHTML = ''; // Clear previous content
+                welcomeMessage.innerHTML = '';   // Clear previous welcome message
+                qrCodeImage.src = ''; // Clear previous QR code image
+
+                if (data.history.length > 0) {
+                    // Show the welcome message with the user's full name
+                    welcomeMessage.innerHTML = `Welcome ${data.full_name}!`;
+                    
+                    // Set QR code image source
+                    qrCodeImage.src = data.qr_code;
+
+                    // Build the list of borrowed books
+                    data.history.forEach(slip => {
+                        let statusClass = slip.status === 'Returned' ? 'status-returned' : 'penalty-status';
+                        historyContainer.innerHTML += `
+                            <div class="borrow-slip" style="margin: 0;">
+                                <p><strong>Book No.:</strong> ${slip.book_number}</p>
+                                <p><strong>Book Title:</strong> ${slip.book_title}</p>
+                                <p><strong>Borrow Date:</strong> ${slip.date_borrow}</p>
+                                <p><strong>Due Date:</strong> ${slip.due_date}</p>
+                                <p><strong>Status:</strong> <span class="${statusClass}">${slip.status}</span></p>
+                            </div><hr>`;
+                    });
+                } else {
+                    welcomeMessage.innerHTML = "UID not found.";
+                    historyContainer.innerHTML = '<p>No books borrowed with this UID.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    }
+
 
 </script>
 

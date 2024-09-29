@@ -7,6 +7,7 @@ from .views import book_details, generate_selected_books_pdf
 urlpatterns = [
 
     path('', views.landing, name='landing'),
+    path('borrow-history/', views.borrow_history, name='borrow-history'),
 
     # home
     path('home/', views.home, name='home'),

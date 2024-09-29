@@ -189,6 +189,37 @@ def book_detail(request, book_number):
         'query': request.GET.get('q', ''),  # Preserve the search query
     })
 
+def borrow_history(request):
+    uid = request.GET.get('uid')
+    response_data = {
+        'full_name': '',
+        'history': [],
+        'qr_code': ''
+    }
+
+    if uid:
+        try:
+            # Fetch the borrower using the UID
+            borrower = Borrower.objects.get(borrower_uid=uid)
+            response_data['full_name'] = borrower.borrower_name
+            response_data['qr_code'] = borrower.qr_code.url  # Get QR code URL
+
+            # Fetch all borrow slips associated with the UID
+            borrow_slips = BorrowSlip.objects.filter(borrower_uid_number=uid)
+            for slip in borrow_slips:
+                response_data['history'].append({
+                    'book_number': slip.book_number,
+                    'book_title': slip.book_title,
+                    'date_borrow': slip.date_borrow.strftime('%Y-%m-%d'),
+                    'due_date': slip.due_date.strftime('%Y-%m-%d'),
+                    'status': slip.status
+                })
+
+        except Borrower.DoesNotExist:
+            response_data['full_name'] = 'UID not found'
+
+    return JsonResponse(response_data)
+
 
 
 
