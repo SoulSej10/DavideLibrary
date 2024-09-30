@@ -742,7 +742,7 @@
                     welcomeMessage.innerHTML = "UID not found.";
                     historyContainer.innerHTML = `
                         <p style="color: #f5c6cb; font-size: 20px; text-align: center;">No books borrowed with this UID.</p>`;
-                    
+                        qrCodeImage.src = '{% static "images/hpdslogo.png" %}'; 
                     // Show the retry button
                     retryButton.style.display = 'block'; // Show the retry button
                 }
