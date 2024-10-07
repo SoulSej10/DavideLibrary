@@ -14,40 +14,7 @@
             margin-top: 90px; /* Adjust as per your header height */
         }
 
-       
-
-        .head {
-            margin-top: 10px;
-            width: 400px;
-            display: flex;
-            justify-content: center; /* Center the content horizontally */
-            align-items: center; /* Center the content vertically */
-            padding: 20px; /* Add padding inside the div */
-            background-color: #CC8C18; /* Set the background color */
-            border-radius: 10px; /* Add rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
-            color: white; /* Set the text color */
-            margin-bottom: 20px; /* Space below the header */
-        }
-
-        .head h1 {
-
-            margin: 0; /* Remove default margin from the h1 */
-            font-size: 24px; /* Set the font size */
-            font-family: 'Poppins', sans-serif; /* Set the font family */
-            letter-spacing: 3px; /* Slightly increase the spacing between letters */
-            text-align: center; /* Center the text within the h1 */
-            width: 100%; 
-        }
-
-
-
-        /* .search-container {
-            margin-bottom: 20px;
-        } */
-
         .search-container {
-            
             display: flex;
             flex-direction: column;
             gap: 20px; 
