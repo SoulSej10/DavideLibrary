@@ -121,7 +121,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
-        padding-top: 10px;
+        padding-top: 18px;
     }
 
     .section-label {
@@ -347,7 +347,7 @@
                                 <th>
                                     <label>
                                         <input type="checkbox" id="select-all-checkbox">
-                                        Select [ All List ]
+                                        Select <br>[ All List ]
                                     </label>
                                 </th>
                                 <th>Book Number</th>
@@ -427,7 +427,7 @@
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button type="button" id="set-location-btn" class="btn btn-search hidden" onclick="setLocation()">Set Location</button>
                 <button type="submit" name="action" value="delete" id="delete-btn" class="btn btn-delete hidden" style="display: none;"></button>
-                <button type="button" class="btn btn-delete" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                <button type="button" class="btn btn-delete" data-toggle="modal" data-target="#deleteModal" style="background-color: #ff4d4d;color: white;">Delete</button>
                 <button type="submit" formaction="{% url 'generate-selected-books-pdf' %}" class="btn btn-download">Download PDF</button>
             </div>
         </div>
