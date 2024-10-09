@@ -1,464 +1,312 @@
+ /* Global Styles */
+ body {
+    font-family: 'Poppins', sans-serif;
+    font-size: medium;
+}
 
-        /* Your existing styles here */
-        @font-face {
-            font-family: 'Poppins';
-            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
-        }
-        .body {
-            font-size: small;
-        }
+.main-content {
+    margin-left: 240px; /* Sidebar width */
+    padding: 15px;
+    margin-top: 90px; /* Header height */
+    display: flex;
+    gap: 20px; /* Space between sidebar and table */
+}
 
-        .main-content {
-            margin-left: 240px; /* Adjust as per your sidebar width */
-            padding: 15px;
-            margin-top: 90px; /* Adjust as per your header height */
-        }
+/* Sidebar Actions */
+.sidebar-actions {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-        .search-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px; 
-            padding: 20px;
-            max-width: 600px; 
-           
-        }
+.sidebar-actions h1 {
+    font-size: 24px;
+    margin-bottom: -15px;
+    text-align: center;
+}
 
-        .search-container > * {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.background {
+    background-color: #555555;
+    border-radius: 10px;
+    padding: 20px;
+    color: white;
+    height: 455px;
+}
 
-        .search-container form,
-        .search-container a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.filter-container{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
 
-        .search-container form {
-            display: flex;
-            align-items: center;
-            gap: 10px; 
-            flex: 1; 
-        }
+.search-container, .filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
-        .search-container label {
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif; 
-            color: #333; 
-            width: 200px;
-            align-self: center;
-        }
+.search-container form, .filter-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-        
-        .search-container input[type="text"],
-        .search-container select {
-            
-            padding: 8px 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            font-size: 14px; 
-            font-family: 'Poppins', sans-serif;
-            width: 100%; 
-            box-sizing: border-box; 
-        }
-        
-        .search-container button {
-            padding: 10px 15px; 
-            background-color: #CC8C18; 
-            border: none; 
-            border-radius: 5px;
-            color: white; 
-            font-size: 14px; 
-            font-family: 'Poppins', sans-serif; 
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 180px; 
-           
-        }
-        
-        .search-container button:hover {
-            background-color: #b37512; 
-        }
-        
-        /* Style for the Reset List link */
-        .search-container a {
-            
-            align-items: center;
-            font-size: 14px; 
-            color: #CC8C18;
-            text-decoration: none; 
-            font-family: 'Poppins', sans-serif; 
-            text-wrap: nowrap;
-            
-        }
-        
-        .search-container a:hover {
-            text-decoration: underline; 
-        }
+.search-container label, .filter-container label {
+    font-weight: bold;
+}
 
+/* Input and Select Styling */
+.search-container input[type="text"], .filter-container select, #location {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Poppins', sans-serif;
+}
 
-        .no-results {
-            color: red;
-            margin-top: 20px;
-            margin-left: 200px;
-        }
-  
+/* Button Styling */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    text-decoration: none;
+    text-align: center;
+}
 
-        .add {
-            padding: 15px;
-            border-radius: 0px 30px 30px 0px; /* Rounded corners */
-            background-color: #654321;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            font-size: 14px;
-            max-width: 150px;
-            position: relative; /* Needed to position the pseudo-element */
-            
-        }
-        .add:hover{
-            opacity: 0.8;
-            cursor: pointer;  
+.btn-search {
+    background-color: #7EBC89; /* Green */
+    color: white;
+}
 
-        }
-        .add a{
-            padding: 15px;
-            color: white;
-            text-decoration: none;
+.btn-search:hover {
+    background-color: #6FAE7B;
+}
 
-        }
+.btn-reset {
+    background-color: #D6B980; /* Light Brown/Gold */
+    color: white;
+}
 
-        
-       /* location container */
-       /* Container for the section below the table */
-        #location-container {
-            width: 60%;
-            margin-top: 20px; /* Space between the table and the container */
-            padding: 15px;
-            background-color: #eae0a4;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            margin-left: 170px;
+.btn-reset:hover {
+    background-color: #C5A86A;
+}
 
+.add-book-button {
+    background-color: #007bff; /* Bootstrap Primary Blue */
+    color: white;
+    text-decoration: none;
+    text-align: center;
+}
 
-        }
+.add-book-button:hover {
+    background-color: #0056b3;
+}
 
-        /* Label and input styling */
-        #location-container label {
-            font-weight: bold;
-            margin-right: 10px;
-            margin-bottom: 15px;
-            font-size: 15px;
-            background-color: #b37512;
-            padding: 8px;
-            margin-left: 50px;
-            width: 300px;
-            border-radius: 0px 10px 10px 0px;
-            color: white;
+/* Container for Data Table */
+.table-container-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 18px;
+}
 
-        }
+.section-label {
+    font-size: 20px;
+    font-weight: bold;
+}
 
-        #location-container input[type="text"] {
+.table-container {
+    max-height: 495px; /* Increased height for more visibility */
+    overflow: auto;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
 
-            margin-bottom: 15px;
-            margin-left: 50px;
-            margin-top: 15px;
-            padding: 8px 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            font-size: 14px; 
-            font-family: 'Poppins', sans-serif;
-            width: 80%; 
-            box-sizing: border-box;
+/* Hide scrollbar for Chrome, Safari and Edge */
+.table-container::-webkit-scrollbar {
+    display: none;
+}
 
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Poppins', sans-serif;
+}
 
-        /* Style for the buttons */
-        #button-container {
-            display: flex;
-            justify-content: center; /* Center buttons */
-            gap: 10px; /* Space between buttons */
-           
+th, td {
+    padding: 12px 8px;
+    text-align: left;
+}
 
-        }
-        #location-container button {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            flex: 1;
-            
-        }
+th {
+    background-color: #555555;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
 
-        #location-container button:hover{
-           opacity: 0.8; ;
-        }
+tbody {
+    display: block;
+    overflow-y: auto;
+    max-height: 560px;
+    font-size: 14px;
+}
 
-        #location-container #set-location-btn {
-            background-color: #4CAF50; /* Green */
-            color: white;
-        }
+tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
 
-        #location-container .btn-danger {
-            background-color: #f44336; /* Red */
-            color: white;
-        }
+td {
+    word-wrap: break-word;
+}
 
-        /* Ensure hidden elements remain hidden */
-        .hidden {
-            display: none;
-        }
+tbody tr:nth-child(even) {
+    background-color: #D9D9D9;
+    border-radius: 5px;
+}
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            #location-container input[type="text"] {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            
-            #location-container button {
-                width: 100%;
-                margin-top: 10px;
-            }
-        }
+/* Button Styles in Table */
+.butstyle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
 
-        /* delete pop up */
-        /* Style for the close button */
-        .modal-header .close {
-            position: absolute;
-            top: 10px; /* Adjust top spacing */
-            right: 10px; /* Adjust right spacing */
-            background-color: transparent; /* Transparent background */
-            border: none; /* Remove border */
-            font-size: 20px; /* Increase the size of the close icon */
-            color: #000; /* Icon color */
-            outline: none; /* Remove the default outline */
-            cursor: pointer; /* Change cursor to pointer */
-            padding: 5px; /* Add some padding for clickability */
-            border-radius: 50%; /* Make the button circular */
-        }
+.btn-details {
+    background-color: #7EBC89; /* Green */
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+}
 
-        .modal-header .close:hover {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-            font-size: 24px;
-        }
+.btn-details:hover {
+    background-color: #6FAE7B;
+}
 
+.btn-edit {
+    background-color: #D6B980; /* Light Brown/Gold */
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+}
 
-        
-        .modal-delete {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
+.btn-edit:hover {
+    background-color: #C5A86A;
+}
 
-        .modal-content-delete {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-        }
+/* Hidden Actions */
+.hidden {
+    display: none;
+}
 
-        .close-delete {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
+.blur {
+    filter: blur(4px);
+}
 
-        .close-delete:hover,
-        .close-delete:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+/* Modal Styles */
+.modal-delete, .modal-details {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
 
-        .blur {
-            filter: blur(5px);
-        }
+.modal-content-delete, .modal-content-details {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+}
 
-        .btn-edit {
-            background-color: #777;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
+.close-delete, .close-details {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
 
+.close-delete:hover, .close-details:hover,
+.close-delete:focus, .close-details:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-        
-        .table-container {
-            max-height: 355px; /* Adjust the height as needed */
-            overflow: auto;
-            border: 1px solid #ddd; /* Optional: Add borders for styling */
-            border-radius: 4px;
-            
-        }
+/* Notification Styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    display: none;
+}
 
-        
+/* Styles for Book Details Modal */
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    height: 450px;
+}
 
-        
+.details-table tbody {
+    display: block;
+    overflow-y: auto;
+    max-height: 390px;
+    font-size: 13px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-           
-            
-        }
+.details-table td, .details-table th {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
 
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            
-           
-        }
+.details-table td:nth-child(odd), .details-table th {
+    background-color: #f9f9f9;
+}
 
-        th {
-            background-color: #eae0a4;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
+.details-table th {
+    background-color: #f5f5f5;
+}
 
-        tbody {
-            display: block;
-            overflow-y: auto;
-            max-height: 320px; /* Adjust based on the container height */
-            font-size: 13px;
-        }
+.details-table img {
+    display: block;
+    margin: 0 auto;
+}
 
-        tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-
-        td {
-            
-            word-wrap: break-word; /* Ensures long text wraps inside cells */
-        }
-        tbody tr:nth-child(even) {
-            background-color: #eae0a4;
-        }
-        .hidden {
-            display: none;
-        }
-        .blur {
-            filter: blur(4px);
-        }
-
-
-        .modal-delete{
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; 
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-        .modal-details {
-            margin-left: 150px;
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; 
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;  
-        }
-        .modal-content-delete{
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-        }
-        .modal-content-details {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            height: 480px;
-        }
-        .close-delete, .close-details {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close-delete:hover, .close-details:hover,
-        .close-delete:focus, .close-details:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        /* Notification Styles */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-            display: none;
-        }
-        /* Styles for Book Details Modal */
-        .details-table {
-            width: 600px;
-            border-collapse: collapse;
-            font-size: 14px;
-            height: 450px;
-        }
-        .details-table tbody{
-            display: block;
-            overflow-y: auto;
-            max-height: 390px;
-            font-size: 13px;
-        }
-
-        .details-table td {
-            padding: 8px;
-            border: 1px solid #ddd;
-        }
-
-        .details-table td:nth-child(odd) {
-            background-color: #f9f9f9;
-        }
-
-        .details-table th {
-            background-color: #f5f5f5;
-        }
-
-        .details-table img {
-            display: block;
-            margin: 0 auto;
-        }
-
-        
-    
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+    .sidebar-actions, .table-container-wrapper {
+        width: 100%;
+    }
+}
