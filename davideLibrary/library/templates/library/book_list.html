@@ -18,7 +18,7 @@
     <!-- Data Table Section -->
     <div class="table-container-wrapper">
         <!-- Heading Above the Table -->
-        <div class="section-label">Books</div>
+        <div class="section-label">Book Inventory</div>
 
         {% if messages %}
             {% for message in messages %}
@@ -81,7 +81,7 @@
 
     <!-- Sidebar Actions: Search, Filter, Add Book, and Hidden Actions -->
     <div class="sidebar-actions">
-        <h1>Book Inventory</h1>
+        <h1>Actions</h1>
         <div class="background">
         <div class="search-container">
             <form method="GET" action="{% url 'book-list' %}">

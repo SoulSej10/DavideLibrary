@@ -83,7 +83,7 @@
         }
 
         .btncategory{
-            background-color: #777;
+            background-color: #C5A86A;
             color: white;
             padding: 7px 20px;
             border-radius: 4px;
@@ -114,7 +114,7 @@
             background-color: #555;
         }
         .btncategory:hover {
-            background-color: #555;
+            background-color: #D6B980;
         }
         .add-category-form {
             display: flex;
@@ -315,9 +315,9 @@
                 {{ form.location }}
             </div>
             <div class="form-actions">
-                <button type="submit" class="btn-save">{{ form.instance.pk|yesno:"Save,Create" }}</button>
-                <a href="{% url 'book-list' %}" class="btn-back">Back to List</a>
-                <button class="btncategory" id="categoryBtn" type="button">Categories</button>
+                <button type="submit" class="btn-save" style="font-family: 'Poppins', sans-serif;" >{{ form.instance.pk|yesno:"Save,Create" }}</button>
+                <a href="{% url 'book-list' %}" class="btn-back" style="padding-top: 10px; padding-bottom: 10px;">BACK TO LIST</a>
+                <button class="btncategory" id="categoryBtn" type="button" style="font-family: 'Poppins', sans-serif;">Categories</button>
             </div>
             
                 
