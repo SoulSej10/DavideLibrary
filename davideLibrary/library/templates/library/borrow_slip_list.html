@@ -14,68 +14,94 @@
 
 <body>
     <div class="main-content">
-     <div class="head">
-        <h1>Borrow Slips</h1>
-    </div>
 
-    <div class="filter-container">
-        <!-- Date filter -->
-        <form method="GET" action="{% url 'borrow-slip-list' %}">
-            <label for="date_filter">Filter by Date:</label>
-            <input type="date" id="date_filter" name="date_filter" value="{{ date_filter }}">
-            <button type="submit">Filter by Date</button>
-        </form>
-    
-         <!-- Search form -->
-         <form method="GET" action="{% url 'borrow-slip-list' %}">
-             <span>Search by:</span>
-            <input type="text" name="search" autofocus placeholder="Book Number || UID || Librarian" value="{{ query }}">
-            <button type="submit">Search</button>
-            <a href="{% url 'borrow-slip-list' %}">Reset List</a>
-        </form>
-    </div>
+        
+    <div class="table-container-wrapper">
 
-    <div class="create" style="max-width: 200px;">
-        <button><a href="{% url 'borrow-slip-create' %}">Create New Slip</a></button>
-    </div>
-    <!-- Download selected PDF -->
-    <form method="POST" action="{% url 'download-selected-pdf' %}">
-        {% csrf_token %}
-       
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" id="select-all" />Slip No.</th>
-                        <th>Book Borrowed</th>
-                        <th>Author</th>
-                        <th>Book Number</th>
-                        <th>Date Borrow</th>
-                        <th>Borrower UID Number</th>
-                        <th>Borrower Name</th>
-                        <th>Due Date</th>
-                        <th>Librarian Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for slip in borrow_slips %}
+        <div class="section-label">Borrowers Slip</div>
+        <!-- Download selected PDF -->
+        <form method="POST" action="{% url 'download-selected-pdf' %}">
+            {% csrf_token %}
+        
+            <div class="table-container">
+
+                
+
+                <table>
+                    <thead>
                         <tr>
-                            <td><input type="checkbox" name="selected_slips" value="{{ slip.slip_number }}" />{{ slip.slip_number }}</td>
-                            <td>{{ slip.book_title }}</td>
-                            <td>{{ slip.author }}</td>
-                            <td>{{ slip.book_number }}</td>
-                            <td>{{ slip.date_borrow|date:"Y-m-d" }}</td>
-                            <td>{{ slip.borrower_uid_number|obfuscate }}</td>
-                            <td>{{ slip.borrower_name }}</td>
-                            <td>{{ slip.due_date|date:"Y-m-d" }}</td>
-                            <td>{{ slip.librarian_name }}</td>
+                            <th><input type="checkbox" id="select-all" />Slip No.</th>
+                            <th>Book Borrowed</th>
+                            <th>Author</th>
+                            <th>Book Number</th>
+                            <th>Date Borrow</th>
+                            <th>Borrower UID Number</th>
+                            <th>Borrower Name</th>
+                            <th>Due Date</th>
+                            <th>Librarian Name</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for slip in borrow_slips %}
+                            <tr>
+                                <td><input type="checkbox" name="selected_slips" value="{{ slip.slip_number }}" />{{ slip.slip_number }}</td>
+                                <td>{{ slip.book_title }}</td>
+                                <td>{{ slip.author }}</td>
+                                <td>{{ slip.book_number }}</td>
+                                <td>{{ slip.date_borrow|date:"Y-m-d" }}</td>
+                                <td>{{ slip.borrower_uid_number|obfuscate }}</td>
+                                <td>{{ slip.borrower_name }}</td>
+                                <td>{{ slip.due_date|date:"Y-m-d" }}</td>
+                                <td>{{ slip.librarian_name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        
+        </form>
+    </div>
+     
+
+    <div class="sidebar-actions">
+        <h1>Actions</h1>
+        <div class="background">
+    
+        <div class="search-container">
+            <!-- Search form -->
+            <form method="GET" action="{% url 'borrow-slip-list' %}">
+                <label>Search Borrower:</label>
+                <input type="text" name="search" autofocus placeholder="Book Number || UID || Librarian" value="{{ query }}">
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-search">Search</button>
+                    <a href="{% url 'borrow-slip-list' %}" class="btn btn-reset">Reset List</a>
+                </div>
+                   
+            
+            </form>
         </div>
-        <button id="download-pdf-button" type="submit" style="background-color: #CC8C18; color: white; border: none; padding: 8px 16px; text-align: center; font-size: 16px; text-decoration: none; display: inline-block; font-size: 14px; cursor: pointer; border-radius: 4px; position: relative; z-index: 1; margin-top: 20px; margin-left: 400px;">Download Selected PDF</button>
-    </form>
+
+        <div class="filter-container">
+             <!-- Date filter -->
+            <form method="GET" action="{% url 'borrow-slip-list' %}">
+                <label for="date_filter">Filter by Date:</label>
+                <input type="date" id="date_filter" name="date_filter" value="{{ date_filter }}">
+        
+                <button type="submit" class="btn btn-search">Filter by Date</button>
+                 <!-- Add new Slip -->
+                 <a href="{% url 'borrow-slip-create' %}" class="add-borrower-button">Create New Slip</a>
+            </form>
+
+            <button id="download-pdf-button" type="submit" >Download Selected PDF</button>
+
+        </div>
+
+       
+    
+    </div>
+        
+    
+    
 </div>
 
 <script>
