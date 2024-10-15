@@ -6,38 +6,276 @@
 <html>
 <head>
     <title>Borrowers</title>
-    {% block css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/borrower_list.css' %}">
-    {% endblock %}
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .container {
+            display: flex;
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            margin-top: 90px; /* Adjust as per your header height */
+            padding: 15px;
+        }
+
+        .list-panel {
+            width: 75%;
+            margin-right: 20px;
+        }
+
+        .form-panel {
+            width: 25%;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            height: 515px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-y: auto;
+            display: block;
+            max-height: 370px; /* Adjust the height as needed */
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        tbody{
+            font-size: 14px;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        img {
+            max-width: 100px;
+        }
+
+        .btn-back {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .btn-back:hover {
+            background-color: #555;
+        }
+
+        
+
+        .btn-add {
+            margin-bottom: 20px;
+        }
+
+       
+
+        .search-form {
+            margin-bottom: 20px;
+        }
+
+        .search-form button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            margin-left: -2px; 
+        }
+
+        .search-form button:hover {
+            background-color: #45a049;
+        } 
+
+        /* Modal styling */
+        .modal-delete {
+            display: none;
+            position: fixed;
+            z-index: 1000; /* Ensure the modal is on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content-delete {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .close-delete {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-delete:hover,
+        .close-delete:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* To avoid scrolling when modal is open */
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .close-delete {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-delete:hover,
+        .close-delete:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .blur {
+            filter: blur(5px);
+        }
+
+        .btn-edit {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn-save {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 10px;
+        }
+        .btn-cancel {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            /* margin-left: -2px; */
+        }
+        
+        .message {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .blur {
+            filter: blur(5px);
+        }
+
+
+        /* =========================================== */
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 5.5px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-actions button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .form-group-author{
+            width: 100%;
+            font-size: 14px;
+            display: flex;
+            gap: 5px;
+        }
+        .hidden {
+    display: none;
+}
+
+    </style>
 </head>
 <body>
     <div class="main-content">
         <div class="container">
             <div class="list-panel">
-               <div class="head">
-                    <h1>Borrowers</h1>
-                </div>
+                <h1>Borrowers</h1>
+                <!-- Search Form -->
+                <form method="get" action="" class="search-form">
+                    <span>Search by:</span>
+                    <input type="text" name="search" autofocus placeholder="Enter UID" value="{{ query }}">
+                    <button type="submit">Search</button>
+                    <a href="{% url 'borrower-list' %}">Reset List</a>
+                </form>
 
-                <div class="search-container">
-                    <!-- Search Form -->
-                    <form method="get" action="" class="search-form">
-                        <span style="color: rgb(105, 104, 104);">Search by:</span>
-                        <input type="text" name="search" autofocus placeholder="Enter UID" value="{{ query }}">
-                        <button type="submit" style="background-color: #CC8C18; padding: 8px 12px; ">Search</button>
-                        <a href="{% url 'borrower-list' %}">Reset List</a>
-                    </form>
-    
-                    <!-- Filter Form -->
-                    <form method="get" action="" class="filter-form">
-                        <label for="grade_filter">Filter by Grade:</label>
-                        <select name="grade">
-                            {% for grade, display in form.fields.grade_level.choices %}
-                                <option value="{{ grade }}" {% if grade_filter == grade %}selected{% endif %}>{{ display }}</option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit">Filter</button>
-                    </form>
-                </div>
+                <!-- Filter Form -->
+                <form method="get" action="" class="filter-form">
+                    <label for="grade_filter">Filter by Grade:</label>
+                    <select name="grade">
+                        {% for grade, display in form.fields.grade_level.choices %}
+                            <option value="{{ grade }}" {% if grade_filter == grade %}selected{% endif %}>{{ display }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Filter</button>
+                </form>
 
                 <!-- Bulk Actions Form -->
                 <form id="bulk-action-form" method="post" action="">
@@ -73,16 +311,15 @@
                                     <img src="{{ borrower.qr_code.url }}" alt="QR Code">
                                     {% endif %}
                                 </td>
-                                <td style="text-align: center; padding: 10px; position: relative;">
-                                    <!-- <a href="{% url 'generate_uid_pdf' borrower.borrower_uid %}">Print UID</a> -->
-                                    <a href="{% url 'edit-borrower' borrower.borrower_uid %}" class="btn-edit" style="background-color: #CC8C18; color: white; border: none; padding: 5px 10px; text-align: center; text-decoration: none; display: inline-block; font-size: 14px; cursor: pointer; border-radius: 4px; position: relative; z-index: 1;">Edit</a>
+                                <td>
+                                    <a href="{% url 'edit-borrower' borrower.borrower_uid %}" class="btn-edit">Edit</a>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                     <div class="hidden bulk-actions" id="bulk-actions">
-                        <button type="submit" name="action" value="delete" style="background-color: #f44336;">Delete Selected</button>
+                        <button type="submit" name="action" value="delete">Delete Selected</button>
                         <button type="submit" name="action" value="download_pdf">Download PDF</button>
                     </div>                    
                 </form>
