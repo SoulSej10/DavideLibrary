@@ -3,23 +3,67 @@
             font-family: 'Poppins';
             src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
         }
-        .container {
+        .main-content {
             display: flex;
             margin-left: 240px; /* Adjust as per your sidebar width */
             margin-top: 90px; /* Adjust as per your header height */
             padding: 15px;
         }
 
-        .list-panel {
-            width: 75%;
+        .table-container-wrapper {
+            border-radius: 5px; /* Rounded corners */
+            width: 70%;
             margin-right: 20px;
         }
 
-        /* add or edit borrower */
+        .list-panel {
+            margin: 0; /* Reset margin */
+        }
+
+        h1 {
+            font-size: 24px; /* Header size */
+            margin-bottom: 20px; /* Space below header */
+        }
+
+        table {
+            width: 100%; /* Full width */
+            border-collapse: collapse; /* Collapses table borders */
+        }
+
+        th, td {
+            padding: 10px; /* Cell padding */
+            text-align: left; /* Left align text */
+            border-bottom: 1px solid #ddd; /* Underline for table rows */
+        }
+
+        th {
+            background-color: #f4f4f4; /* Header background */
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1; /* Row hover effect */
+        }
+
+        .hidden {
+            display: none; /* Hidden by default */
+        }
+
+        .bulk-actions {
+            margin-top: 5px; /* Space above actions */
+        }
+
+        .btn-edit {
+            color: #007BFF; /* Edit button color */
+            text-decoration: none; /* Remove underline */
+        }
+
+        .btn-edit:hover {
+            text-decoration: underline; /* Underline on hover */
+    }
 
         .form-panel {
-            width: 25%;
-            background-color: #eae0a4;
+            width: 30%;
+            background-color: #f9f9f9;
             padding: 15px;
             border-radius: 4px;
             border: 1px solid #ddd;
@@ -27,171 +71,29 @@
             height: 515px;
         }
 
-        .form-panel h1{
-            margin: 0; /* Remove default margin from the h1 */
-            font-size: 24px; /* Set the font size */
-            font-family: 'Poppins', sans-serif; /* Set the font family */
-           padding: 8px;
-           background-color: #b37512;
-           border-radius: 10px;
-            text-align: center;
+        h1 {
             margin-bottom: 20px;
         }
-
-        .form-panel label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-
-            
-        }
-
-        .form-panel input,
-        .form-panel select {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #654321;
-            border-radius: 4px;
-            box-sizing: border-box;
-            margin-bottom: 5px;
-        }
-
-
-
-
-        .head {
-            margin-top: 10px;
-            width: 350px;
-            display: flex;
-            justify-content: center; /* Center the content horizontally */
-            align-items: center; /* Center the content vertically */
-            padding: 20px; /* Add padding inside the div */
-            background-color: #CC8C18; /* Set the background color */
-            border-radius: 10px; /* Add rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
-            color: white; /* Set the text color */
-            margin-bottom: 20px; /* Space below the header */
-        }
-
-        .head h1 {
-
-            margin: 0; /* Remove default margin from the h1 */
-            font-size: 24px; /* Set the font size */
-            font-family: 'Poppins', sans-serif; /* Set the font family */
-            letter-spacing: 3px; /* Slightly increase the spacing between letters */
-            text-align: center; /* Center the text within the h1 */
-            width: 100%; 
-        }
-
-        .search-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px; 
-            padding: 20px;
-            max-width: 800px; 
-           
-        }
-
-        .search-container > * {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .search-container form,
-        .search-container a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .search-container form {
-            display: flex;
-            align-items: center;
-            gap: 10px; 
-            flex: 1; 
-        }
-
-        .search-container label {
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif; 
-            color: #333; 
-            width: 200px;
-            align-self: center;
-        }
-
-        
-        .search-container input[type="text"],
-        .search-container select {
-            
-            padding: 8px 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            font-size: 14px; 
-            font-family: 'Poppins', sans-serif;
-            width: 100%; 
-            box-sizing: border-box; 
-        }
-        
-        .search-container button {
-            padding: 8px 12px; 
-            background-color: #CC8C18; 
-            border: none; 
-            border-radius: 5px;
-            color: white; 
-            font-size: 14px; 
-            font-family: 'Poppins', sans-serif; 
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 180px; 
-           
-        }
-        
-        .search-container button:hover {
-            background-color: #b37512; 
-        }
-        
-        /* Style for the Reset List link */
-        .search-container a {
-            
-            align-items: center;
-            font-size: 14px; 
-            color: #CC8C18;
-            text-decoration: none; 
-            font-family: 'Poppins', sans-serif; 
-            text-wrap: nowrap;
-            
-        }
-        
-        .search-container a:hover {
-            text-decoration: underline; 
-        }
-
-
 
         table {
             width: 100%;
             border-collapse: collapse;
             overflow-y: auto;
             display: block;
-            max-height: 370px; /* Adjust the height as needed */
-            border-radius: 4px;
+            max-height: 485px; /* Adjust the height as needed */
+            border-radius: 10px;
             border: 1px solid #ddd;
         }
 
-        thead th{
-                background-color: #eae0a4;
-        }
-
         th, td {
-            padding: 8px;
+            padding: 10px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #555555;
+            color: white;
             position: sticky;
             top: 0;
             z-index: 2;
@@ -200,91 +102,12 @@
             font-size: 14px;
         }
         tbody tr:nth-child(even) {
-            background-color: #eae0a4;
+            background-color: #f9f9f9;
         }
 
         img {
-            max-width: 60px;
+            max-width: 100px;
         }
-
-
-        /* bulk-actions */
-
-        #bulk-actions{
-            width: 60%;
-            margin-top: 20px; /* Space between the table and the container */
-            padding: 15px;
-            background-color: #eae0a4;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            margin-left: 170px;
-        }
-
-        #button-container {
-            display: flex;
-            justify-content: center; /* Center buttons */
-            gap: 10px; /* Space between buttons */
-           
-
-        }
-        #bulk-actions button {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            flex: 1;
-            
-        }
-
-        #bulk-actions button:hover{
-           opacity: 0.8; ;
-        }
-
-       
-
-
-
-
-        .btn-back {
-            background-color: #777;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            margin-left: 10px;
-        }
-
-        .btn-back:hover {
-            background-color: #555;
-        }
-
-        
-
-        .btn-add {
-            margin-bottom: 20px;
-        }
-
-       
-
-        .search-form {
-            margin-bottom: 20px;
-        }
-
-        .search-form button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            margin-left: -2px; 
-        }
-
-        .search-form button:hover {
-            background-color: #45a049;
-        } 
 
         /* Modal styling */
         .modal-delete {
@@ -347,10 +170,14 @@
         }
 
         .btn-edit {
-            background-color: #777;
+            background-color: #7EBC89;
             color: white;
-            text-decoration: none;
-            border-radius: 4px;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
         }
         .btn-save {
             padding: 10px 20px;
@@ -372,8 +199,6 @@
             color: white;
             /* margin-left: -2px; */
         }
-
-        
         
         .message {
             position: absolute;
@@ -394,37 +219,145 @@
 
         /* =========================================== */
 
+                /* Form Panel Styles */
+        .form-panel {
+            background-color: #555555;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            width: 30%;
+            margin-top: 10px;
+            height: auto; /* Changed height to auto for flexibility */
+            color: white;
+        }
+
+        /* Search and Filter Container */
+        .search-container, .filter-container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Input and Select Styling */
+        .search-container input[type="text"],
+        .filter-container select,
         .form-group input,
         .form-group select {
-            width: 100%;
-            padding: 5.5px;
-            font-size: 14px;
-            border: 1px solid #000;
+            padding: 8px;
+            border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            color: #333; /* Text color for better visibility */
+            background-color: white; /* Background color for inputs */
+            width: 95%; /* Full width */
         }
-        .form-actions button {
-            padding: 10px 20px;
-            font-size: 16px;
+
+        .form-group-author {
+            display: flex; /* Enable flexbox for horizontal layout */
+            justify-content: space-between; /* Distribute space between fields */
+            gap: 10px; /* Add space between fields */
+            align-items: center; /* Center vertically */
+        }
+
+        /* Styles for author fields */
+        .author-field {
+            flex: 1; /* Allow each field to grow equally */
+            min-width: 0; /* Prevent overflow */
+        }
+
+        .author-field input {
+            width: 85%; /* Make inputs take full width */
+            padding: 8px; /* Consistent padding */
+            border: 1px solid #ccc; /* Consistent border */
+            border-radius: 4px; /* Consistent border radius */
+            font-family: 'Poppins', sans-serif; /* Consistent font */
+            color: #333; /* Text color for better visibility */
+            background-color: white; /* Background color for inputs */
+        }
+
+        /* New styles for filter controls */
+        .filter-controls {
+            display: flex; /* Enable flexbox */
+            gap: 10px; /* Space between elements */
+            align-items: center; /* Center vertically */
+        }
+
+        .select-filter {
+            padding: 8px; /* Adjust padding for dropdown */
+            border: 1px solid #ccc; /* Consistent border */
+            border-radius: 4px; /* Consistent border radius */
+            font-family: 'Poppins', sans-serif; /* Consistent font */
+            color: #333; /* Text color for better visibility */
+            background-color: white; /* Background color for inputs */
+        }
+        /* Button Styling */
+        .btn {
+            padding: 8px 16px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-
-        .form-group-author{
-            width: 100%;
+            font-family: 'Poppins', sans-serif;
             font-size: 14px;
-            display: flex;
-            gap: 5px;
+            text-decoration: none;
+            text-align: center;
         }
-        .hidden {
-    display: none;
-}
+
+        .btn-search {
+            background-color: #7EBC89; /* Green */
+            color: white;
+        }
+
+        .btn-search:hover {
+            background-color: #6FAE7B;
+        }
+
+        .btn-reset {
+            background-color: #D6B980; /* Light Brown/Gold */
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #C5A86A;
+        }
+
+        .btn-save {
+            background-color: #007bff; /* Bootstrap Primary Blue */
+            color: white;
+            width: 175px;
+            margin-right: 5px;
+        }
+
+        .btn-save:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-cancel {
+            background-color: #ff4d4d; /* Red */
+            color: white;
+            width: 175px;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e63939;
+        }
+
+        .btn-delete {
+            background-color: #ff4d4d; /* Red */
+            color: white;
+        }
+        .btn-delete:hover{
+            background-color: #e63939;
+        }
+        .btn-download{
+            color: #333;
+        }
+        .btn-download:hover{
+            background-color: #888;
+        }
+
+        .grade-level-group {
+            flex: 2; /* Make this group take up more space */
+        }
+
+        .age-group {
+            flex: 1; /* This group takes less space */
+        }
