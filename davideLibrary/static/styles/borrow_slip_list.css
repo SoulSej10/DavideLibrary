@@ -3,197 +3,199 @@
             font-family: 'Poppins';
             src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
         }
+        
+
         .main-content {
-            margin-left: 240px; /* Adjust as per your sidebar width */
-            padding: 20px;
-            margin-top: 90px; /* Adjust as per your header height */
-        }
-
-        .head {
-            margin-top: 10px;
-            width: 400px;
+            margin-left: 240px; /* Sidebar width */
+            padding: 15px;
+            margin-top: 90px; /* Header height */
             display: flex;
-            justify-content: center; /* Center the content horizontally */
-            align-items: center; /* Center the content vertically */
-            padding: 20px; /* Add padding inside the div */
-            background-color: #CC8C18; /* Set the background color */
-            border-radius: 10px; /* Add rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
-            color: white; /* Set the text color */
-            margin-bottom: 20px; /* Space below the header */
+            gap: 20px; /* Space between sidebar and table */
         }
-
-        .head h1 {
-
-            margin: 0; /* Remove default margin from the h1 */
-            font-size: 24px; /* Set the font size */
-            font-family: 'Poppins', sans-serif; /* Set the font family */
-            letter-spacing: 3px; /* Slightly increase the spacing between letters */
-            text-align: center; /* Center the text within the h1 */
-            width: 100%; 
-        }
-
-        .filter-container {
-            
+        
+        /* Sidebar Actions */
+        .sidebar-actions {
+            width: 40%;
             display: flex;
             flex-direction: column;
-            gap: 20px; 
+            gap: 20px;
+        }
+        
+        .sidebar-actions h1 {
+            font-size: 24px;
+            margin-bottom: -15px;
+            text-align: center;
+        }
+        
+        .background {
+            background-color: #555555;
+            border-radius: 10px;
             padding: 20px;
-            max-width: 600px; 
-           
+            color: white;
+            height: 455px;
         }
-
-        .filter-container > * {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filter-container form,
-        .filter-container a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filter-container form {
-            display: flex;
-            align-items: center;
-            gap: 10px; 
-            flex: 1; 
-        }
-
-        .filter-container label {
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif; 
-            color: #333; 
-            width: 200px;
-            align-self: center;
-        }
-
         
-        .filter-container input[type="text"],
-        .filter-container input[type="date"],
-        .filter-container select {
-            
-            padding: 8px 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            font-size: 14px; 
+        .filter-container{
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-container, .filter-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .search-container form, .filter-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .search-container label, .filter-container label {
+            font-weight: bold;
+        }
+        
+        /* Input and Select Styling */
+        .search-container input[type="text"], .filter-container input[type="date"], .filter-container select, #location {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             font-family: 'Poppins', sans-serif;
-            width: 100%; 
-            box-sizing: border-box; 
         }
         
-        .filter-container button {
-            padding: 10px 15px; 
-            background-color: #CC8C18; 
-            border: none; 
+        /* Button Styling */
+        .btn {
+            padding: 8px 16px;
+            border: none;
             border-radius: 5px;
-            color: white; 
-            font-size: 14px; 
-            font-family: 'Poppins', sans-serif; 
             cursor: pointer;
-            transition: 0.3s ease;
-            width: 180px; 
-           
-        }
-        
-        .filter-container button:hover {
-            background-color: #b37512; 
-        }
-        
-        /* Style for the Reset List link */
-        .filter-container a {
-            
-            align-items: center;
-            font-size: 14px; 
-            color: #CC8C18;
-            text-decoration: none; 
-            font-family: 'Poppins', sans-serif; 
-            text-wrap: nowrap;
-            
-        }
-        
-        .filter-container a:hover {
-            text-decoration: underline; 
-        }
-
-
-        
-        
-        .create button{
-            padding: 15px;
-            border-radius: 0px 30px 30px 0px; /* Rounded corners */
-            background-color: #654321;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            font-family: 'Poppins', sans-serif;
             font-size: 14px;
-            position: relative;
-
+            text-decoration: none;
+            text-align: center;
         }
-        .create:hover{
-            opacity: 0.8;
-            cursor: pointer;  
-
+        
+        .btn-search {
+            background-color: #7EBC89; /* Green */
+            color: white;
         }
-        .create a{
-            padding: 15px;
+        
+        .btn-search:hover {
+            background-color: #6FAE7B;
+        }
+        
+        .btn-reset {
+            background-color: #D6B980; /* Light Brown/Gold */
+            color: white;
+        }
+        .add-borrower-button{
+            background-color: #007bff; /* Bootstrap Primary Blue */
             color: white;
             text-decoration: none;
-            font-size: 16px;
-            background-color: none;
+            text-align: center;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            text-decoration: none;
+            text-align: center;
         }
 
-
+        .add-book-button:hover {
+            background-color: #0056b3;
+        }
+        
+        
         
 
 
-        .table-container {
-            max-height: 375px; /* Adjust the height as needed */
-            overflow: auto;
-            border: 1px solid #ddd; /* Optional: Add borders for styling */
-            border-radius: 4px;
+        .table-container-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 18px;
         }
+        
+        .section-label {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .table-container {
+            max-height: 495px; /* Increased height for more visibility */
+            overflow: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        
+        /* Hide scrollbar for Chrome, Safari and Edge */
+        .table-container::-webkit-scrollbar {
+            display: none;
+        }
+        
 
         table {
             width: 100%;
             border-collapse: collapse;
+            font-family: 'Poppins', sans-serif;
         }
-
+        
         th, td {
-            padding: 8px;
+            padding: 12px 8px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
-
+        
         th {
-            background-color: #f5f5f5;
+            background-color: #555555;
+            color: white;
             position: sticky;
             top: 0;
             z-index: 1;
         }
-
+        
         tbody {
             display: block;
             overflow-y: auto;
-            max-height: 320px; /* Adjust based on the container height */
-            font-size: 13px;
+            max-height: 560px;
+            font-size: 14px;
         }
-
+        
         tr {
             display: table;
             width: 100%;
             table-layout: fixed;
         }
-
+        
         td {
-            word-wrap: break-word; /* Ensures long text wraps inside cells */
+            word-wrap: break-word;
         }
+        
         tbody tr:nth-child(even) {
-            background-color: #eae0a4;
+            background-color: #D9D9D9;
+            border-radius: 5px;
         }
+        
+       
+      
+       
+        
         #download-pdf-button {
             display: none; /* Initially hide the button */
+            background-color: #D9D9D9; /* Bootstrap Primary Blue */
+            color: black;
+            text-decoration: none;
+            text-align: center;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            text-decoration: none;
+            text-align: center;
         }
 
