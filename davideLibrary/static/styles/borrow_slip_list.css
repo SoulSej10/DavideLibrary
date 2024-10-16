@@ -3,157 +3,39 @@
             font-family: 'Poppins';
             src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
         }
+        html, body {
+            height: 80%; /* Ensure the body takes the full height */
+            margin: 0; /* Remove default margin */
+        }
+
         .main-content {
             margin-left: 240px; /* Adjust as per your sidebar width */
             padding: 20px;
             margin-top: 90px; /* Adjust as per your header height */
+            display: flex; /* Use flexbox for horizontal alignment */
         }
 
-        .head {
-            margin-top: 10px;
-            width: 400px;
-            display: flex;
-            justify-content: center; /* Center the content horizontally */
-            align-items: center; /* Center the content vertically */
-            padding: 20px; /* Add padding inside the div */
-            background-color: #CC8C18; /* Set the background color */
-            border-radius: 10px; /* Add rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
-            color: white; /* Set the text color */
-            margin-bottom: 20px; /* Space below the header */
+        .data {
+            width: 100%;
+            max-height: 549px;
+            display: flex; 
+            flex-direction: column; 
+            margin-left: -5px;
         }
 
-        .head h1 {
-
-            margin: 0; /* Remove default margin from the h1 */
-            font-size: 24px; /* Set the font size */
-            font-family: 'Poppins', sans-serif; /* Set the font family */
-            letter-spacing: 3px; /* Slightly increase the spacing between letters */
-            text-align: center; /* Center the text within the h1 */
-            width: 100%; 
+        .borrower-label {
+            font-size: 24px; /* Adjust the font size as needed */
+            margin-bottom: 10px; /* Space below the label */
+            margin-top: 20px;
+            font-weight: bold; /* Make the label bold */
         }
-
-        .filter-container {
-            
-            display: flex;
-            flex-direction: column;
-            gap: 20px; 
-            padding: 20px;
-            max-width: 600px; 
-           
-        }
-
-        .filter-container > * {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filter-container form,
-        .filter-container a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filter-container form {
-            display: flex;
-            align-items: center;
-            gap: 10px; 
-            flex: 1; 
-        }
-
-        .filter-container label {
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif; 
-            color: #333; 
-            width: 200px;
-            align-self: center;
-        }
-
-        
-        .filter-container input[type="text"],
-        .filter-container input[type="date"],
-        .filter-container select {
-            
-            padding: 8px 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            font-size: 14px; 
-            font-family: 'Poppins', sans-serif;
-            width: 100%; 
-            box-sizing: border-box; 
-        }
-        
-        .filter-container button {
-            padding: 10px 15px; 
-            background-color: #CC8C18; 
-            border: none; 
-            border-radius: 5px;
-            color: white; 
-            font-size: 14px; 
-            font-family: 'Poppins', sans-serif; 
-            cursor: pointer;
-            transition: 0.3s ease;
-            width: 180px; 
-           
-        }
-        
-        .filter-container button:hover {
-            background-color: #b37512; 
-        }
-        
-        /* Style for the Reset List link */
-        .filter-container a {
-            
-            align-items: center;
-            font-size: 14px; 
-            color: #CC8C18;
-            text-decoration: none; 
-            font-family: 'Poppins', sans-serif; 
-            text-wrap: nowrap;
-            
-        }
-        
-        .filter-container a:hover {
-            text-decoration: underline; 
-        }
-
-
-        
-        
-        .create button{
-            padding: 15px;
-            border-radius: 0px 30px 30px 0px; /* Rounded corners */
-            background-color: #654321;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            font-size: 14px;
-            position: relative;
-
-        }
-        .create:hover{
-            opacity: 0.8;
-            cursor: pointer;  
-
-        }
-        .create a{
-            padding: 15px;
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-            background-color: none;
-        }
-
-
-        
-
 
         .table-container {
-            max-height: 375px; /* Adjust the height as needed */
+            width: 100%;
+            max-height: 549px;
             overflow: auto;
-            border: 1px solid #ddd; /* Optional: Add borders for styling */
-            border-radius: 4px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
         }
 
         table {
@@ -168,7 +50,8 @@
         }
 
         th {
-            background-color: #f5f5f5;
+            background-color: #555555;
+            color: white;
             position: sticky;
             top: 0;
             z-index: 1;
@@ -177,7 +60,7 @@
         tbody {
             display: block;
             overflow-y: auto;
-            max-height: 320px; /* Adjust based on the container height */
+            max-height: 415px; /* Adjust based on the container height */
             font-size: 13px;
         }
 
@@ -190,10 +73,109 @@
         td {
             word-wrap: break-word; /* Ensures long text wraps inside cells */
         }
+
         tbody tr:nth-child(even) {
-            background-color: #eae0a4;
+            background-color: #f9f9f9;
         }
+
+        /* Actions container styling */
+        .actions {
+            width: 40%; /* Set the width for the actions container */
+            margin-right: 20px; /* Space between actions and table */
+            display: flex; /* Align actions vertically */
+            flex-direction: column; /* Stack actions vertically */
+            justify-content: flex-start; /* Align to the start */
+            margin: 20px;
+        }
+
+        .sidebar-actions {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-actions h1 {
+            font-size: 24px;
+            margin-bottom: -15px;
+            text-align: center;
+        }
+
+        .background {
+            background-color: #555555;
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+            height: auto;
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+
+        .search-container, .filter-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .search-container form, .filter-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .search-container label, .filter-container label {
+            font-weight: bold;
+        }
+
+        /* Input and Select Styling */
+        .search-container input[type="text"], .filter-container select, #location {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Button Styling */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-search {
+            background-color: #7EBC89; /* Green */
+            color: white;
+        }
+
+        .btn-search:hover {
+            background-color: #6FAE7B;
+        }
+
+        .btn-reset {
+            background-color: #D6B980; /* Light Brown/Gold */
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #C5A86A;
+        }
+
+        .add-book-button {
+            background-color: #007bff; /* Bootstrap Primary Blue */
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .add-book-button:hover {
+            background-color: #0056b3;
+        }
+
         #download-pdf-button {
             display: none; /* Initially hide the button */
         }
-
