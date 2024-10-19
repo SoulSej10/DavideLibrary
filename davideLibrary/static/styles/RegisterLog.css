@@ -1,7 +1,7 @@
 
         @font-face {
             font-family: 'Poppins';
-            src: url('{% static "styles/Poppins/Poppins-Regular.ttf" %}') format('truetype');
+            src: url('{% static "styles/Poppins/Poppins-Medium.ttf" %}') format('truetype');
         }
         body {
             font-family: 'Poppins', sans-serif;

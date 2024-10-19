@@ -7,31 +7,105 @@
 <head>
     <title>Register</title>
     {% block css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/RegisterLog.css' %}">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'styles/RegisterLog.css' %}"> -->
     {% endblock %}
     <style>
-        .container {
+        @font-face {
+            font-family: 'Poppins';
+            src: url('{% static "styles/Poppins/Poppins-Medium.ttf" %}') format('truetype');
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url('{% static "images/your-blurred-background-image.jpg" %}');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        .main-content {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 60px;
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            margin-top: 90px; /* Adjust as per your header height */
+            padding: 10px;
+            gap: 20px; /* Gap between the containers */
         }
-        .form-container, .accounts-container {
-            width: 48%;
+        h2 {
+            margin: 0;
+            text-align: center;
         }
-        .form-panel {
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            grid-gap: 20px; /* Space between fields */
             width: 100%;
         }
+        .form-panel {
+            margin-top: 20px;
+            width: 100%; /* Take full width of the container */
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            background-color: #555555;
+            color: white;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #654321;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-register {
+            grid-column: span 2; /* Button spans both columns */
+            padding: 10px;
+            background-color: #007bff; /* Bootstrap Primary Blue */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-register:hover {
+            background-color: #0056b3;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            align-items: flex-start;
+            gap: 20px; /* Gap between containers */
+        }
         .accounts-container {
+            width: 25%; /* Adjusted width */
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
             background-color: #f9f9f9;
+            overflow-y: auto;
+            max-height: 500px;
             margin-top: 20px;
+        }
+        .blank-container {
+            width: 25%;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            height: 500px;
+            margin-top: 20px;
+        }
+        .form-container {
+            width: 36%; /* Adjusted width */
+            max-height: 500px;
         }
         .accounts-container h3 {
             margin-top: 0;
@@ -44,96 +118,115 @@
             margin-bottom: 10px;
         }
         .error-list {
-            color: red;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
             font-size: 14px;
-            margin-bottom: 20px;
+        }
+        .errormessage{
+            height: 85px; 
+            width: 455px; 
+            border: solid white;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <div class="main-content">
-    <div class="container">
-        <!-- Form Container -->
-        <div class="form-container">
-            <div class="form-panel">
-                <h2>Register an Account</h2>
-                
-                <!-- Display form errors -->
-                {% if form.errors %}
-                    <div class="error-list">
-                        <ul>
-                            {% for field, errors in form.errors.items %}
-                                <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-                
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        {{ form.username.label_tag }}
-                        {{ form.username }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.first_name.label_tag }}
-                        {{ form.first_name }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.middle_name.label_tag }}
-                        {{ form.middle_name }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.last_name.label_tag }}
-                        {{ form.last_name }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.admin_id.label_tag }}
-                        {{ form.admin_id }}
-                    </div>
+        <div class="container">
+            <!-- Accounts Container -->
+            <div class="accounts-container">
+                <p style="align-items: center; font-size: 22px; font-weight: bold; text-align: center;">Registered Accounts</p>
+                <h3>Head Librarians</h3>
+                <ul>
+                    {% for head_librarian in head_librarians %}
+                    <li>{{ head_librarian.get_full_name }} - {{ head_librarian.username }}</li>
+                    {% empty %}
+                    <li>No head librarians found.</li>
+                    {% endfor %}
+                </ul>
 
-                    <!-- Add the role field here -->
-                    <div class="form-group">
-                        {{ form.role.label_tag }}
-                        {{ form.role }}
-                    </div>
+                <h3>Assistant Librarians</h3>
+                <ul>
+                    {% for assistant_librarian in assistant_librarians %}
+                    <li>{{ assistant_librarian.get_full_name }} - {{ assistant_librarian.username }}</li>
+                    {% empty %}
+                    <li>No assistant librarians found.</li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-                    <div class="form-group">
-                        {{ form.password1.label_tag }}
-                        {{ form.password1 }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.password2.label_tag }}
-                        {{ form.password2 }}
-                    </div>
-                    <button type="submit" class="btn-register">Register</button>
-                </form>
+            <!-- Blank Container -->
+            <div class="blank-container">
+                <!-- Intentionally left blank -->
+            </div>
+
+            <!-- Form Container -->
+            <div class="form-container">
+                <div class="form-panel">
+                    <h2>Register an Account</h2>
+                    
+                    <div class="errormessage">
+                        <!-- Only show this <p> tag if there are no form errors -->
+                        {% if not form.errors %}
+                            <p style="text-align: center;">Validation Messages are displayed here.</p>
+                        {% endif %}
+                        
+                        <!-- Display form errors -->
+                        {% if form.errors %}
+                            <div class="error-list">
+                                <ul style="margin: 0;">
+                                    {% for field, errors in form.errors.items %}
+                                        <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>                    
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.username.label_tag }}
+                            {{ form.username }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.first_name.label_tag }}
+                            {{ form.first_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.middle_name.label_tag }}
+                            {{ form.middle_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.last_name.label_tag }}
+                            {{ form.last_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.admin_id.label_tag }}
+                            {{ form.admin_id }}
+                        </div>
+
+                        <!-- Add the role field here -->
+                        <div class="form-group">
+                            {{ form.role.label_tag }}
+                            {{ form.role }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.password1.label_tag }}
+                            {{ form.password1 }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.password2.label_tag }}
+                            {{ form.password2 }}
+                        </div>
+                        <button type="submit" class="btn-register">Register</button>
+                    </form>
+                </div>
             </div>
         </div>
-
-        <!-- Accounts Container -->
-        <div class="accounts-container">
-            <p style="align-items: center; font-size: 22px; font-weight: bold; text-align: center;">Registered Accounts</p>
-            <h3>Head Librarians</h3>
-            <ul>
-                {% for head_librarian in head_librarians %}
-                <li>{{ head_librarian.get_full_name }} - {{ head_librarian.username }}</li>
-                {% empty %}
-                <li>No head librarians found.</li>
-                {% endfor %}
-            </ul>
-
-            <h3>Assistant Librarians</h3>
-            <ul>
-                {% for assistant_librarian in assistant_librarians %}
-                <li>{{ assistant_librarian.get_full_name }} - {{ assistant_librarian.username }}</li>
-                {% empty %}
-                <li>No assistant librarians found.</li>
-                {% endfor %}
-            </ul>
-        </div>
     </div>
-</div>
 </body>
 </html>
 {% endblock %}
