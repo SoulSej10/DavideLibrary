@@ -108,7 +108,11 @@
             max-height: 500px;
         }
         .accounts-container h3 {
-            margin-top: 0;
+            margin: 0;
+            text-align: center;
+            background-color: #555555;
+            border-radius: 4px;
+            color: white;
         }
         .accounts-container ul {
             list-style: none;
@@ -129,6 +133,22 @@
             border: solid white;
             border-radius: 4px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #D9D9D9; /* Light background for alternate rows */
+            border-radius: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -136,24 +156,51 @@
         <div class="container">
             <!-- Accounts Container -->
             <div class="accounts-container">
-                <p style="align-items: center; font-size: 22px; font-weight: bold; text-align: center;">Registered Accounts</p>
+                <p style="align-items: center; font-size: 18px; font-weight: bold; text-align: center; margin: 0;">Registered Accounts</p>
+                
                 <h3>Head Librarians</h3>
-                <ul>
-                    {% for head_librarian in head_librarians %}
-                    <li>{{ head_librarian.get_full_name }} - {{ head_librarian.username }}</li>
-                    {% empty %}
-                    <li>No head librarians found.</li>
-                    {% endfor %}
-                </ul>
-
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for head_librarian in head_librarians %}
+                        <tr>
+                            <td>{{ head_librarian.get_full_name }}</td>
+                            <td>{{ head_librarian.username }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2">No head librarians found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
                 <h3>Assistant Librarians</h3>
-                <ul>
-                    {% for assistant_librarian in assistant_librarians %}
-                    <li>{{ assistant_librarian.get_full_name }} - {{ assistant_librarian.username }}</li>
-                    {% empty %}
-                    <li>No assistant librarians found.</li>
-                    {% endfor %}
-                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assistant_librarian in assistant_librarians %}
+                        <tr>
+                            <td>{{ assistant_librarian.get_full_name }}</td>
+                            <td>{{ assistant_librarian.username }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2">No assistant librarians found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
             <!-- Blank Container -->
