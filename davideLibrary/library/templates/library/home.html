@@ -69,6 +69,7 @@
     height: 220px; /* Set a fixed height for the search results container */
     overflow-y: auto; /* Enable vertical scrolling */
     background-color: #ECECEC;
+    padding: 20px;
     }
     .first-container p {
         margin-block-start: 0;
@@ -80,6 +81,9 @@
     .side-container {
         width: 40%;
         height: 220px;
+        background-color: #555555;
+        padding: 20px;
+        color: white;
     }
 
     .bottom-container-wrapper {
@@ -329,8 +333,8 @@
             <div class="section-label">Actions</div>
             <div class="search-container">
                 <form method="GET" action="{% url 'home' %}">
-                    <input type="text" class="search-input" name="q" placeholder="Search book" value="{{ query }}" style="width: 117%;" autofocus>
-                    <button type="submit" class="search-button" style="text-decoration: none; width: 123%; background-color: #7EBC89; border: none;">Search Book</button>
+                    <input type="text" class="search-input" name="q" placeholder="Search book" value="{{ query }}" style="width: 117%; font-family: 'Poppins', sans-serif;" autofocus>
+                    <button type="submit" class="search-button" style="text-decoration: none; width: 123%; background-color: #7EBC89; border: none; margin-top: 5px;">Search Book</button>
                 </form>
             </div>
         </div>

@@ -21,13 +21,16 @@
     </style>
 <body>
     <div class="main-content">
-    <div class="head">
-        <h1>Log List</h1>
-    </div>
+        <div class="head">
+            <div class="buttons" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Log List</h2>
+                <div class="add">
+                    <a href="{% url 'create-attendance' %}">New Log</a>
+                </div>
+            </div>
+        </div>        
     
-    <div class="add">
-        <a href="{% url 'create-attendance' %}">New Log</a>
-    </div>
+    <div class="table-container">
     <table>
         <thead>
             <tr>
@@ -52,6 +55,7 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 </div>
 </body>
 </html>

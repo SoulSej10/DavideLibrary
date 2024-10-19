@@ -1,117 +1,69 @@
+.main-content {
+    margin-left: 240px; /* Adjust as per your sidebar width */
+    padding: 20px;
+    margin-top: 90px; /* Adjust as per your header height */
+}
 
-    
+.table-container {
+    max-height: 475px; /* Set the height for the scrollable area */
+    overflow-y: auto; /* Add vertical scrollbar when needed */
+    border-bottom: 1px solid #ddd; /* Optional: border around the scrollable area */
+    border-radius: 10px;
+}
 
-    .main-content {
-            margin-left: 240px; /* Adjust as per your sidebar width */
-            padding: 20px;
-            margin-top: 90px; /* Adjust as per your header height */
-        }
-    
-        .head {
-            margin-top: 10px;
-            width: 250px;
-            display: flex;
-            justify-content: center; /* Center the content horizontally */
-            align-items: center; /* Center the content vertically */
-            padding: 20px; /* Add padding inside the div */
-            background-color: #CC8C18; /* Set the background color */
-            border-radius: 10px; /* Add rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for depth */
-            color: white; /* Set the text color */
-            margin-bottom: 20px; /* Space below the header */
-        }
+.add a {
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    background-color: #007bff; /* Button color */
+    border-radius: 5px; /* Rounded corners */
+}
 
-        .head h1 {
+.add a:hover {
+    background-color: #0056b3;
+}
 
-            margin: 0; /* Remove default margin from the h1 */
-            font-size: 24px; /* Set the font size */
-            font-family: 'Poppins', sans-serif; /* Set the font family */
-            letter-spacing: 3px; /* Slightly increase the spacing between letters */
-            text-align: center; /* Center the text within the h1 */
-            width: 100%; 
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        .add {
-            padding: 15px;
-            border-radius: 0px 30px 30px 0px; /* Rounded corners */
-            background-color: #654321;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            font-size: 16px;
-            max-width: 150px;
-            position: relative; /* Needed to position the pseudo-element */
-            
-        }
-        .add:hover{
-            opacity: 0.8;
-            cursor: pointer;  
+th, td {
+    padding: 10px;
+    text-align: left;
+}
 
-        }
-        .add a{
-            padding: 15px;
-            color: white;
-            text-decoration: none;
+th {
+    background-color: #555555;
+    color: white;
+    position: sticky; /* Make header sticky */
+    top: 0; /* Stick to the top */
+    z-index: 2; /* Ensure header stays on top of the table body */
+}
 
-        }
+tbody {
+    font-size: 14px;
+}
 
+tbody tr:nth-child(even) {
+    background-color: #D9D9D9;
+}
 
-        .table-container {
-            max-height: 355px; /* Adjust the height as needed */
-            overflow: auto;
-            border: 1px solid #ddd; /* Optional: Add borders for styling */
-            border-radius: 4px;
-            
-        }
+.hidden {
+    display: none;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-           
-            
-        }
+.blur {
+    filter: blur(4px);
+}
 
-        thead th{
-            background-color: #eae0a4;
-        }
+.add {
+    text-align: center;
+    background-color: #007bff; /* Bootstrap Primary Blue */
+    padding: 10px 20px;
+    border-radius: 5px;
+}
 
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            
-           
-        }
-
-        th {
-            background-color: #f5f5f5;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        tbody {
-            display: block;
-            overflow-y: auto;
-            max-height: 320px; /* Adjust based on the container height */
-            font-size: 14px;
-        }
-
-        tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-
-        td {
-            
-            word-wrap: break-word; /* Ensures long text wraps inside cells */
-        }
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .hidden {
-            display: none;
-        }
-        .blur {
-            filter: blur(4px);
-        }
+.add:hover {
+    background-color: #0056b3;
+}
