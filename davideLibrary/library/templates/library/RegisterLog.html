@@ -132,6 +132,10 @@
             width: 455px; 
             border: solid white;
             border-radius: 4px;
+            overflow-y: auto;
+        }
+        .errormessage::-webkit-scrollbar {
+            display: none;
         }
         table {
             width: 100%;
@@ -216,7 +220,19 @@
                     <div class="errormessage">
                         <!-- Only show this <p> tag if there are no form errors -->
                         {% if not form.errors %}
-                            <p style="text-align: center;">Validation Messages are displayed here.</p>
+                        <!-- <p style="text-align: center; margin: 0;">Validation Messages are displayed here.</p> -->
+                        <ul style="margin: 0; font-size: 14px; list-style-type: none; padding-top: 10px;">
+                            <li style="position: relative; padding-left: 20px;">
+                                <span style="position: absolute; left: 0; top: 0;">✔</span> Username must be at least 8 characters long.
+                            </li>
+                            <li style="position: relative; padding-left: 20px;">
+                                <span style="position: absolute; left: 0; top: 0;">✔</span> Username must contain at least ONE number.
+                            </li>
+                            <li style="position: relative; padding-left: 20px;">
+                                <span style="position: absolute; left: 0; top: 0;">✔</span> Username must contain at least one UPPERCASE letter.
+                            </li>
+                        </ul>
+                        
                         {% endif %}
                         
                         <!-- Display form errors -->

@@ -239,6 +239,7 @@ tbody tr:nth-child(even) {
     border: 1px solid #888;
     width: 80%;
     max-width: 600px;
+    border-radius: 20px;
 }
 
 .close-delete, .close-details {
@@ -273,7 +274,7 @@ tbody tr:nth-child(even) {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
-    height: 450px;
+    height: 390px;
 }
 
 .details-table tbody {

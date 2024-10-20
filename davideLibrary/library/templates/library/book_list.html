@@ -20,11 +20,11 @@
         <!-- Heading Above the Table -->
         <div class="section-label">Book Inventory</div>
 
-        {% if messages %}
+        <!-- {% if messages %}
             {% for message in messages %}
                 <p style="color: red;">{{ message }}</p>
             {% endfor %}
-        {% endif %}
+        {% endif %} -->
 
         {% if no_results %}
             <p class="no-results" style="color: red;">No records of "{{ query }}" found, please try to approach the librarian for more inquiries.</p>
@@ -147,7 +147,7 @@
         <div id="details-content">
             <!-- Book details will be dynamically loaded here -->
         </div>
-        <button type="button" class="btn btn-secondary" onclick="closeDetailsModal()">Close</button>
+        <!-- <button type="button" class="btn btn-secondary" onclick="closeDetailsModal()">Close</button> -->
     </div>
 </div>
 
