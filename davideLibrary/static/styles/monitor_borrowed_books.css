@@ -14,7 +14,7 @@
 .table-container {
     max-height: 470px; /* Set the height for the scrollable area */
     overflow-y: auto; /* Add vertical scrollbar when needed */
-    border-bottom: 1px solid #ddd; /* Optional: border around the scrollable area */
+    border: 1px solid #ddd; /* Optional: border around the scrollable area */
     border-radius: 10px;
 }
 
@@ -41,7 +41,9 @@ tbody {
 }
 
 tbody tr:nth-child(even) {
-    background-color: #D9D9D9;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 
 

@@ -167,8 +167,10 @@ td {
 }
 
 tbody tr:nth-child(even) {
-    background-color: #D9D9D9;
+    background-color: #f9f9f9;
     border-radius: 5px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 
 /* Button Styles in Table */
