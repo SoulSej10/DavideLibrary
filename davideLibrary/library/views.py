@@ -540,16 +540,39 @@ def edit_borrower(request, pk):
     }
     return render(request, 'library/borrower_list.html', context)
 
-@login_required
+# @login_required
+# def delete_borrower(request, pk):
+#     borrower = get_object_or_404(Borrower, borrower_uid=pk)
+#     if request.method == 'POST':
+#         borrower.delete()
+#         return redirect('borrower-list')
+#     borrowers = Borrower.objects.all().order_by('-date_issued')
+#     return render(request, 'library/borrower_list.html', {'borrowers': borrowers, 'query': '', 'form': BorrowerForm()})
+
 def delete_borrower(request, pk):
     borrower = get_object_or_404(Borrower, borrower_uid=pk)
     if request.method == 'POST':
         borrower.delete()
+        messages.success(request, f"Borrower {borrower.borrower_name} deleted successfully.")
         return redirect('borrower-list')
+    
+    # Fallback if it's a GET request
     borrowers = Borrower.objects.all().order_by('-date_issued')
     return render(request, 'library/borrower_list.html', {'borrowers': borrowers, 'query': '', 'form': BorrowerForm()})
 
-
+@login_required
+def delete_multiple_borrowers(request):
+    if request.method == 'POST':
+        selected_ids = request.POST.get('selected_ids', '').split(',')
+        if selected_ids:
+            borrowers = Borrower.objects.filter(borrower_uid__in=selected_ids)
+            count = borrowers.count()
+            borrowers.delete()
+            messages.success(request, f"{count} borrower(s) deleted successfully.")
+        else:
+            messages.error(request, "No borrowers selected for deletion.")
+    
+    return redirect('borrower-list')
 
 @login_required
 def borrower_create(request):

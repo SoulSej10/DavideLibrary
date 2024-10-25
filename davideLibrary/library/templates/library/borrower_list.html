@@ -142,18 +142,18 @@
                         {% if form.instance.pk %}
                             <button type="button" class="btn btn-cancel" onclick="cancelEdit()">Cancel</button>
                         {% endif %}
-                        <div class="hidden bulk-actions" id="bulk-actions">
-                            <button type="submit" name="action" value="delete" class="btn btn-delete" style="width: 175px; margin-right: 5px;">Delete Selected</button>
-                            <button type="submit" name="action" value="download_pdf" class="btn btn-download" style="width: 175px;">Download PDF</button>
-                        </div>
                     </div>
                 </form>
-            
+                <div class="hidden bulk-actions" id="bulk-actions">
+                    <button type="button" onclick="submitFormWithAction('delete')" class="btn btn-delete" style="width: 175px; margin-right: 5px;">Delete Selected</button>
+                    <button type="button" onclick="submitFormWithAction('download_pdf')" class="btn btn-download" style="width: 175px;">Download PDF</button>
+                </div>
                 
             </div>
             
             
     </div>
+
     <div id="confirm-delete" class="modal-delete">
         <div class="modal-content-delete">
             <span class="close-delete" onclick="closeDeleteModal()">&times;</span>
@@ -161,26 +161,52 @@
             <p>Are you sure you want to delete "<span id="borrower-name"></span>"?</p>
             <form id="delete-form" method="post">
                 {% csrf_token %}
+                <input type="hidden" id="selected-ids" name="selected_ids"> <!-- Hidden field to store multiple IDs -->
                 <button type="submit">Yes, delete</button>
                 <button type="button" onclick="closeDeleteModal()">Cancel</button>
             </form>
         </div>
     </div>
     
+    
     <script>
-        function confirmDelete(borrowerId, borrowerName) {
-            var modal = document.getElementById('confirm-delete');
-            var borrowerNameSpan = document.getElementById('borrower-name');
-            var deleteForm = document.getElementById('delete-form');
-            deleteForm.action = "{% url 'delete-borrower' '0' %}".replace('0', borrowerId);
-            borrowerNameSpan.textContent = borrowerName;
-            modal.style.display = 'block';
-        }
+        // function confirmDelete(borrowerId, borrowerName) {
+        //     var modal = document.getElementById('confirm-delete');
+        //     var borrowerNameSpan = document.getElementById('borrower-name');
+        //     var deleteForm = document.getElementById('delete-form');
 
-        function closeDeleteModal() {
-            var modal = document.getElementById('confirm-delete');
-            modal.style.display = 'none';
-        }
+        //     if (borrowerId) {
+        //         // Single delete
+        //         deleteForm.action = "{% url 'delete-borrower' '0' %}".replace('0', borrowerId);
+        //         borrowerNameSpan.textContent = borrowerName;
+        //     } else {
+        //         // Multiple delete
+        //         var selectedIds = getSelectedIds();
+        //         if (selectedIds.length === 0) {
+        //             alert("Please select at least one borrower to delete.");
+        //             return;
+        //         }
+        //         borrowerNameSpan.textContent = "multiple borrowers";
+        //         document.getElementById('selected-ids').value = selectedIds.join(',');
+        //         deleteForm.action = "{% url 'delete-multiple-borrowers' %}";
+        //     }
+
+        //     modal.style.display = 'block';
+        // }
+
+        // function closeDeleteModal() {
+        //     var modal = document.getElementById('confirm-delete');
+        //     modal.style.display = 'none';
+        // }
+
+        // function getSelectedIds() {
+        //     var checkboxes = document.querySelectorAll('input[name="selected_borrowers"]:checked');
+        //     var ids = [];
+        //     checkboxes.forEach(function(checkbox) {
+        //         ids.push(checkbox.value);
+        //     });
+        //     return ids;
+        // }
     
         // Function to handle cancelling the edit action
         function cancelEdit() {
@@ -258,6 +284,79 @@
         errorMessage.style.display = 'none';
         return true; // Allow form submission
     }
+
+    function submitFormWithAction(actionValue) {
+        const form = document.getElementById('bulk-action-form');
+
+        // Check if the action is 'delete'
+        if (actionValue === 'delete') {
+            var selectedIds = getSelectedIds(); // Get selected borrower IDs
+            
+            if (selectedIds.length === 1) {
+                // Single deletion - show confirmation modal with borrower's name
+                var borrowerId = selectedIds[0];
+                var borrowerName = document.getElementById('row-' + borrowerId).querySelector('td:nth-child(3)').textContent;
+                confirmDelete(borrowerId, borrowerName);  // Show confirmation modal for single deletion
+            } else if (selectedIds.length > 1) {
+                // Multiple deletion - show confirmation modal for multiple borrowers
+                confirmDelete(null, '');  // Trigger modal for multiple deletion
+            } else {
+                // No borrowers selected, show an alert or message
+                alert("Please select at least one borrower to delete.");
+            }
+        } else {
+            // For actions like 'download_pdf', directly submit the form
+            // Create a hidden input to set the action value
+            let actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = actionValue;
+
+            // Append the hidden input to the form and submit
+            form.appendChild(actionInput);
+            form.submit();
+        }
+    }
+
+    function getSelectedIds() {
+        var checkboxes = document.querySelectorAll('input[name="selected_borrowers"]:checked');
+        var ids = [];
+        checkboxes.forEach(function(checkbox) {
+            ids.push(checkbox.value);
+        });
+        return ids;
+    }
+
+    function confirmDelete(borrowerId, borrowerName) {
+        var modal = document.getElementById('confirm-delete');
+        var borrowerNameSpan = document.getElementById('borrower-name');
+        var deleteForm = document.getElementById('delete-form');
+        
+        if (borrowerId) {
+            // Single delete
+            deleteForm.action = "{% url 'delete-borrower' '0' %}".replace('0', borrowerId);
+            borrowerNameSpan.textContent = borrowerName;
+        } else {
+            // Multiple delete
+            var selectedIds = getSelectedIds();
+            if (selectedIds.length === 0) {
+                alert("Please select at least one borrower to delete.");
+                return;
+            }
+            borrowerNameSpan.textContent = "multiple borrowers";
+            document.getElementById('selected-ids').value = selectedIds.join(',');
+            deleteForm.action = "{% url 'delete-multiple-borrowers' %}";
+        }
+
+        modal.style.display = 'block';
+    }
+
+    function closeDeleteModal() {
+        var modal = document.getElementById('confirm-delete');
+        modal.style.display = 'none';
+    }
+
+
     </script>
     
 </body>

@@ -28,8 +28,9 @@ urlpatterns = [
     path('borrower-create/', views.borrower_create, name='borrower-create'),
     path('generate-uid-pdf/<str:pk>/', views.generate_uid_pdf, name='generate_uid_pdf'),
     path('edit-borrower/<str:pk>/', views.edit_borrower, name='edit-borrower'),
-    path('delete-borrower/<str:pk>/', views.delete_borrower, name='delete-borrower'),
-    # path('borrowers/delete-selected/', views.bulk_delete_borrowers, name='bulk-delete-borrowers'),
+    # path('delete-borrower/<str:pk>/', views.delete_borrower, name='delete-borrower'),
+    path('borrowers/delete/<str:pk>/', views.delete_borrower, name='delete-borrower'),
+    path('borrowers/delete-multiple/', views.delete_multiple_borrowers, name='delete-multiple-borrowers'),
 
 
     # book inventory
