@@ -20,12 +20,6 @@
         <!-- Heading Above the Table -->
         <div class="section-label">Book Inventory</div>
 
-        <!-- {% if messages %}
-            {% for message in messages %}
-                <p style="color: red;">{{ message }}</p>
-            {% endfor %}
-        {% endif %} -->
-
         {% if no_results %}
             <p class="no-results" style="color: red;">No records of "{{ query }}" found, please try to approach the librarian for more inquiries.</p>
         {% else %}
@@ -112,14 +106,26 @@
         
         
         <!-- Hidden Actions Container -->
-        <div id="location-container" class="hidden">
+        <!-- <div id="location-container" class="hidden">
+            
             <label for="location">Add Location:</label>
             <input type="text" name="location" id="location" style="width: 94%;" placeholder="Enter location for selected books">
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button type="button" id="set-location-btn" class="btn btn-search hidden" onclick="setLocation()">Set Location</button>
                 <button type="submit" name="action" value="delete" id="delete-btn" class="btn btn-delete hidden" style="display: none;"></button>
-                <button type="button" class="btn btn-delete" data-toggle="modal" data-target="#deleteModal" style="background-color: #ff4d4d;color: white;">Delete</button>
-                <button type="submit" formaction="{% url 'generate-selected-books-pdf' %}" class="btn btn-download">Download PDF</button>
+                <button type="button" class="btn btn-delete" data-toggle="modal" data-target="#deleteModal" style="background-color: #ff4d4d;color: white;" onclick="submitDeleteForm()">Delete</button>
+                <button type="button" class="btn btn-download" onclick="downloadPdf()">Download PDF</button>
+                
+            </div>
+        </div> -->
+
+        <div id="location-container" class="hidden">
+            <label for="location">Add Location:</label>
+            <input type="text" name="location" id="location" style="width: 94%;" placeholder="Enter location for selected books">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button type="button" id="set-location-btn" class="btn btn-search" onclick="setLocation()">Set Location</button>
+                <button type="button" id="delete-btn" class="btn btn-delete" data-toggle="modal" data-target="#deleteModal" style="background-color: #ff4d4d;color: white;" onclick="submitDeleteForm()">Delete</button>
+                <button type="button" class="btn btn-download" onclick="downloadPdf()">Download PDF</button>
             </div>
         </div>
     </div>
@@ -130,11 +136,11 @@
 <div class="modal-delete" id="deleteModal">
     <div class="modal-content-delete">
         <span class="close-delete" onclick="closeDeleteModal()">&times;</span>
-        <h5>Confirm Deletion</h5>
+        <h2>Confirm Deletion</h2>
         <p>Are you sure you want to delete the selected book(s)?</p>
         <div style="text-align: right;">
-            <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
-            <button type="button" class="btn btn-danger" id="confirm-delete">Delete</button>
+            <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()"  style="background-color: #7EBC89;color: white;">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirm-delete" style="background-color: #ff4d4d;color: white;">Delete</button>
         </div>
     </div>
 </div>
@@ -289,6 +295,60 @@
     function closeDeleteModal() {
         document.getElementById('deleteModal').style.display = 'none';
         document.querySelector('.main-content').classList.remove('blur');
+    }
+
+    function submitDeleteForm() {
+        const form = document.getElementById('delete-form');
+        // Optionally, you can also check if any books are selected before submitting
+    }
+
+    function downloadPdf() {
+        const form = document.getElementById('delete-form');
+        const action = "{% url 'generate-selected-books-pdf' %}";
+        form.setAttribute('action', action);
+        form.submit();
+    }
+    function setLocation() {
+        const selectedBooks = Array.from(document.querySelectorAll('input[name="selected_books"]:checked')).map(el => el.value);
+        const location = document.getElementById('location').value;
+
+        if (selectedBooks.length === 0 || !location) {
+            alert("No books selected or location not provided.");
+            return;
+        }
+
+        // Create a form programmatically
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{% url 'set-location-for-books' %}";  // Update with your actual URL
+
+        // CSRF Token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+
+        // Add selected books to the form
+        selectedBooks.forEach(book => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'selected_books';
+            input.value = book;
+            form.appendChild(input);
+        });
+
+        // Add the location to the form
+        const locationInput = document.createElement('input');
+        locationInput.type = 'hidden';
+        locationInput.name = 'location';
+        locationInput.value = location;
+        form.appendChild(locationInput);
+
+        // Append the form to the body and submit
+        document.body.appendChild(form);
+        form.submit();
     }
 </script>
 {% endblock %}

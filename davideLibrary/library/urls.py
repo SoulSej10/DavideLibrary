@@ -8,7 +8,7 @@ urlpatterns = [
 
     path('', views.landing, name='landing'),
     path('borrow-history/', views.borrow_history, name='borrow-history'),
-
+    
     # home
     path('home/', views.home, name='home'),
     path('directory/', views.directory, name='directory'),

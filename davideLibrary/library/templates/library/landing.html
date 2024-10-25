@@ -467,7 +467,7 @@
         <div class="search-form-container">
             <div class="search-container">
                 <form method="GET" action="{% url 'landing' %}" style="flex: 1; display: flex;">
-                    <input type="text" class="search-input" name="q" placeholder="Search book" value="{{ query }}" autofocus>
+                    <input type="text" class="search-input" name="q" placeholder="Search book" value="None" id="searchInput" autofocus onfocus="clearDefaultValue()">
                     <button type="submit" class="search-button" style="margin-right: 5px;">Search</button>
                     <a href="{% url 'landing' %}" class="reset-button">Reset</a>
                 </form>
@@ -475,11 +475,15 @@
         </div>
 
         <!-- Search Results Section -->
-<div class="section-label">Search Results 
-    {% if category_name %}
-        : <strong>{{ category_name }}</strong>
-    {% endif %}
-</div>
+        <div class="section-label">Search Results for :
+            {% if category_name %}
+                 <strong style="color: #757575;">{{ category_name }}</strong>
+            {% endif %}
+            {% if query %}
+                 <strong></strong> <span style="color: #757575;">{{ query }}</span>
+            {% endif %}
+        </div>
+        
 <div class="book-item-container">
     {% if book_detail %}
         <!-- Display Book Details -->
@@ -511,7 +515,8 @@
             </p>
         </div>
         <div class="button-container" style="padding-top: 20px; gap: 10px;">
-            <a href="{% url 'landing' %}?q={{ query }}" class="search-button" style="text-decoration: none; background-color: #757575;">Back to Search Results</a>
+            <a href="javascript:void(0);" class="search-button" style="text-decoration: none; background-color: #757575; padding: 10px; color: white; border-radius: 5px;" onclick="history.back();">Back to Search Results</a>
+
         </div>
     {% else %}
         <!-- Display Search Results -->
@@ -831,7 +836,12 @@
     // Load stored data on page load
     window.onload = loadStoredData;
 
-
+    function clearDefaultValue() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput.value === 'None') {
+            searchInput.value = ''; // Clear the default value when the field is focused
+        }
+    }
 </script>
 
 {% endblock content %}

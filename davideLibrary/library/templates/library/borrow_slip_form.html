@@ -106,7 +106,7 @@
                     {% csrf_token %}
                     {{ form.as_p }}
                     <button type="submit" class="btn-save">Save</button>
-                    <a href="{% url 'borrow-slip-list' %}" class="btn-back">Back to List</a>
+                    <a href="javascript:void(0);" class="btn-back" onclick="history.back();">Back to List</a>
                 </div>
             </form>
         </div>

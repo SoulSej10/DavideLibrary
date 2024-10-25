@@ -254,7 +254,11 @@
 
 <div class="main-content">
     <!-- Search Results Section -->
-    <div class="section-label">Search Results</div>
+    <div class="section-label">Search Results for :
+        {% if query %}
+             <strong></strong> <span style="color: #757575;">{{ query }}</span>
+        {% endif %}
+    </div>
     <div class="container-wrapper">
         <div class="first-container">
             {% if book_detail %}
@@ -282,7 +286,7 @@
                         </p>
                 </div>
                 <div class="button-container" style="padding-top: 20px; padding-left: 300px; gap: 10px;">
-                    <a href="{% url 'home' %}?q={{ query }}" class="search-button" style="text-decoration: none; background-color: #757575;">Back to Search Results</a>
+                    <a href="javascript:void(0);" class="search-button" style="text-decoration: none; background-color: #757575;"onclick="history.back();">Back to Search Results</a>
                     <a href="{% url 'borrow-slip-create' %}" class="search-button" style="text-decoration: none;background-color: #D6B980;">Borrow Book</a>
                 </div>
             {% else %}
@@ -333,7 +337,8 @@
             <div class="section-label">Actions</div>
             <div class="search-container">
                 <form method="GET" action="{% url 'home' %}">
-                    <input type="text" class="search-input" name="q" placeholder="Search book" value="{{ query }}" style="width: 117%; font-family: 'Poppins', sans-serif;" autofocus>
+                    <input type="text" class="search-input" name="q" placeholder="Search book" value="None" style="width: 117%; font-family: 'Poppins', sans-serif;" id="searchInput" autofocus onfocus="clearDefaultValue()">
+                    
                     <button type="submit" class="search-button" style="text-decoration: none; width: 123%; background-color: #7EBC89; border: none; margin-top: 5px;">Search Book</button>
                 </form>
             </div>
@@ -429,6 +434,13 @@
         modal.appendChild(content);
         document.body.appendChild(modal);
     });
+
+    function clearDefaultValue() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput.value === 'None') {
+            searchInput.value = ''; // Clear the default value when the field is focused
+        }
+    }
 </script>
 
 {% endblock content %}
