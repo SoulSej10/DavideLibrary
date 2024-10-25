@@ -14,6 +14,28 @@
             font-family: 'Poppins';
             src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
         }
+        .row-editing {
+            filter: blur(3px); /* Blur effect on the entire row */
+            position: relative; /* For positioning the editing label */
+        }
+
+        .editing-label {
+            position: absolute; /* Use absolute positioning */
+            margin-top: 20px;
+            margin-left: 320px;
+            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: red;
+            pointer-events: none; /* Prevent interaction with the label */
+            z-index: 1000; /* Ensure the label is on top of the blurred content */
+        }
+
+
+
+
+
     </style>
 </head>
 <body>
@@ -54,9 +76,15 @@
                                         <img src="{{ borrower.qr_code.url }}" alt="QR Code" style="width: 50px; height: 50px;">
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <a href="{% url 'edit-borrower' borrower.borrower_uid %}" class="btn-edit">Edit</a>
+                                    </td> -->
+                                    <td>
+                                        <a href="{% url 'edit-borrower' borrower.borrower_uid %}" 
+                                           class="btn-edit" 
+                                           onclick="markRowAsEditing('{{ borrower.borrower_uid }}')">Edit</a>
                                     </td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -170,48 +198,10 @@
     
     
     <script>
-        // function confirmDelete(borrowerId, borrowerName) {
-        //     var modal = document.getElementById('confirm-delete');
-        //     var borrowerNameSpan = document.getElementById('borrower-name');
-        //     var deleteForm = document.getElementById('delete-form');
-
-        //     if (borrowerId) {
-        //         // Single delete
-        //         deleteForm.action = "{% url 'delete-borrower' '0' %}".replace('0', borrowerId);
-        //         borrowerNameSpan.textContent = borrowerName;
-        //     } else {
-        //         // Multiple delete
-        //         var selectedIds = getSelectedIds();
-        //         if (selectedIds.length === 0) {
-        //             alert("Please select at least one borrower to delete.");
-        //             return;
-        //         }
-        //         borrowerNameSpan.textContent = "multiple borrowers";
-        //         document.getElementById('selected-ids').value = selectedIds.join(',');
-        //         deleteForm.action = "{% url 'delete-multiple-borrowers' %}";
-        //     }
-
-        //     modal.style.display = 'block';
-        // }
-
-        // function closeDeleteModal() {
-        //     var modal = document.getElementById('confirm-delete');
-        //     modal.style.display = 'none';
-        // }
-
-        // function getSelectedIds() {
-        //     var checkboxes = document.querySelectorAll('input[name="selected_borrowers"]:checked');
-        //     var ids = [];
-        //     checkboxes.forEach(function(checkbox) {
-        //         ids.push(checkbox.value);
-        //     });
-        //     return ids;
-        // }
-    
         // Function to handle cancelling the edit action
-        function cancelEdit() {
-            window.location.href = '{% url "borrower-list" %}';
-        }
+        // function cancelEdit() {
+        //     window.location.href = '{% url "borrower-list" %}';
+        // }
 
         // Toggle select all checkboxes
         function toggleSelectAll(checkbox) {
@@ -354,6 +344,64 @@
     function closeDeleteModal() {
         var modal = document.getElementById('confirm-delete');
         modal.style.display = 'none';
+    }
+
+    // Function to apply blur effect and editing label
+    function markRowAsEditing(borrowerId) {
+        // Get the row by borrower ID and add the 'row-editing' class
+        var row = document.getElementById('row-' + borrowerId);
+        row.classList.add('row-editing');
+
+        // Create the editing label if it doesn't exist
+        if (!document.querySelector('.editing-label')) {
+            var label = document.createElement('div');
+            label.className = 'editing-label';
+            label.textContent = '-Editing in progress-'; // Set the label text
+            document.body.appendChild(label); // Append the label to the body
+            positionLabel(row, label); // Position the label
+        }
+    }
+
+    // Function to position the editing label
+    function positionLabel(row, label) {
+        var rect = row.getBoundingClientRect();
+        label.style.top = rect.top + window.scrollY + 'px'; // Set the vertical position
+        label.style.left = rect.left + window.scrollX + 'px'; // Set the horizontal position
+    }
+
+    // Function to remove the editing effect (call this when editing is completed)
+    function clearEditingRow(borrowerId) {
+        var row = document.getElementById('row-' + borrowerId);
+        row.classList.remove('row-editing');
+
+        // Remove the editing label
+        var label = document.querySelector('.editing-label');
+        if (label) {
+            document.body.removeChild(label); // Remove the label from the body
+        }
+    }
+
+
+
+    // Function to handle page load
+    document.addEventListener('DOMContentLoaded', function () {
+        const borrowerId = "{{ form.instance.pk }}";  // Get the borrower's ID from the form instance
+
+        // Check if we're in edit mode
+        if (borrowerId) {
+            markRowAsEditing(borrowerId);
+        }
+    });
+
+    // Function to handle cancelling the edit action
+    function cancelEdit() {
+        const borrowerId = "{{ form.instance.pk }}";  // Get the borrower's ID from the form instance
+        if (borrowerId) {
+            clearEditingRow(borrowerId);
+        }
+        
+        // Redirect to the borrower list
+        window.location.href = '{% url "borrower-list" %}';
     }
 
 
