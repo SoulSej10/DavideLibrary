@@ -227,7 +227,7 @@ class AttendanceForm(forms.ModelForm):
         model = Attendance
         fields = ['borrower_uid_number']
         widgets = {
-            'borrower_uid_number': forms.TextInput(attrs={
+            'borrower_uid_number': forms.PasswordInput(attrs={
                 'class': 'input',  # Add your custom class for styling
                 'placeholder': 'Enter your Borrower UID',  # Placeholder text
                 'style': 'padding-left: 40px;',  # Inline styles, if needed
