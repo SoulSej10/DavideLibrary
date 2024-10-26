@@ -221,8 +221,36 @@ def borrow_history(request):
 
     return JsonResponse(response_data)
 
+def landingLog(request):
+    form = AttendanceForm()
+    return render(request, 'library/landing_attendance.html', {'form': form})
 
+import logging
 
+logger = logging.getLogger(__name__)
+
+def log_attendance(request):
+    if request.method == 'POST':
+        form = AttendanceForm(request.POST)
+        if form.is_valid():
+            borrower_uid = form.cleaned_data['borrower_uid_number']
+            borrower = Borrower.objects.filter(borrower_uid=borrower_uid).first()
+            if borrower:
+                attendance = form.save(commit=False)
+                attendance.borrower_name = borrower.borrower_name
+                attendance.grade_level = borrower.grade_level
+                attendance.section = borrower.section
+                attendance.save()
+                return JsonResponse({'borrower_name': borrower.borrower_name})
+            else:
+                logger.error("Borrower not found for UID: %s", borrower_uid)
+                return JsonResponse({'error': 'Borrower not found.'}, status=404)
+        else:
+            logger.error("Form errors: %s", form.errors)
+            return JsonResponse({'errors': form.errors}, status=400)
+    else:
+        form = AttendanceForm()
+    return render(request, 'library/landing_attendance.html', {'form': form})
 
 
 

@@ -1,0 +1,137 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<html>
+<head>
+    <title>Create Attendance</title>
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/create_attendance.css' %}">
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        </style>
+    {% endblock %}
+</head>
+
+<body>
+    <div class="overlay-container">
+<div class="min-h-screen">
+    <div class="card">
+        <div class="card-header">
+            <div class="logo-container">
+                <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 150px; height: 150px; border-radius: 50%;">
+            </div>
+            <h1 class="card-title">Welcome to DavideLib Connect</h1>
+            <p class="card-description">Colawin Library Management System</p>
+        </div>
+        <div class="card-content">
+            <form method="post" id="attendanceForm" action="{% url 'log_attendance' %}"> 
+                {% csrf_token %}
+                <div class="relative">
+                    <span class="user-check-icon">👤</span>
+                    
+                    <div class="input-container">
+                        {{ form.borrower_uid_number }}  
+                    </div>
+                </div>
+            
+                <div class="buttons" style="text-align: center;">
+                    <button type="submit" class="button">Save Log Entry</button>
+                    <a href="{% url 'landing' %}" class="button-back" style="text-decoration: none; color: black;">Back to Page</a>
+                </div>
+            </form>                    
+            
+        </div>
+        <div class="card-footer">
+            <p>Thank you for using our library services!</p>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal for welcome message -->
+<div id="welcomeModal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1 style="color: #4CAF50; margin: 0; padding: 0;">Welcome!</h1>
+        <p id="welcomeMessage" style="font-size: 24px; margin-bottom: 20px;">Thank you for logging in, <span id="borrowerName" style="font-weight: bold; font-size: 28px;"></span>!</p>
+        <p style="font-size: 18px; color: #555;">Feel free to explore the Library.</p>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('attendanceForm');
+    const modal = document.getElementById('welcomeModal');
+    const closeButton = document.querySelector('.close');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const borrowerNameSpan = document.getElementById('borrowerName');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                return response.json();
+            } else {
+                // Fallback for non-JSON responses
+                return response.text().then(text => {
+                    console.error('Received non-JSON response:', text);  // Log the response text
+                    throw new Error('Unexpected response format');
+                });
+            }
+        })
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error); // Show borrower not found error
+            }
+            borrowerNameSpan.textContent = data.borrower_name;
+            modal.style.display = "block"; // Show the modal
+
+            setTimeout(() => {
+                modal.style.display = "none"; // Close the modal
+                window.location.href = "{% url 'log_attendance' %}"; // Redirect back to create attendance page
+            }, 2500); 
+        })
+        .catch(error => {
+            alert(error.message); // Alert the error message
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    });
+
+    closeButton.onclick = function() {
+        modal.style.display = "none"; // Close the modal
+        window.location.href = "{% url 'log_attendance' %}"; // Redirect to attendance list after closing the modal
+    }
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none"; // Close the modal if clicked outside
+            window.location.href = "{% url 'log_attendance' %}"; // Redirect to attendance list after closing the modal
+        }
+    }
+</script>
+
+
+
+
+
+</body>
+</html>
+{% endblock %}
