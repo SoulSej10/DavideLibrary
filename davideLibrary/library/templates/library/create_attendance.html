@@ -34,7 +34,7 @@
                     <span class="user-check-icon">👤</span>
                     
                     <div class="input-container">
-                        {{ form.borrower_uid_number }}  <!-- This will use the custom widget -->
+                        {{ form.borrower_uid_number }}  
                     </div>
                 </div>
             
@@ -86,7 +86,7 @@
                 return response.json();
             }
             return response.json().then(errorData => {
-                throw new Error(errorData.error || 'An error occurred.'); // Get the error message from the response
+                throw new Error(errorData.error || 'An error occurred.'); 
             });
         })
         .then(data => {
@@ -94,11 +94,11 @@
             borrowerNameSpan.textContent = data.borrower_name;
             modal.style.display = "block"; // Show the modal
             
-            // Hide the modal after 1.5 seconds and redirect
+            
             setTimeout(() => {
                 modal.style.display = "none"; // Close the modal
                 window.location.href = "{% url 'create-attendance' %}"; // Redirect back to create attendance page
-            }, 2500); // 1500 milliseconds = 1.5 seconds
+            }, 2500); 
         })
         .catch(error => {
             alert(error.message); // Alert the error message
