@@ -1131,14 +1131,24 @@ def create_attendance(request):
                 attendance.grade_level = borrower.grade_level
                 attendance.section = borrower.section
                 attendance.save()
-                return redirect('attendance-list')
+                # Return a JSON response with the borrower's name
+                return JsonResponse({'borrower_name': borrower.borrower_name})
+            else:
+                # Return an error message if the borrower is not found
+                return JsonResponse({'error': 'Borrower not found.'}, status=404)
+        else:
+            # Return the form errors as a JSON response
+            return JsonResponse({'errors': form.errors}, status=400)
     else:
         form = AttendanceForm()
     return render(request, 'library/create_attendance.html', {'form': form})
+
 @login_required
 def attendance_list(request):
-    attendances = Attendance.objects.all()
+    # Order by date_time in descending order to get the most recent records first
+    attendances = Attendance.objects.all().order_by('-date_time')
     return render(request, 'library/attendance_list.html', {'attendances': attendances})
+
 
 
 

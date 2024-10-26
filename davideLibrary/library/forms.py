@@ -211,18 +211,34 @@ class BorrowSlipForm(forms.ModelForm):
 # ============================================================================================================================================
 # ===============================================================___LOG FORM___===============================================================
 # ============================================================================================================================================
+# class AttendanceForm(forms.ModelForm):
+#     class Meta:
+#         model = Attendance
+#         fields = ['borrower_uid_number']
+
+#     def clean_borrower_uid_number(self):
+#         borrower_uid = self.cleaned_data.get('borrower_uid_number')
+#         if not borrower_uid.startswith('hpdsnhs'):
+#             raise forms.ValidationError("Invalid Borrower UID format")
+#         return borrower_uid
+
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
         fields = ['borrower_uid_number']
+        widgets = {
+            'borrower_uid_number': forms.TextInput(attrs={
+                'class': 'input',  # Add your custom class for styling
+                'placeholder': 'Enter your Borrower UID',  # Placeholder text
+                'style': 'padding-left: 40px;',  # Inline styles, if needed
+            }),
+        }
 
     def clean_borrower_uid_number(self):
         borrower_uid = self.cleaned_data.get('borrower_uid_number')
         if not borrower_uid.startswith('hpdsnhs'):
             raise forms.ValidationError("Invalid Borrower UID format")
         return borrower_uid
-
-
 
 
 

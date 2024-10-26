@@ -6,25 +6,285 @@
 <head>
     <title>Create Attendance</title>
     {% block css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/create_attendance.css' %}">
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+
+        .overlay-container {
+            position: fixed; /* or absolute based on your layout */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* background: rgba(255, 255, 255, 0.9);  */
+            z-index: 9999; /* Ensure it appears above other content */
+
+            background-image: url("../../static/images/hpdsback.jpg");
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            /* font-family: 'Poppins', sans-serif; */
+        }
+        .overlay-container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: inherit;
+            filter: blur(10px);
+            z-index: -1;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 28rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+        }
+
+        .card-header {
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #73532C;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .card-description {
+            color: #6b7280;
+        }
+
+        .card-content form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .relative {
+            position: relative;
+        }
+
+        .relative .user-check-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .input {
+            padding-left: 2.5rem;
+            padding-right: 1rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.875rem;
+        }
+
+        .input:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .button {
+            width: 100%;
+            background-color: #D6B980;
+            color: #555;
+            font-size: medium;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+            margin-bottom: 5px;
+        }
+
+        .button:hover {
+            background-color: #C5A86A;
+        }
+
+        .card-footer {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+        }
+
+        .modal-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        /* Animation for modal appearance */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
     {% endblock %}
 </head>
 
 <body>
-    <div class="main-content">
-        <div class="head">
-            <h1>Create Attendance</h1>
-        </div>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-            <div class="buttons">
-                <button type="submit">Save</button>
-                <a href="{% url 'attendance-list' %}">Back to List</a>
+    <div class="overlay-container">
+<div class="min-h-screen">
+    <div class="card">
+        <div class="card-header">
+            <div class="logo-container">
+                <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 150px; height: 150px; border-radius: 50%;">
             </div>
-    </form>
-   
+            <h1 class="card-title">Welcome to DavideLib Connect</h1>
+            <p class="card-description">Colawin Library Management System</p>
+        </div>
+        <div class="card-content">
+            <form method="post" id="attendanceForm">  <!-- Added id -->
+                {% csrf_token %}
+                <div class="relative">
+                    <span class="user-check-icon">👤</span>
+                    
+                    <div class="input-container">
+                        {{ form.borrower_uid_number }}  <!-- This will use the custom widget -->
+                    </div>
+                </div>
+            
+                <div class="buttons" style="text-align: center;">
+                    <button type="submit" class="button">Save</button>
+                    <a href="{% url 'attendance-list' %}" class="button-back" style="text-decoration: none; color: black;">Back to List</a>
+                </div>
+            </form>                    
+            
+        </div>
+        <div class="card-footer">
+            <p>Thank you for using our library services!</p>
+        </div>
+    </div>
 </div>
+</div>
+
+<!-- Modal for welcome message -->
+<div id="welcomeModal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1 style="color: #4CAF50; margin: 0; padding: 0;">Welcome!</h1>
+        <p id="welcomeMessage" style="font-size: 24px; margin-bottom: 20px;">Thank you for logging in, <span id="borrowerName" style="font-weight: bold; font-size: 28px;"></span>!</p>
+        <p style="font-size: 18px; color: #555;">Feel free to explore the Library.</p>
+    </div>
+</div>
+
+
+<script>
+    const form = document.getElementById('attendanceForm');
+    const modal = document.getElementById('welcomeModal');
+    const closeButton = document.querySelector('.close');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const borrowerNameSpan = document.getElementById('borrowerName');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            return response.json().then(errorData => {
+                throw new Error(errorData.error || 'An error occurred.'); // Get the error message from the response
+            });
+        })
+        .then(data => {
+            // Assuming the server returns the borrower's name
+            borrowerNameSpan.textContent = data.borrower_name;
+            modal.style.display = "block"; // Show the modal
+            
+            // Hide the modal after 1.5 seconds and redirect
+            setTimeout(() => {
+                modal.style.display = "none"; // Close the modal
+                window.location.href = "{% url 'create-attendance' %}"; // Redirect back to create attendance page
+            }, 3000); // 1500 milliseconds = 1.5 seconds
+        })
+        .catch(error => {
+            alert(error.message); // Alert the error message
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    });
+
+    closeButton.onclick = function() {
+        modal.style.display = "none"; // Close the modal
+        window.location.href = "{% url 'attendance-list' %}"; // Redirect to attendance list after closing the modal
+    }
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none"; // Close the modal if clicked outside
+            window.location.href = "{% url 'attendance-list' %}"; // Redirect to attendance list after closing the modal
+        }
+    }
+</script>
+
+
 </body>
 </html>
 {% endblock %}
