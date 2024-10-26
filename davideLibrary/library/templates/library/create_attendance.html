@@ -98,7 +98,7 @@
             setTimeout(() => {
                 modal.style.display = "none"; // Close the modal
                 window.location.href = "{% url 'create-attendance' %}"; // Redirect back to create attendance page
-            }, 3000); // 1500 milliseconds = 1.5 seconds
+            }, 2500); // 1500 milliseconds = 1.5 seconds
         })
         .catch(error => {
             alert(error.message); // Alert the error message
