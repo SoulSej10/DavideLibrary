@@ -419,8 +419,11 @@
             {% endfor %}
         </div>
     {% endif %}
+    <a href="{% url 'landingLog' %}">
+        <img src="{% static 'images/documents.png' %}" style="width: 60px; height: 55px; display: flex; padding-left: 130px;" alt="">    
+    </a>
     <a href="{% url 'directory' %}">
-        <img src="{% static 'images/lock2.png' %}" style="width: 80px; height: 60px; display: flex; padding-left: 190px;" alt="">
+        <img src="{% static 'images/literature.png' %}" style="width: 65px; height: 60px; display: flex; " alt="">
     </a>
 </div>
 
@@ -483,7 +486,7 @@
                  <strong></strong> <span style="color: #757575;">{{ query }}</span>
             {% endif %}
         </div>
-        <span<p><a href="{% url 'landingLog' %}">here</a></p></span>
+
 <div class="book-item-container">
     {% if book_detail %}
         <!-- Display Book Details -->
