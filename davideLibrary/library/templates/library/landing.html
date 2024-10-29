@@ -470,7 +470,7 @@
         <div class="search-form-container">
             <div class="search-container">
                 <form method="GET" action="{% url 'landing' %}" style="flex: 1; display: flex;">
-                    <input type="text" class="search-input" name="q" placeholder="Search book" value="None" id="searchInput" autofocus onfocus="clearDefaultValue()">
+                    <input type="text" class="search-input" name="q" placeholder="Search book" value="None" id="searchInput" autofocus onfocus="clearDefaultValue()" style="font-family: 'Poppins', sans-serif;">
                     <button type="submit" class="search-button" style="margin-right: 5px;">Search</button>
                     <a href="{% url 'landing' %}" class="reset-button">Reset</a>
                 </form>
@@ -604,7 +604,7 @@
     <!-- Side Container -->
     <div class="side-container">
         <div class="section-label" style="color: white; font-weight: lighter;">
-            <h1 style="font-size: 18px;">Who's Browsing?</h1>
+            <h1 style="font-size: 18px;">Who's Browsing? View your Account Here...</h1>
         </div>
         <div class="search-container">
             <!-- Input field for scanning UID -->
