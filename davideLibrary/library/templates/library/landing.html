@@ -404,6 +404,31 @@
             color: red;
         }
 
+        .hover-label-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hover-label {
+            position: absolute;
+            bottom: -25px; /* Adjusts label position below the image */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .hover-label-container:hover .hover-label {
+            opacity: 1; /* Shows label on hover */
+        }
+
 </style>
 <div class="header">
     <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 68px; height: 68px; border-radius: 50%; padding-left: 6px;">
@@ -419,12 +444,15 @@
             {% endfor %}
         </div>
     {% endif %}
-    <a href="{% url 'landingLog' %}">
-        <img src="{% static 'images/documents.png' %}" style="width: 60px; height: 55px; display: flex; padding-left: 130px;" alt="">    
+    <a href="{% url 'landingLog' %}" class="hover-label-container">
+        <img src="{% static 'images/documents.png' %}" style="width: 60px; height: 55px; padding-left: 140px;" alt="">
+        <span class="hover-label" style="margin-left: 70px;">Log Entry</span>
     </a>
-    <a href="{% url 'directory' %}">
-        <img src="{% static 'images/literature.png' %}" style="width: 65px; height: 60px; display: flex; " alt="">
+    <a href="{% url 'directory' %}" class="hover-label-container">
+        <img src="{% static 'images/literature.png' %}" style="width: 65px; height: 60px;" alt="">
+        <span class="hover-label" style="margin-bottom: 3px;">Admin Login</span>
     </a>
+    
 </div>
 
 <!-- Sidebar Section -->
