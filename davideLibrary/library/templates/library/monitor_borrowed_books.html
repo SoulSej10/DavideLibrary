@@ -29,8 +29,8 @@
                 <td>{{ slip.book_number }}</td>
             <td>{{ slip.book_title }}</td>
             <td>{{ slip.borrower_name }}</td>
-            <td>{{ slip.date_borrow|date:"Y-m-d" }}</td>
-            <td>{{ slip.due_date|date:"Y-m-d" }}</td>
+            <td>{{ slip.date_borrow|date}}</td>
+            <td>{{ slip.due_date|date}}</td>
             <td>
                 {% if slip.penalty %}
                     <span class="penalty-status">UNRETURNED ({{ slip.penalty }})</span>

@@ -48,10 +48,10 @@
                                         <td><input type="checkbox" name="selected_slips" value="{{ slip.slip_number }}" />{{ slip.slip_number }}</td>
                                         <td>{{ slip.book_title }}</td>
                                         <td>{{ slip.book_number }}</td>
-                                        <td>{{ slip.date_borrow|date:"Y-m-d" }}</td>
+                                        <td>{{ slip.date_borrow|date}}</td>
                                         <td>{{ slip.borrower_uid_number|obfuscate }}</td>
                                         <td>{{ slip.borrower_name }}</td>
-                                        <td>{{ slip.due_date|date:"Y-m-d" }}</td>
+                                        <td>{{ slip.due_date|date}}</td>
                                         <td>{{ slip.librarian_name }}</td>
                                     </tr>
                                 {% endfor %}
