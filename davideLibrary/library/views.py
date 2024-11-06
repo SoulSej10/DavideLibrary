@@ -46,8 +46,8 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-
-
+from django.contrib.auth.hashers import make_password
+from django.core.files import File
 
 
 
@@ -342,6 +342,12 @@ def login_view(request):
 
     return render(request, 'library/LogRegister.html', {'form': form})
 
+# Logout view
+def logout_view(request):
+    logout(request)
+    messages.success(request, "You have been logged out successfully.")
+    return redirect('landing')
+
 # Registration view (only accessible to Head Librarians)
 @login_required
 @user_passes_test(is_head_librarian)
@@ -349,11 +355,14 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Assistant Librarian registered successfully.')
-            return redirect('register')
-        else:
-            messages.error(request, 'Registration failed. Please check the form.')
+            user = form.save()
+            # Ensure admin_id is generated
+            if user.admin_id:
+                messages.success(request, 'Assistant Librarian registered successfully.')
+                return redirect('register')
+            else:
+                messages.error(request, 'Failed to generate admin_id.')
+            
     else:
         form = CustomUserCreationForm()
 
@@ -365,16 +374,79 @@ def register(request):
         'form': form,
         'head_librarians': head_librarians,
         'assistant_librarians': assistant_librarians,
-        'user': request.user  # Ensure user object is available in template
+        'user': request.user,  # Ensure user object is available in template
     }
 
     return render(request, 'library/RegisterLog.html', context)
 
-# Logout view
-def logout_view(request):
-    logout(request)
-    messages.success(request, "You have been logged out successfully.")
-    return redirect('landing')
+def user_details(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    user_data = {
+        'full_name': f"{user.first_name} {user.middle_name} {user.last_name}",
+        'admin_id': user.admin_id,
+        'username': user.username,
+        'hashed_password': user.password,  # This shows the hashed password.
+    }
+    return JsonResponse(user_data)
+
+
+def generate_account_pdf(request, admin_id):
+    # Get the selected account using admin_id
+    account = CustomUser.objects.get(admin_id=admin_id)
+
+    # Check if the account already has a QR code
+    if not account.qr_code:
+        # Generate a new QR code for the account
+        qr = qrcode.make(account.admin_id)
+        qr_image = BytesIO()
+        qr.save(qr_image, format='PNG')
+        qr_image.seek(0)
+
+        # Save the QR code to the account's `qr_code` field
+        account.qr_code.save(f"{account.admin_id}_qr.png", File(qr_image))
+        account.save()
+
+    # Create a response object with PDF content type
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{account.username}_account.pdf"'
+
+    # Create PDF canvas
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    # Set font size
+    p.setFont("Helvetica", 10)
+
+    # Define initial position
+    margin_left = 0.3 * inch
+    margin_top = height - 0.5 * inch
+    current_x = margin_left
+    current_y = margin_top
+    row_height = 150  # Row height for QR code and text
+
+    # Draw rectangle border around account data
+    p.rect(current_x, current_y - row_height, width - 1 * margin_left, row_height)
+
+    # QR code path (based on `admin_id`)
+    qr_code_path = os.path.join(settings.MEDIA_ROOT, account.qr_code.name)
+    p.drawImage(qr_code_path, current_x + 10, current_y - 110, width=80, height=80)
+
+    # Position text slightly to the right of QR code
+    text_start_x = current_x + 100
+    text_start_y = current_y - 30
+    line_height = 15
+
+    # Add account details
+    p.drawString(text_start_x, text_start_y, f"Admin ID: {account.admin_id}")
+    p.drawString(text_start_x, text_start_y - line_height, f"Username: {account.username}")
+    p.drawString(text_start_x, text_start_y - 2 * line_height, f"Full Name: {account.first_name} {account.middle_name} {account.last_name}")
+    p.drawString(text_start_x, text_start_y - 3 * line_height, f"Role: {account.get_role_display()}")
+
+    # Save the PDF
+    p.save()
+    return response
+
+
 
 @login_required
 def home(request):

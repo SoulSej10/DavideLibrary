@@ -25,6 +25,10 @@ urlpatterns = [
     path('login/head/', views.HeadLibrarianLoginView.as_view(), name='head_librarian_login'),
     path('login/assistant/', views.AssistantLibrarianLoginView.as_view(), name='assistant_librarian_login'),
     
+    #register
+    path('user-details/<str:user_id>/', views.user_details, name='user_details'),
+    path('account/<str:admin_id>/download-pdf/', views.generate_account_pdf, name='download-account-pdf'),
+  
 
     # borrowers
     path('borrower-list/', views.borrower_list, name='borrower-list'),

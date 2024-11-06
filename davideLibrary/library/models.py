@@ -60,7 +60,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Assistant Librarian')
-    
+    qr_code = models.ImageField(upload_to='qr_codes', blank=True, null=True)
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'
@@ -82,11 +83,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             max_id = max([int(re.search(r'\d+$', admin_id).group()) for admin_id in users_with_ids])
             next_id = max_id + 1
 
-        return f"{prefix}{str(next_id).zfill(3)}"
+        return f"{prefix}{str(next_id).zfill(2)}"
 
     def save(self, *args, **kwargs):
         if not self.admin_id:  # Only generate if the admin_id is not already set
             self.admin_id = CustomUser.generate_next_admin_id()
+        if not self.qr_code:  # Only generate QR code if not already set
+            qr_image = qrcode.make(self.admin_id)
+            buffer = BytesIO()
+            qr_image.save(buffer, format='PNG')
+            buffer.seek(0)
+            self.qr_code.save(f'{self.admin_id}_qr.png', File(buffer), save=False)
         super().save(*args, **kwargs)
 
 

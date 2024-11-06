@@ -30,7 +30,7 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ['username', 'first_name', 'middle_name', 'last_name', 'admin_id', 'password1', 'password2', 'role']
         widgets = {
             'role': forms.Select(choices=CustomUser.ROLE_CHOICES, attrs={'id': 'role-field'}),
-            'admin_id': forms.TextInput(attrs={'readonly': 'readonly'})  # Make admin_id readonly
+            # 'admin_id': forms.TextInput(attrs={'readonly': 'readonly'})  # Make admin_id readonly
         }
 
     def __init__(self, *args, **kwargs):
@@ -49,15 +49,38 @@ class CustomUserCreationForm(UserCreationForm):
             raise forms.ValidationError("Username must contain at least one uppercase letter.")
         return username
 
+    # def save(self, commit=True):
+    #     user = super().save(commit=False)
+    #     user.set_password(self.cleaned_data["password1"])  # Ensure password is set correctly
+    #     user.is_staff = user.role == 'Head Librarian'  # Set is_staff for head librarians
+    #     if commit:
+    #         user.save()
+    #         if user.role == 'Assistant Librarian':
+    #             assistant_group, _ = Group.objects.get_or_create(name='Assistant Librarian')
+    #             user.groups.add(assistant_group)
+    #     return user
     def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])  # Ensure password is set correctly
-        user.is_staff = user.role == 'Head Librarian'  # Set is_staff for head librarians
+        # Ensure admin_id is populated (for new users)
+        if not self.instance.admin_id:
+            self.instance.admin_id = CustomUser.generate_next_admin_id()
+
+        user = super().save(commit=False)  # Create user but don't save yet
+
+        # Ensure password is set correctly
+        user.set_password(self.cleaned_data["password1"])
+
+        # Automatically handle the `is_staff` field based on role
+        user.is_staff = user.role == 'Head Librarian'  
+
+        # Commit to save the user
         if commit:
             user.save()
+
+            # If role is Assistant Librarian, assign to appropriate group
             if user.role == 'Assistant Librarian':
                 assistant_group, _ = Group.objects.get_or_create(name='Assistant Librarian')
                 user.groups.add(assistant_group)
+
         return user
 
 class CustomAuthenticationForm(AuthenticationForm):

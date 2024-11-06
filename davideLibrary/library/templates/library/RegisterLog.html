@@ -101,7 +101,17 @@
             background-color: #f0f0f0;
             height: 500px;
             margin-top: 20px;
+            overflow-wrap: break-word; /* Allows long text to wrap within the container */
+            word-wrap: break-word;     /* Fallback for older browsers */
+            white-space: normal;       /* Prevents long strings from staying on a single line */
         }
+
+        .hashed-password {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
         .form-container {
             width: 36%; /* Adjusted width */
             max-height: 500px;
@@ -151,11 +161,63 @@
         tr:nth-child(even) {
             background-color: #D9D9D9; /* Light background for alternate rows */
             border-radius: 5px;
-            
             border-top: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
         }
 
+        .buttons{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            padding-top: 20px;
+        }
+
+        .modern-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            position: relative;
+        }
+
+        .modern-button:hover {
+            background-color: #45a049;
+        }
+
+        .button-link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .button-link:hover {
+            text-decoration: none;
+        }
+
+        #exit-btn {
+            background-color: #f44336; /* Red */
+        }
+
+        #exit-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .view-btn{
+            background-color: #D6B980;
+            color: white;
+
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            text-decoration: none;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -169,15 +231,17 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Full Name</th>
                             <th>Username</th>
+                            <th style="padding-left: 25px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for head_librarian in head_librarians %}
                         <tr>
-                            <td>{{ head_librarian.get_full_name }}</td>
                             <td>{{ head_librarian.username }}</td>
+                            <td style="padding-left: 20px;">
+                                <button class="view-btn" data-id="{{ head_librarian.id }}">View</button>
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -191,15 +255,17 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Full Name</th>
                             <th>Username</th>
+                            <th style="padding-left: 80px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for assistant_librarian in assistant_librarians %}
                         <tr>
-                            <td>{{ assistant_librarian.get_full_name }}</td>
                             <td>{{ assistant_librarian.username }}</td>
+                            <td style="padding-left: 75px;">
+                                <button class="view-btn" data-id="{{ assistant_librarian.id }}">View</button>
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -211,8 +277,10 @@
             </div>
 
             <!-- Blank Container -->
-            <div class="blank-container">
-                <!-- Intentionally left blank -->
+            <div class="blank-container" id="account-details-container">
+                <h2 style="margin: 0; padding: 0;">Account Details</h2>
+                <p style="color: gray; text-align: center;">View Account Here!</p>
+                <img src="{% static 'images/account.png' %}" alt="">
             </div>
 
             <!-- Form Container -->
@@ -305,6 +373,86 @@
             }
         }
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const viewButtons = document.querySelectorAll('.view-btn');
+    const container = document.querySelector('.blank-container');
+    
+    // Save the original HTML of the container
+    const originalContent = container.innerHTML;
+
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const userId = this.getAttribute('data-id');
+
+            fetch(`/user-details/${userId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    // Populate the blank-container with the user data
+                    container.innerHTML = `
+                        <h2 style="margin: 0; padding: 0;">Account Details</h2>
+                        <p><strong>Username:</strong> ${data.username}</p>
+                        <p><strong>Full Name:</strong> ${data.full_name}</p>
+                        <p><strong>Admin ID:</strong> ${data.admin_id}</p>
+                        <p class="hashed-password"><strong>Hashed Password:</strong> ${data.hashed_password}</p>
+                        <p style="color: grey; font-size: 12px; text-align: justify;">NOTE:<br>
+                        When the user forgets the password, the system does NOT provide the old password. INSTEAD, the user is given a temporary password to use for one-time login and prompted to change their password. The system will then accept the new password and update the account.
+                        </p>
+                        <div class="buttons">
+                        <div class="account-entry">
+                            ${data.admin_id ? `
+                                <div id="download-link-${data.admin_id}" class="download-link" style="display: block;">
+                                    <button class="modern-button" style = "font-family: 'Poppins', sans-serif;">
+                                        <a href="/account/${data.admin_id}/download-pdf/" class="button-link">Download QR Code</a>
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <button id="exit-btn" class="modern-button" onclick="exitView()" style = "font-family: 'Poppins', sans-serif;">Exit</button>
+                    </div>
+
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching user details:', error);
+                });
+        });
+    });
+});
+
+// Exit the view
+function exitView() {
+    const container = document.querySelector('.blank-container');
+    container.innerHTML = `
+        <h2 style="margin: 0; padding: 0;">Account Details</h2>
+        <p style="color: gray; text-align: center;">View Account Here!</p>
+        <img src="{% static 'images/account.png' %}" alt="">
+    `;
+}
+
+
+
+
+    function downloadPDF() {
+        const accountId = "{{ account.admin_id }}";  // Verify this variable
+        console.log("Admin ID:", accountId);  // Debugging: Check the console for the admin_id value
+        if (accountId) {
+            window.location.href = `/account/${accountId}/download-pdf/`;
+        } else {
+            alert("Admin ID is missing");
+        }
+    }
+    function showDownloadLink(adminId) {
+        // Hide all download links first
+        document.querySelectorAll('.download-link').forEach(link => link.style.display = 'none');
+        
+        // Show the download link for the selected account
+        const selectedLink = document.getElementById(`download-link-${adminId}`);
+        if (selectedLink) {
+            selectedLink.style.display = 'block';
+        }
+    }
 </script>
 </html>
 {% endblock %}
