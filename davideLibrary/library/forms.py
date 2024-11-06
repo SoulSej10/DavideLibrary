@@ -29,9 +29,15 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ['username', 'first_name', 'middle_name', 'last_name', 'admin_id', 'password1', 'password2', 'role']
         widgets = {
-            'role': forms.Select(choices=CustomUser.ROLE_CHOICES, attrs={'id': 'role-field'}),  # Add 'id' here
+            'role': forms.Select(choices=CustomUser.ROLE_CHOICES, attrs={'id': 'role-field'}),
+            'admin_id': forms.TextInput(attrs={'readonly': 'readonly'})  # Make admin_id readonly
         }
-        
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Automatically set the admin_id field value for new users
+        if not self.instance.pk:
+            self.fields['admin_id'].initial = CustomUser.generate_next_admin_id()
 
     def clean_username(self):
         username = self.cleaned_data.get('username')

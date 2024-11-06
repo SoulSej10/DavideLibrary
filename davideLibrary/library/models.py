@@ -18,7 +18,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.utils.translation import gettext_lazy as _
 from .utils import generate_qr_code
 from django.utils import timezone
-
+from django.db.models import Max
+import re
 
 
 
@@ -68,6 +69,25 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    @staticmethod
+    def generate_next_admin_id():
+        prefix = "hpdsnhsadmin"
+        
+        # Use regex to get only the numeric part after the prefix
+        users_with_ids = CustomUser.objects.filter(admin_id__startswith=prefix).values_list('admin_id', flat=True)
+        if not users_with_ids:
+            next_id = 1
+        else:
+            # Extract the numeric part, convert to an integer, and find the maximum
+            max_id = max([int(re.search(r'\d+$', admin_id).group()) for admin_id in users_with_ids])
+            next_id = max_id + 1
+
+        return f"{prefix}{str(next_id).zfill(3)}"
+
+    def save(self, *args, **kwargs):
+        if not self.admin_id:  # Only generate if the admin_id is not already set
+            self.admin_id = CustomUser.generate_next_admin_id()
+        super().save(*args, **kwargs)
 
 
 
