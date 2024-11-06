@@ -294,5 +294,17 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const roleField = document.getElementById("role-field");
+        const options = roleField.options;
+
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].value === "Head Librarian") {
+                options[i].style.display = "none";  // Hides "Head Librarian" option
+            }
+        }
+    });
+</script>
 </html>
 {% endblock %}

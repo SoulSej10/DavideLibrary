@@ -29,8 +29,9 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ['username', 'first_name', 'middle_name', 'last_name', 'admin_id', 'password1', 'password2', 'role']
         widgets = {
-            'role': forms.Select(choices=CustomUser.ROLE_CHOICES),
+            'role': forms.Select(choices=CustomUser.ROLE_CHOICES, attrs={'id': 'role-field'}),  # Add 'id' here
         }
+        
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
