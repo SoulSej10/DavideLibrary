@@ -417,26 +417,30 @@ def generate_account_pdf(request, admin_id):
     # Set font size
     p.setFont("Helvetica", 10)
 
-    # Define initial position
-    margin_left = 0.3 * inch
-    margin_top = height - 0.5 * inch
-    current_x = margin_left
-    current_y = margin_top
-    row_height = 150  # Row height for QR code and text
+    # Define the initial position for an ID-like layout
+    id_card_width = 3.5 * inch  # Adjusted width for a more compact ID size
+    id_card_height = 2.25 * inch  # Adjusted height for a more compact ID size
+    margin_left = 0.5 * inch  # Centered horizontally on the page
+    margin_top = height - .8 * inch  # Adjust position from the top of the page
+    row_height = id_card_height  # Make the rectangle height match ID height
 
     # Draw rectangle border around account data
-    p.rect(current_x, current_y - row_height, width - 1 * margin_left, row_height)
+    p.rect(margin_left, margin_top - row_height, id_card_width, row_height)
 
-    # QR code path (based on `admin_id`)
+    # Draw QR code within the ID rectangle
+    qr_code_x = margin_left + 10  # Adjusted X position for padding
+    qr_code_y = margin_top - 1.7 * inch  # Position QR code inside the ID
+    qr_code_size = 80  # Adjust size to fit within the ID card
+
     qr_code_path = os.path.join(settings.MEDIA_ROOT, account.qr_code.name)
-    p.drawImage(qr_code_path, current_x + 10, current_y - 110, width=80, height=80)
+    p.drawImage(qr_code_path, qr_code_x, qr_code_y, width=qr_code_size, height=qr_code_size)
 
-    # Position text slightly to the right of QR code
-    text_start_x = current_x + 100
-    text_start_y = current_y - 30
-    line_height = 15
+    # Position text to the right of QR code
+    text_start_x = qr_code_x + qr_code_size + 10  # Spacing between QR and text
+    text_start_y = margin_top - 60  # Adjust Y position for better alignment
+    line_height = 12  # Adjusted line height for compact spacing
 
-    # Add account details
+    # Add account details in a compact format
     p.drawString(text_start_x, text_start_y, f"Admin ID: {account.admin_id}")
     p.drawString(text_start_x, text_start_y - line_height, f"Username: {account.username}")
     p.drawString(text_start_x, text_start_y - 2 * line_height, f"Full Name: {account.first_name} {account.middle_name} {account.last_name}")
@@ -445,6 +449,7 @@ def generate_account_pdf(request, admin_id):
     # Save the PDF
     p.save()
     return response
+
 
 
 

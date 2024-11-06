@@ -30,7 +30,7 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ['username', 'first_name', 'middle_name', 'last_name', 'admin_id', 'password1', 'password2', 'role']
         widgets = {
             'role': forms.Select(choices=CustomUser.ROLE_CHOICES, attrs={'id': 'role-field'}),
-            # 'admin_id': forms.TextInput(attrs={'readonly': 'readonly'})  # Make admin_id readonly
+            'admin_id': forms.TextInput(attrs={'readonly': 'readonly'})  # Make admin_id readonly
         }
 
     def __init__(self, *args, **kwargs):
