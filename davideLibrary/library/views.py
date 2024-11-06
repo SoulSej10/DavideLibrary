@@ -351,6 +351,7 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Assistant Librarian registered successfully.')
+            return redirect('register')
         else:
             messages.error(request, 'Registration failed. Please check the form.')
     else:
