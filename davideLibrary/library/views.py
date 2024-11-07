@@ -36,8 +36,8 @@ import matplotlib
 matplotlib.use('Agg')  # Set the backend to 'Agg' for non-interactive plotting
 import matplotlib.pyplot as plt
 import base64
-
-
+import time
+import uuid
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
 from django.contrib.auth.models import Group 
@@ -48,7 +48,7 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.contrib.auth.hashers import make_password
 from django.core.files import File
-
+from django.core.files.base import ContentFile
 
 
 
@@ -1249,11 +1249,97 @@ def create_attendance(request):
         form = AttendanceForm()
     return render(request, 'library/create_attendance.html', {'form': form})
 
+# @login_required
+# def attendance_list(request):
+#     # Fetch attendance data
+#     attendances = Attendance.objects.all().order_by('-date_time')
+
+#     # Calculate statistics by grade level
+#     grade_level_stats = Attendance.objects.values('grade_level') \
+#         .annotate(total_students=Count('borrower_uid_number', distinct=True)) \
+#         .order_by('grade_level')
+
+#     # Prepare data for the pie chart
+#     labels = [f"{stat['grade_level']}" for stat in grade_level_stats]  # Just the grade number
+#     sizes = [stat['total_students'] for stat in grade_level_stats]
+#     colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']  # Optional: customize colors
+
+#     # Generate the pie chart with Matplotlib
+#     plt.figure(figsize=(4, 4))  # Adjust as needed
+#     wedges, texts, autotexts = plt.pie(sizes, labels=None, autopct='%1.0f', startangle=140, colors=colors, textprops={'fontsize': 8})
+
+#     # Add the actual count inside the pie chart
+#     for autotext in autotexts:
+#         autotext.set_fontsize(8)  # Smaller font size for the count inside the pie
+
+#     # Add the legend with grade numbers and corresponding colors
+#     plt.legend(labels=[f"{stat['grade_level']}" for stat in grade_level_stats], 
+#                loc='upper center', 
+#                bbox_to_anchor=(0.5, 1.4),  # Adjust as needed
+#                ncol=3, 
+#                fontsize=10, 
+#                title="Grade Levels",
+#                frameon=False)
+
+#     plt.axis('equal')
+#     plt.tight_layout()
+
+#     # Save the chart to a BytesIO object and encode it to base64
+#     buffer = BytesIO()
+#     plt.savefig(buffer, format='png')
+#     buffer.seek(0)
+#     image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+#     buffer.close()
+
+#     # Pass the base64 image to the template
+#     return render(request, 'library/attendance_list.html', {
+#         'attendances': attendances,
+#         'chart_image_base64': image_base64,
+#     })
+# @login_required
+# def attendance_chart_data(request):
+#     # Calculate attendance statistics
+#     grade_level_stats = Attendance.objects.values('grade_level') \
+#         .annotate(total_students=Count('borrower_uid_number', distinct=True)) \
+#         .order_by('grade_level')
+
+#     labels = [f"{stat['grade_level']}" for stat in grade_level_stats]
+#     sizes = [stat['total_students'] for stat in grade_level_stats]
+#     colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+
+#     # Generate chart as a base64 image
+#     plt.figure(figsize=(4, 4))
+#     plt.pie(sizes, labels=None, autopct='%1.0f', startangle=140, colors=colors, textprops={'fontsize': 8})
+#     plt.axis('equal')
+#     plt.legend(labels=labels, loc='upper center', bbox_to_anchor=(0.5, 1.3), ncol=3, fontsize=10, frameon=False)
+#     buffer = BytesIO()
+#     plt.savefig(buffer, format='png')
+#     buffer.seek(0)
+#     image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+#     buffer.close()
+
+#     return JsonResponse({'chart_image_base64': image_base64})
 @login_required
 def attendance_list(request):
-    # Order by date_time in descending order to get the most recent records first
+    # Fetch attendance data for the table
     attendances = Attendance.objects.all().order_by('-date_time')
-    return render(request, 'library/attendance_list.html', {'attendances': attendances})
+
+    # Calculate statistics by grade level
+    grade_level_stats = Attendance.objects.values('grade_level') \
+        .annotate(total_students=Count('borrower_uid_number', distinct=True)) \
+        .order_by('grade_level')
+
+    # Prepare data for JSON response (labels and sizes)
+    labels = [f"{stat['grade_level']}" for stat in grade_level_stats]
+    sizes = [stat['total_students'] for stat in grade_level_stats]
+
+    return render(request, 'library/attendance_list.html', {
+        'attendances': attendances,
+        'grade_level_data': json.dumps({'labels': labels, 'sizes': sizes}),  # Pass JSON data to the template
+    })
+
+
+
 
 
 

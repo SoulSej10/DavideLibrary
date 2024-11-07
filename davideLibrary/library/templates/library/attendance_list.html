@@ -3,22 +3,23 @@
 {% load custom_filters %}
 {% block content %}
 
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Log List</title>
     {% block css %}
     <link rel="stylesheet" type="text/css" href="{% static 'styles/attendance_list.css' %}">
-    {% endblock %}
-</head>
     <style>
-
-@font-face {
+        /* Font Import */
+        @font-face {
             font-family: 'Poppins';
-            src: url('../static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
-    }
+            src: url('{% static "styles/Poppins/Poppins-Medium.ttf" %}') format('truetype');
+        }
     </style>
+    {% endblock %}
+    <!-- Add Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 <body>
     <div class="main-content">
         <div class="head">
@@ -29,34 +30,95 @@
                 </div>
             </div>
         </div>        
-    
-    <div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>Log Number</th>
-                <th>Date Time</th>
-                <th>Borrower UID Number</th>
-                <th>Borrower Name</th>
-                <th>Grade Level</th>
-                <th>Section</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for attendance in attendances %}
-                <tr>
-                    <td>{{ attendance.attendance_number }}</td>
-                    <td>{{ attendance.date_time.date }}</td>
-                    <td>{{ attendance.borrower_uid_number|obfuscate }}</td>
-                    <td>{{ attendance.borrower_name }}</td>
-                    <td>{{ attendance.grade_level }}</td>
-                    <td>{{ attendance.section }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-</div>
+
+        <div class="content-container">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Log Number</th>
+                            <th>Date Time</th>
+                            <th>Borrower UID Number</th>
+                            <th>Borrower Name</th>
+                            <th>Grade Level</th>
+                            <th>Section</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attendance in attendances %}
+                            <tr>
+                                <td>{{ attendance.attendance_number }}</td>
+                                <td>{{ attendance.date_time.date }}</td>
+                                <td>{{ attendance.borrower_uid_number|obfuscate }}</td>
+                                <td>{{ attendance.borrower_name }}</td>
+                                <td>{{ attendance.grade_level }}</td>
+                                <td>{{ attendance.section }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Chart container -->
+            <div class="chart-container" style="width: 400px; height: 400px;">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Retrieve data from Django
+            const gradeLevelData = JSON.parse('{{ grade_level_data|safe }}');
+
+            // Chart.js configuration
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: gradeLevelData.labels, // Grade levels
+                    datasets: [{
+                        data: gradeLevelData.sizes, // Total students per grade level
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                        ],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Grade Levels',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    const label = tooltipItem.label || '';
+                                    const count = tooltipItem.raw || 0;
+                                    return `Grade ${label}: ${count} students`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
+
 {% endblock %}

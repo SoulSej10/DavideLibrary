@@ -9,8 +9,19 @@
     overflow-y: auto; /* Add vertical scrollbar when needed */
     border-bottom: 1px solid #ddd; /* Optional: border around the scrollable area */
     border-radius: 10px;
+    width: 71%;
 }
-
+.content-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px; /* Space between the chart and table */
+}
+.chart-container {
+    width: 30%; /* 40% for the chart */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .add a {
     padding: 10px 20px;
     color: white;
