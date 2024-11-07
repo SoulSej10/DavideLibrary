@@ -49,16 +49,6 @@ class CustomUserCreationForm(UserCreationForm):
             raise forms.ValidationError("Username must contain at least one uppercase letter.")
         return username
 
-    # def save(self, commit=True):
-    #     user = super().save(commit=False)
-    #     user.set_password(self.cleaned_data["password1"])  # Ensure password is set correctly
-    #     user.is_staff = user.role == 'Head Librarian'  # Set is_staff for head librarians
-    #     if commit:
-    #         user.save()
-    #         if user.role == 'Assistant Librarian':
-    #             assistant_group, _ = Group.objects.get_or_create(name='Assistant Librarian')
-    #             user.groups.add(assistant_group)
-    #     return user
     def save(self, commit=True):
         # Ensure admin_id is populated (for new users)
         if not self.instance.admin_id:

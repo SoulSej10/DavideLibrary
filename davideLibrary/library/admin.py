@@ -44,7 +44,7 @@ admin.site.register(Attendance, AttendanceAdmin)
 
 # Custom User Admin
 class CustomUserAdmin(UserAdmin):
-    list_display = ('pk_display', 'username', 'first_name', 'last_name', 'is_staff', 'is_superuser')
+    list_display = ('pk_display', 'username', 'first_name', 'last_name', 'is_staff', 'is_superuser', 'role')
 
     def pk_display(self, obj):
         return obj.id
@@ -53,7 +53,7 @@ class CustomUserAdmin(UserAdmin):
     # Override the fieldsets to include only the relevant fields for CustomUser
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal Info', {'fields': ('first_name', 'middle_name', 'last_name', 'admin_id')}),
+        ('Personal Info', {'fields': ('first_name', 'middle_name', 'last_name', 'admin_id', 'role')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
 
@@ -61,10 +61,11 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password1', 'password2', 'first_name', 'middle_name', 'last_name', 'admin_id', 'is_staff', 'is_active', 'is_superuser')}
-        ),
+            'fields': ('username', 'password1', 'password2', 'first_name', 'middle_name', 'last_name', 'admin_id', 'role', 'is_staff', 'is_active', 'is_superuser'),
+        }),
     )
 
+# Register CustomUser with the customized admin
 admin.site.register(CustomUser, CustomUserAdmin)
 
 # Category Admin
