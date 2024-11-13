@@ -378,6 +378,7 @@
             <div>
                 <!-- Bar graph image -->
                 <img id="bar-graph" src="data:image/png;base64,{{ graph }}" alt="Bar Graph">
+                <!-- <p>Total Books: {{ total_books }}</p>  -->
             </div>
         </div>
     </div>    
@@ -419,7 +420,7 @@
         closeButton.style.padding = '10px 20px';
         closeButton.style.borderRadius = '5px';
         closeButton.style.cursor = 'pointer';
-        
+
         closeButton.addEventListener('click', function() {
             document.body.removeChild(modal);
         });
@@ -429,8 +430,14 @@
         img.style.maxWidth = '100%';
         img.style.height = 'auto';
 
+        var totalBooksText = document.createElement('p');
+        totalBooksText.textContent = 'Total Books: {{ total_books }}';
+        totalBooksText.style.fontWeight = 'bold';
+        totalBooksText.style.marginTop = '10px';
+
         content.appendChild(closeButton);
         content.appendChild(img);
+        content.appendChild(totalBooksText);  // Add total book count below the graph
         modal.appendChild(content);
         document.body.appendChild(modal);
     });
