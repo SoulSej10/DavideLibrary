@@ -1274,7 +1274,26 @@ def attendance_list(request):
         'grade_level_data': json.dumps({'labels': labels, 'sizes': sizes}),  # Pass JSON data to the template
     })
 
+@login_required
+def recent_attendance_stats(request):
+    # Get the three most recent attendance dates with records
+    recent_dates = Attendance.objects.dates('date_time', 'day', order='DESC')[:3]
 
+    # Gather attendance counts by grade level for each of the recent dates
+    recent_data = []
+    for date in recent_dates:
+        day_data = Attendance.objects.filter(date_time__date=date) \
+            .values('grade_level') \
+            .annotate(total_students=Count('borrower_uid_number', distinct=True)) \
+            .order_by('grade_level')
+
+        # Format each day's data for JSON serialization
+        recent_data.append({
+            'date': date.strftime('%b %d, %Y'),
+            'data': {stat['grade_level']: stat['total_students'] for stat in day_data}
+        })
+
+    return JsonResponse(recent_data, safe=False)
 
 
 

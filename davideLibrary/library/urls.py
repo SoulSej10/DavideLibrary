@@ -60,6 +60,7 @@ urlpatterns = [
     # attendance
     path('create/', views.create_attendance, name='create-attendance'),
     path('list/', views.attendance_list, name='attendance-list'),
+    path('recent-attendance-stats/', views.recent_attendance_stats, name='recent_attendance_stats'),
 
     # # Borrowed books
     path('monitor-borrowed-books/', views.monitor_borrowed_books, name='monitor-borrowed-books'),

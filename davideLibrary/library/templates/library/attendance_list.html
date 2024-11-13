@@ -15,6 +15,70 @@
             font-family: 'Poppins';
             src: url('{% static "styles/Poppins/Poppins-Medium.ttf" %}') format('truetype');
         }
+        /* Ensure the carousel has a consistent height and width */
+        /* Make sure the carousel is positioned below the pie chart */
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Ensure the carousel takes the correct size and is aligned at the bottom */
+        #carouselChartContainer {
+            width: 300px;
+            height: 280px;
+            margin-top: 20px; /* Add spacing between the pie chart and the carousel */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Ensure only one carousel item is visible at a time */
+        .carousel-item {
+            display: none;  /* Hide all items by default */
+        }
+
+        .carousel-item.active {
+            display: block; /* Only display the active item */
+        }
+
+        .carousel-control-prev, .carousel-control-next {
+            background-color: #007bff; /* Button background color */
+            color: white; /* Icon color */
+            border: none; /* Remove button borders */
+            border-radius: 20%; /* Circular shape */
+            width: 40px; /* Button width */
+            height: 40px; /* Button height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth hover transition */
+            font-size: 20px; /* Icon size */
+            font-weight: bold; /* Bold icon */
+        }
+
+        .carousel-control-prev:hover, .carousel-control-next:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+
+        .carousel-control-prev span, .carousel-control-next span {
+            display: inline-block;
+            line-height: 1;
+        }
+
+        .carousel-control-prev {
+            margin-right: 10px; /* Adjust spacing from the carousel */
+        }
+
+        .carousel-control-next {
+            margin-left: 10px; /* Adjust spacing from the carousel */
+        }
+
+
+
     </style>
     {% endblock %}
     <!-- Add Chart.js from CDN -->
@@ -58,11 +122,28 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Chart container -->
+            
+            <div class="chart" style="display: flex; flex-direction: column;">
+            <!-- Existing Chart container for the Pie Chart -->
             <div class="chart-container" style="width: 300px; height: 280px;">
                 <canvas id="attendanceChart"></canvas>
             </div>
+
+            <!-- New carousel container for the bar chart statistics -->
+            <div class="bar" id="carouselChartContainer" style="width: 300px; height: 95px; ">
+                <div class="carousel-inner" style="width: 300px; height: 180px;">
+                    <!-- Dynamic carousel items will be injected here -->
+                </div>
+                <div class="btns" style="display: flex; flex-direction: row; margin-top: 45px; padding-left: 40px;">
+                    <button class="carousel-control-prev" type="button" id="prevButton">
+                        <span><</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" id="nextButton">
+                        <span>></span>
+                    </button>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -117,6 +198,90 @@
                 }
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+    // Fetch recent attendance data for the three most recent dates
+    fetch("{% url 'recent_attendance_stats' %}")
+        .then(response => response.json())
+        .then(data => {
+            const carouselInner = document.querySelector('#carouselChartContainer .carousel-inner');
+            carouselInner.innerHTML = '';  // Clear any existing content
+
+            // Create carousel items
+            data.forEach((dayData, index) => {
+                const carouselItem = document.createElement('div');
+                carouselItem.classList.add('carousel-item');
+                if (index === 0) carouselItem.classList.add('active');  // Make the first item active
+
+                // Chart container
+                const chartContainer = document.createElement('div');
+                chartContainer.classList.add('chart-container');
+                chartContainer.style.width = '300px';
+                chartContainer.style.height = '280px';
+
+                const canvas = document.createElement('canvas');
+                canvas.id = `attendanceChart${index + 1}`;  // Unique ID for each canvas
+
+                chartContainer.appendChild(canvas);
+                carouselItem.appendChild(chartContainer);
+                carouselInner.appendChild(carouselItem);
+
+                // Render chart with Chart.js
+                const ctx = canvas.getContext('2d');
+                const labels = Object.keys(dayData.data);
+                const dataValues = Object.values(dayData.data);
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `Attendance on ${dayData.date}`,
+                            data: dataValues,
+                            backgroundColor: '#36A2EB',
+                            borderColor: '#36A2EB',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { title: { display: true, text: 'Grade Level' }},
+                            y: { title: { display: true, text: 'Number of Students' }, beginAtZero: true, ticks: { stepSize: 1 }}
+                        },
+                        plugins: { legend: { display: false }, title: { display: true, text: `Library Logs on ${dayData.date}` }}
+                    }
+                });
+            });
+
+            // Custom Carousel Logic
+            const items = document.querySelectorAll('.carousel-item');
+            let currentIndex = 0;
+
+            function updateCarousel(newIndex) {
+                items[currentIndex].classList.remove('active');
+                items[newIndex].classList.add('active');
+                currentIndex = newIndex;
+            }
+
+            // Previous Button
+            document.getElementById('prevButton').addEventListener('click', () => {
+                const newIndex = (currentIndex === 0) ? items.length - 1 : currentIndex - 1;
+                updateCarousel(newIndex);
+            });
+
+            // Next Button
+            document.getElementById('nextButton').addEventListener('click', () => {
+                const newIndex = (currentIndex === items.length - 1) ? 0 : currentIndex + 1;
+                updateCarousel(newIndex);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching attendance data:', error);
+        });
+});
+
+
     </script>
 </body>
 </html>
