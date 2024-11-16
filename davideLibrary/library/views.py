@@ -499,20 +499,6 @@ def request_password_reset(request):
 
     return render(request, 'library/request.html', {'temp_password': temp_password})
 
-# def change_password(request):
-#     if request.method == 'POST':
-#         form = PasswordChangeForm(request.user, request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             update_session_auth_hash(request, user)  # Keeps the user logged in after password change
-#             user.temporary_password = None  # Clear the temporary password once the user has updated it
-#             user.save()
-#             return redirect('home')
-#     else:
-#         form = PasswordChangeForm(request.user)
-
-#     return render(request, 'library/password_change.html', {'form': form})
-
 def change_password(request):
     if request.method == 'POST':
         form = CustomPasswordResetForm(request.POST)
