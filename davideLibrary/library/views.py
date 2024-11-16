@@ -534,7 +534,7 @@ def change_password(request):
 
             # Display a success message and redirect the user
             messages.success(request, 'Your password has been successfully changed!')
-            return redirect('home')  # You can change this to a different redirect if needed
+            return redirect('home')  
     else:
         form = CustomPasswordResetForm()
 
