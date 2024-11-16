@@ -517,22 +517,17 @@ def change_password(request):
     if request.method == 'POST':
         form = CustomPasswordResetForm(request.POST)
         if form.is_valid():
-            # Get the user who is changing the password
-            user = request.user  # Assuming the user is logged in
+            user = request.user  
 
-            # Set the new password
             new_password = form.cleaned_data['new_password1']
             user.set_password(new_password)
             user.save()
 
-            # Update session to keep the user logged in
             update_session_auth_hash(request, user)
 
-            # Clear the temporary password once the user has updated it
             user.temporary_password = None
             user.save()
 
-            # Display a success message and redirect the user
             messages.success(request, 'Your password has been successfully changed!')
             return redirect('home')  
     else:
