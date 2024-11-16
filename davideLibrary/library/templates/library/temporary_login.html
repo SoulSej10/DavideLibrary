@@ -1,0 +1,24 @@
+{% load static %}
+
+{% block content %}
+  <h2>Temporary Login</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="username">Username:</label>
+      <input type="text" name="username" required>
+
+      <label for="temporary_password">Temporary Password:</label>
+      <input type="text" name="temporary_password" required>
+      
+    </div>
+    <button type="submit">Login</button>
+  </form>
+{% endblock %}

@@ -50,9 +50,18 @@ from django.contrib.auth.hashers import make_password
 from django.core.files import File
 from django.core.files.base import ContentFile
 
-
-
-
+# from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+import random
+import string
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import render, redirect
+from .forms import CustomPasswordResetForm
 
 #MARK: Landing Page
 # ============================================================================================================================================
@@ -313,7 +322,6 @@ class AssistantLibrarianLoginView(LoginView):
 def directory(request):
     return render(request, 'library/directory.html')
 
-# Custom login view (if using a custom authentication form)
 def login_view(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
@@ -324,16 +332,31 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             admin_id = form.cleaned_data.get('admin_id')
             
-            # Authenticate user
-            user = authenticate(request, username=username, password=password)
-            
-            # Check if user is authenticated and if admin_id matches
-            if user is not None and user.admin_id == admin_id:  # Adjust this check based on your User model
-                login(request, user)
-                messages.success(request, 'Login successful.')
-                return redirect('home')
-            else:
-                messages.error(request, 'Invalid credentials or admin ID.')
+            try:
+                # Fetch the user from the database
+                user = CustomUser.objects.get(username=username)
+                
+                # Check if the password matches the temporary password
+                if user.temporary_password == password:
+                    # If the user is using the temporary password, authenticate them manually
+                    login(request, user)
+                    
+                    # Display a message prompting the user to change their password
+                    messages.warning(request, 'You are using a temporary password. Please change your password.')
+                    return redirect('change_password')  # Redirect to the password change page
+                
+                # Otherwise, authenticate the user with the usual credentials
+                user = authenticate(request, username=username, password=password)
+                
+                if user is not None and user.admin_id == admin_id:
+                    login(request, user)
+                    
+                    messages.success(request, 'Login successful.')
+                    return redirect('home')
+                else:
+                    messages.error(request, 'Invalid credentials or admin ID.')
+            except CustomUser.DoesNotExist:
+                messages.error(request, 'User does not exist.')
         else:
             messages.error(request, 'Login failed. Please check your details.')
 
@@ -341,6 +364,7 @@ def login_view(request):
         form = CustomAuthenticationForm()
 
     return render(request, 'library/LogRegister.html', {'form': form})
+
 
 # Logout view
 def logout_view(request):
@@ -450,8 +474,111 @@ def generate_account_pdf(request, admin_id):
     p.save()
     return response
 
+# Generate a random temporary password
+def generate_temporary_password():
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+
+def request_password_reset(request):
+    temp_password = None  # Initialize to None in case no password has been generated yet
+
+    if request.method == "POST":
+        username = request.POST.get('username')
+        try:
+            user = CustomUser.objects.get(username=username)
+        except CustomUser.DoesNotExist:
+            # If the user does not exist, handle the error gracefully
+            return render(request, 'library/request.html', {'error': 'User does not exist'})
+
+        # Generate temporary password
+        temp_password = generate_temporary_password()
+        user.temporary_password = temp_password
+        user.save()
+
+        # Pass the temporary password to the template
+        return render(request, 'library/request.html', {'temp_password': temp_password})
+
+    return render(request, 'library/request.html', {'temp_password': temp_password})
+
+# def change_password(request):
+#     if request.method == 'POST':
+#         form = PasswordChangeForm(request.user, request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             update_session_auth_hash(request, user)  # Keeps the user logged in after password change
+#             user.temporary_password = None  # Clear the temporary password once the user has updated it
+#             user.save()
+#             return redirect('home')
+#     else:
+#         form = PasswordChangeForm(request.user)
+
+#     return render(request, 'library/password_change.html', {'form': form})
+
+def change_password(request):
+    if request.method == 'POST':
+        form = CustomPasswordResetForm(request.POST)
+        if form.is_valid():
+            # Get the user who is changing the password
+            user = request.user  # Assuming the user is logged in
+
+            # Set the new password
+            new_password = form.cleaned_data['new_password1']
+            user.set_password(new_password)
+            user.save()
+
+            # Update session to keep the user logged in
+            update_session_auth_hash(request, user)
+
+            # Clear the temporary password once the user has updated it
+            user.temporary_password = None
+            user.save()
+
+            # Display a success message and redirect the user
+            messages.success(request, 'Your password has been successfully changed!')
+            return redirect('home')  # You can change this to a different redirect if needed
+    else:
+        form = CustomPasswordResetForm()
+
+    return render(request, 'library/password_change.html', {'form': form})
 
 
+def temporary_login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        temp_password = request.POST.get('temporary_password')
+
+        try:
+            # Fetch the user based on the username
+            user = CustomUser.objects.get(username=username)
+
+            # Check if the entered temporary password matches
+            if user.temporary_password == temp_password:
+                # Log the user in
+                login(request, user)
+
+                # Clear the temporary password to prevent reuse
+                user.temporary_password = None
+                user.save()
+
+                # Redirect to password change page
+                return redirect('change_password')
+            else:
+                messages.error(request, 'Invalid temporary password.')
+        except CustomUser.DoesNotExist:
+            messages.error(request, 'User does not exist.')
+
+    return render(request, 'library/temporary_login.html')
+
+
+
+
+
+
+
+
+
+
+
+#MARK: Home
 
 @login_required
 def home(request):

@@ -139,12 +139,18 @@
             <form method="post">
                 <div class="form-group">
                     {% csrf_token %}
-                    {{ form.username.label }} {{ form.username }}  <!-- Include label and input for username -->
-                    {{ form.password.label }} {{ form.password }}  <!-- Include label and input for password -->
+                    {{ form.username.label }} {{ form.username }}  
+                    {{ form.password.label }} {{ form.password }}  
                 </div>
                 <button type="submit" style="font-weight: bold; font-size: 18px; width: 280px; border-radius: 10px; font-family: Poppins;">LOGIN</button>
-                <a href="{% url 'directory' %}" style="text-decoration: none; color: black; padding-top: 10px;">Back to Directory</a>
+                <div class="links" style="display: flex; flex-direction: row;">
+                <a href="{% url 'directory' %}" style="text-decoration: none; color: black; padding-top: 10px; padding-right: 10px;">Back to Directory</a>
+                <a href="{% url 'password_reset' %}" style="text-decoration: none; color: blue; font-size: 16px; margin-top: 10px; display: inline-block;">
+                    Forgot Password?
+                </a>
+            </div>
             </form>
+            
         </div>
     </div>
 

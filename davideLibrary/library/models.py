@@ -20,7 +20,8 @@ from .utils import generate_qr_code
 from django.utils import timezone
 from django.db.models import Max
 import re
-
+import random
+import string
 
 
 # ============================================================================================================================================
@@ -61,6 +62,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Assistant Librarian')
     qr_code = models.ImageField(upload_to='qr_codes', blank=True, null=True)
+    temporary_password = models.CharField(max_length=128, blank=True, null=True)  # New temporary password field
 
     objects = CustomUserManager()
 

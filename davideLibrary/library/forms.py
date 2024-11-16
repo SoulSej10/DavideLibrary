@@ -13,7 +13,8 @@ from datetime import timedelta
 from django.contrib.auth import authenticate
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
-
+# from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 
@@ -88,7 +89,24 @@ class CustomAuthenticationForm(AuthenticationForm):
                 raise forms.ValidationError("Invalid credentials or admin ID.")
         return cleaned_data
 
+class CustomPasswordResetForm(forms.Form):
+    new_password1 = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        min_length=8,  # or your preferred min length
+    )
+    new_password2 = forms.CharField(
+        label="Confirm New Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        min_length=8,
+    )
 
+    def clean_new_password2(self):
+        password1 = self.cleaned_data.get("new_password1")
+        password2 = self.cleaned_data.get("new_password2")
+        if password1 != password2:
+            raise forms.ValidationError("The two password fields must match.")
+        return password2
 
 #MARK: Student
 # ============================================================================================================================================

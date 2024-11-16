@@ -24,6 +24,11 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('login/head/', views.HeadLibrarianLoginView.as_view(), name='head_librarian_login'),
     path('login/assistant/', views.AssistantLibrarianLoginView.as_view(), name='assistant_librarian_login'),
+
+    #login
+    path('password_reset/', views.request_password_reset, name='password_reset'),
+    path('change_password/', views.change_password, name='change_password'),
+    path('login/temporary/', views.temporary_login_view, name='temporary_login'),
     
     #register
     path('user-details/<str:user_id>/', views.user_details, name='user_details'),

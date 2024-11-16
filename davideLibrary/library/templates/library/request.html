@@ -1,0 +1,57 @@
+{% load static %}
+
+{% block content %}
+  <h2>Request Password Reset</h2>
+
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+
+  {% if temp_password %}
+    <div class="temp-password">
+      <p>Your temporary password is: <strong id="temp-password-display">{{ temp_password }}</strong></p>
+    </div>
+
+    <!-- Show the Copy and Confirm buttons after password generation -->
+    <button id="copy-password" onclick="copyPassword()">Copy</button>
+    <button id="confirm-password" onclick="goToTemporaryLogin()">Confirm</button>
+
+    <!-- Hide the request password reset button -->
+    <style>
+      #request-reset-btn { display: none; }
+    </style>
+  {% else %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" name="username" required>
+      </div>
+      <button type="submit" id="request-reset-btn">Request Password Reset</button>
+    </form>
+  {% endif %}
+  
+{% endblock %}
+
+<script>
+  // Function to copy the password to clipboard
+  function copyPassword() {
+    var passwordText = document.getElementById("temp-password-display").textContent;
+    navigator.clipboard.writeText(passwordText).then(function() {
+      alert("Password copied to clipboard!");
+    }, function(err) {
+      alert("Error copying password: " + err);
+    });
+  }
+
+  // Function to redirect to the login page after confirmation
+  function confirmPassword() {
+    window.location.href = "{% url 'login' %}";
+  }
+
+
+  function goToTemporaryLogin() {
+    // Redirect to the temporary login page
+    window.location.href = "{% url 'temporary_login' %}";
+  }
+</script>
