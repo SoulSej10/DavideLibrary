@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser, Category
+from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser, Category, Location
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth import authenticate
@@ -170,14 +170,18 @@ class BookInventoryForm(forms.ModelForm):
     firstname = forms.CharField(max_length=100, required=False)
     middle_initial = forms.CharField(max_length=2, required=False)
     lastname = forms.CharField(max_length=100, required=False)
-    
+    new_location = forms.CharField(max_length=200, required=False, label="New Location")  # Field for new location
+
     class Meta:
         model = BookInventory
-        fields = ['class_field', 'book_title', 'edition', 'volume', 'pages', 'quantity', 'fund_source', 'price', 'publisher', 'year', 'category', 'remark', 'location']
-    
+        fields = ['class_field', 'book_title', 'edition', 'volume', 'pages', 'quantity', 
+                  'fund_source', 'price', 'publisher', 'year', 'category', 'remark', 
+                  'location', 'book_type']
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
+            # Split the author into firstname, middle_initial, and lastname
             name_parts = self.instance.author.split()
             if len(name_parts) >= 3:
                 self.fields['firstname'].initial = ' '.join(name_parts[:-2])
@@ -190,10 +194,17 @@ class BookInventoryForm(forms.ModelForm):
                 self.fields['firstname'].initial = name_parts[0]
 
     def save(self, commit=True):
+        # Process author fields
         firstname = self.cleaned_data.get('firstname', '').strip()
         middle_initial = self.cleaned_data.get('middle_initial', '').strip()
         lastname = self.cleaned_data.get('lastname', '').strip()
         
+        # Handle saving a new location
+        new_location_name = self.cleaned_data.get('new_location')
+        if new_location_name:
+            location, created = Location.objects.get_or_create(name=new_location_name)
+            self.instance.location = location
+
         # Concatenate the names with careful handling of extra spaces
         if middle_initial:
             self.instance.author = f"{firstname} {middle_initial} {lastname}".strip()

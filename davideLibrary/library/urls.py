@@ -54,6 +54,7 @@ urlpatterns = [
     path('books/set-location/', views.set_location_for_books, name='set-location-for-books'),
     path('book-details/<str:book_number>/', book_details, name='book-details'),
     path('generate-selected-books-pdf/', generate_selected_books_pdf, name='generate-selected-books-pdf'),
+    path('add-location/',views.add_location, name='add-location'),
     
     # borrow slip
     path('borrow-slips/', views.borrow_slip_list, name='borrow-slip-list'),

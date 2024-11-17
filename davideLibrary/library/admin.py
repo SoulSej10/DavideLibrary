@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser, Category
+from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser, Category, Location
 
 # Borrower Admin
 class BorrowerAdmin(admin.ModelAdmin):
@@ -70,3 +70,10 @@ admin.site.register(CustomUser, CustomUserAdmin)
 
 # Category Admin
 admin.site.register(Category)
+
+
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'Location')  # Customize the columns displayed in the admin panel
+    search_fields = ('Location',)  # Add a search bar for the Location field
+
+admin.site.register(Location)

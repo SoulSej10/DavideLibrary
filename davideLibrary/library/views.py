@@ -15,7 +15,7 @@ from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
 from django.conf import settings
 from django.db import models
-from .models import  Borrower, BookInventory, BorrowSlip, Attendance, Category, CustomUser
+from .models import  Borrower, BookInventory, BorrowSlip, Attendance, Category, CustomUser, Location
 from .forms import  BorrowerForm, BookInventoryForm, BorrowSlipForm, AttendanceForm, PenaltyForm
 from django.contrib import messages
 from datetime import datetime
@@ -1011,21 +1011,28 @@ def book_list(request):
 @login_required
 def book_create(request):
     if request.method == 'POST':
-        if 'add-category' in request.POST:
+        if 'add-category' in request.POST:  # Handle adding a new category
             category_name = request.POST.get('category_name')
             if category_name:
                 Category.objects.get_or_create(name=category_name)
-                return redirect('book-create')  # Redirect to the same view to avoid re-posting the form
+                return redirect('book-create')  # Redirect to avoid re-posting the form
         else:
             form = BookInventoryForm(request.POST)
             if form.is_valid():
+                # Save the book with the location (new or existing)
                 form.save()
                 return redirect('book-list')
     else:
         form = BookInventoryForm()
 
     categories = Category.objects.all()
-    return render(request, 'library/book_form.html', {'form': form, 'categories': categories})
+    locations = Location.objects.all()  # Include locations for the dropdown
+    return render(
+        request,
+        'library/book_form.html',
+        {'form': form, 'categories': categories, 'locations': locations}
+    )
+
 
 @login_required
 def book_update(request, book_number):
@@ -1039,8 +1046,10 @@ def book_update(request, book_number):
     else:
         form = BookInventoryForm(instance=book)
     
-    categories = Category.objects.all()
-    return render(request, 'library/book_form.html', {'form': form, 'categories': categories})
+    locations = Location.objects.all()  # Fetch all locations
+    categories = Category.objects.all()  # Fetch all categories
+    return render(request, 'library/book_form.html', {'form': form, 'categories': categories, 'locations': locations})
+
 
 @login_required
 def delete_category(request, category_id):
@@ -1158,7 +1167,19 @@ def generate_selected_books_pdf(request):
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename='selected_books.pdf')
 
+@login_required
+def add_location(request):
+    if request.method == 'POST':
+        import json
+        data = json.loads(request.body)
+        location_name = data.get('name')
 
+        if location_name:
+            location, created = Location.objects.get_or_create(name=location_name)
+            return JsonResponse({'success': True, 'location_id': location.id})
+        else:
+            return JsonResponse({'success': False, 'message': 'Invalid location name.'})
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 
 

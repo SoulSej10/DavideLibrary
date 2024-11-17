@@ -144,6 +144,11 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+class Location(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 
@@ -152,6 +157,16 @@ class Category(models.Model):
 # ==============================================================___BOOK MODEL___==============================================================
 # ============================================================================================================================================
 class BookInventory(models.Model):
+    BOOK_TYPE_CHOICES = [
+        ('Circulation', 'Circulation'),
+        ('Reference', 'Reference'),
+        ('Novel', 'Novel'),
+        ('Research/Academic', 'Research/Academic'),
+        ('Encyclopedia', 'Encyclopedia'),
+        ('Dictionary', 'Dictionary'),
+        ('Year Book', 'Year Book'),
+    ]
+
     book_number = models.CharField(max_length=10, primary_key=True)
     record_date = models.DateTimeField(auto_now_add=True)
     class_field = models.CharField(max_length=100, blank=True, null=True)
@@ -167,8 +182,9 @@ class BookInventory(models.Model):
     year = models.IntegerField(blank=True, null=True)
     remark = models.TextField(blank=True, null=True)
 
+    book_type = models.CharField(max_length=50, choices=BOOK_TYPE_CHOICES, default='Circulation')  # New field
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    location = models.TextField(blank=True, null=True)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True, default=1)
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
 
     def __str__(self):
@@ -196,6 +212,7 @@ class BookInventory(models.Model):
     def get_category_prefix(self):
         category_prefix_map = {category.name: chr(65 + i) for i, category in enumerate(Category.objects.all())}
         return category_prefix_map.get(self.category.name, 'X')
+
 
 
 

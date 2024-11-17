@@ -311,9 +311,36 @@
                 {{ form.remark }}
             </div>
             <div class="form-group">
-                <label for="id_location" aria-placeholder="Add Book Location">Shelf Location <span style="color: #555;">(Optional)</span></label>
-                {{ form.location }}
+                <label for="id_book_type">Book Type</label>
+                <select id="id_book_type" name="book_type" class="form-control">
+                    <option value="" {% if not form.instance.book_type %}selected{% endif %}>--- Select Book Type ---</option>
+                    {% for choice in form.fields.book_type.choices %}
+                    <option value="{{ choice.0 }}" {% if form.instance.book_type == choice.0 %}selected{% endif %}>
+                        {{ choice.1 }}
+                    </option>
+                    {% endfor %}
+                </select>
             </div>
+            
+            <div class="form-group">
+                <label for="id_location">Shelf Location</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <select id="id_location" name="location" class="form-control">
+                        <option value="" {% if not form.instance.location %}selected{% endif %}>--- Select Location ---</option>
+                        {% for location in locations %}
+                        <option value="{{ location.id }}" {% if form.instance.location and location.id == form.instance.location.id %}selected{% endif %}>
+                            {{ location.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-secondary" onclick="toggleNewLocationInput()">+ Add New</button>
+                </div>
+                <div id="new_location_section" style="display: none; margin-top: 10px;">
+                    <input type="text" id="new_location_input" class="form-control" placeholder="Enter new location" />
+                    <button type="button" class="btn btn-primary mt-2" onclick="saveNewLocation()">Save Location</button>
+                </div>
+            </div>
+            
             <div class="form-actions">
                 <button type="submit" class="btn-save" style="font-family: 'Poppins', sans-serif;" >{{ form.instance.pk|yesno:"Save,Create" }}</button>
                 <a href="{% url 'book-list' %}" class="btn-back" style="padding-top: 10px; padding-bottom: 10px;">BACK TO LIST</a>
@@ -384,6 +411,50 @@
             });
             function closeModal() {
                 document.getElementById('categoryModal').style.display = 'none';
+            }
+
+            function toggleNewLocationInput() {
+                const section = document.getElementById('new_location_section');
+                section.style.display = section.style.display === 'none' ? 'block' : 'none';
+            }
+
+            function saveNewLocation() {
+                const newLocation = document.getElementById('new_location_input').value.trim();
+
+                if (newLocation === "") {
+                    alert("Please enter a location name.");
+                    return;
+                }
+
+                // Send new location to the server using AJAX
+                fetch("{% url 'add-location' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({ name: newLocation })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Location added successfully!");
+                        // Reload the dropdown with the new location
+                        const locationSelect = document.getElementById('id_location');
+                        const option = document.createElement('option');
+                        option.value = data.location_id;
+                        option.text = newLocation;
+                        locationSelect.appendChild(option);
+                        locationSelect.value = data.location_id;
+
+                        // Reset input field and hide section
+                        document.getElementById('new_location_input').value = "";
+                        toggleNewLocationInput();
+                    } else {
+                        alert("Failed to add location.");
+                    }
+                })
+                .catch(error => console.error("Error adding location:", error));
             }
         </script>
     </div>
