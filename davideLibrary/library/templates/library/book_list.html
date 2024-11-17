@@ -59,7 +59,7 @@
                                     <td>{{ book.category.name }}</td>
                                     <td>
                                         <div class="butstyle">
-                                            <button type="button" class="btn-details" onclick="showDetails('{{ book.book_number }}')">Details</button>
+                                            <button type="button" class="btn-view-details" data-book-number="{{ book.book_number }}">Details</button>
                                             <a href="{% url 'book-update' book.book_number %}" class="btn-edit">Edit</a>
                                         </div>
                                     </td>
@@ -103,22 +103,6 @@
             </form>
         </div>
 
-        
-        
-        <!-- Hidden Actions Container -->
-        <!-- <div id="location-container" class="hidden">
-            
-            <label for="location">Add Location:</label>
-            <input type="text" name="location" id="location" style="width: 94%;" placeholder="Enter location for selected books">
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button type="button" id="set-location-btn" class="btn btn-search hidden" onclick="setLocation()">Set Location</button>
-                <button type="submit" name="action" value="delete" id="delete-btn" class="btn btn-delete hidden" style="display: none;"></button>
-                <button type="button" class="btn btn-delete" data-toggle="modal" data-target="#deleteModal" style="background-color: #ff4d4d;color: white;" onclick="submitDeleteForm()">Delete</button>
-                <button type="button" class="btn btn-download" onclick="downloadPdf()">Download PDF</button>
-                
-            </div>
-        </div> -->
-
         <div id="location-container" class="hidden">
             <label for="location">Add Location:</label>
             <input type="text" name="location" id="location" style="width: 94%;" placeholder="Enter location for selected books">
@@ -145,15 +129,14 @@
     </div>
 </div>
 
-<!-- Modal for Book Details -->
-<div class="modal-details" id="book-details">
-    <div class="modal-content-details">
-        <span class="close-details" onclick="closeDetailsModal()">&times;</span>
+<!-- Modal Structure -->
+<div id="bookModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
         <h2>Book Details</h2>
-        <div id="details-content">
-            <!-- Book details will be dynamically loaded here -->
+        <div id="bookDetails">
+            <!-- Dynamic book details will be injected here -->
         </div>
-        <!-- <button type="button" class="btn btn-secondary" onclick="closeDetailsModal()">Close</button> -->
     </div>
 </div>
 
@@ -216,80 +199,68 @@
         document.getElementById('delete-form').submit();
     }
 
-    // Show Details Modal
-    function showDetails(bookNumber) {
-        fetch(`/book-details/${bookNumber}/`)  // Adjust URL if needed
-            .then(response => response.json())
-            .then(data => {
-                const detailsContent = document.getElementById('details-content');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get modal and close button
+        const modal = document.getElementById('bookModal');
+        const closeBtn = document.getElementsByClassName('close-btn')[0];
 
-                // Ensure price is treated as a number if it's valid
-                let priceDisplay = 'N/A';
-                if (typeof data.price === 'number') {
-                    priceDisplay = `$${data.price.toFixed(2)}`;
-                }
+        // Get all "View Details" buttons
+        const buttons = document.querySelectorAll('.btn-view-details');
 
-                detailsContent.innerHTML = `
-                    <table class="details-table">
-                        <tr>
-                            <td colspan="6">
-                                ${data.qr_code ? `<img src="${data.qr_code}" alt="QR Code" style="width: 100px; height: 100px;">` : ''}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Book Number:</strong></td>
-                            <td>${data.book_number}</td>
-                            <td><strong>Record Date:</strong></td>
-                            <td>${data.record_date}</td>
-                            <td><strong>Class Field:</strong></td>
-                            <td>${data.class_field}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Author:</strong></td>
-                            <td>${data.author}</td>
-                            <td><strong>Book Title:</strong></td>
-                            <td>${data.book_title}</td>
-                            <td><strong>Edition:</strong></td>
-                            <td>${data.edition}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Volume:</strong></td>
-                            <td>${data.volume}</td>
-                            <td><strong>Pages:</strong></td>
-                            <td>${data.pages}</td>
-                            <td><strong>Quantity:</strong></td>
-                            <td>${data.quantity}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Fund Source:</strong></td>
-                            <td>${data.fund_source}</td>
-                            <td><strong>Price:</strong></td>
-                            <td>${priceDisplay}</td>
-                            <td><strong>Publisher:</strong></td>
-                            <td>${data.publisher}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Year:</strong></td>
-                            <td>${data.year}</td>
-                            <td><strong>Remark:</strong></td>
-                            <td>${data.remark}</td>
-                            <td><strong>Category:</strong></td>
-                            <td>${data.category_name}</td>
-                        </tr>
-                    </table>
-                `;
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                const bookNumber = button.getAttribute('data-book-number');
 
-                document.getElementById('book-details').style.display = 'block';
-                document.querySelector('.main-content').classList.add('blur');
-            })
-            .catch(error => console.error('Error:', error));
-    }
+                // Use AJAX to fetch book details
+                fetch(`/book-detail/${bookNumber}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Populate modal with book details
+                        const bookDetailsContainer = document.getElementById('bookDetails');
+                        bookDetailsContainer.innerHTML = `
+                        <div class="content-container">
+                            <div class="content-column" ">
+                                <p><strong>Book Number:</strong> ${data.book_number}</p>
+                                <p><strong>Author:</strong> ${data.author}</p>
+                                <p><strong>Title:</strong> ${data.book_title}</p>
+                                <p><strong>Edition:</strong> ${data.edition}</p>
+                                <p><strong>Volume:</strong> ${data.volume}</p>
+                                <p><strong>Pages:</strong> ${data.pages}</p>
+                                <p><strong>Quantity:</strong> ${data.quantity}</p>
+                            </div>
+                            <div class="content-column">
+                                <p><strong>Fund Source:</strong> ${data.fund_source}</p>
+                                <p><strong>Price:</strong> ${data.price}</p>
+                                <p><strong>Publisher:</strong> ${data.publisher}</p>
+                                <p><strong>Year:</strong> ${data.year}</p>
+                                <p><strong>Remark:</strong> ${data.remark}</p>
+                                <p><strong>Book Type:</strong> ${data.book_type}</p>
+                                <p><strong>Category:</strong> ${data.category}</p>
+                            </div>
+                        </div>
+                        `;
 
-    // Close Details Modal
-    function closeDetailsModal() {
-        document.getElementById('book-details').style.display = 'none';
-        document.querySelector('.main-content').classList.remove('blur');
-    }
+                        // Show modal
+                        modal.style.display = 'block';
+                    })
+                    .catch(error => console.error('Error fetching book details:', error));
+            });
+        });
+
+        // Close modal when close button is clicked
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        // Close modal if user clicks outside the modal
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    });
+
+
 
     // Close Delete Modal
     function closeDeleteModal() {

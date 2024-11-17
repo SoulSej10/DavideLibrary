@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import book_details, generate_selected_books_pdf
+from .views import generate_selected_books_pdf
 
 urlpatterns = [
     #landing
@@ -52,14 +52,14 @@ urlpatterns = [
     path('category/delete/<int:category_id>/', views.delete_category, name='delete-category'),
     path('books/delete-selected/', views.delete_selected_books, name='delete-selected-books'),
     path('books/set-location/', views.set_location_for_books, name='set-location-for-books'),
-    path('book-details/<str:book_number>/', book_details, name='book-details'),
+    path('book-detail/<str:book_number>/', views.book_detail, name='book-detail'),
     path('generate-selected-books-pdf/', generate_selected_books_pdf, name='generate-selected-books-pdf'),
     path('add-location/',views.add_location, name='add-location'),
     
     # borrow slip
     path('borrow-slips/', views.borrow_slip_list, name='borrow-slip-list'),
     path('borrow-slips/create/', views.borrow_slip_create, name='borrow-slip-create'),
-    path('book-details/<str:book_number>/', book_details, name='book-details'),
+    # path('book-details/<str:book_number>/', book_details, name='book-details'),
     path('borrower-details/<str:borrower_uid>/', views.borrower_details, name='borrower-details'),
     path('download-selected-pdf/', views.download_selected_pdf, name='download-selected-pdf'),
     

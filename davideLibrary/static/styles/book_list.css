@@ -180,7 +180,7 @@ tbody tr:nth-child(even) {
     gap: 5px;
 }
 
-.btn-details {
+.btn-view-details {
     background-color: #7EBC89; /* Green */
     color: white;
     border: none;
@@ -191,7 +191,7 @@ tbody tr:nth-child(even) {
     font-family: 'Poppins', sans-serif;
 }
 
-.btn-details:hover {
+.btn-view-details:hover {
     background-color: #6FAE7B;
 }
 
@@ -221,7 +221,7 @@ tbody tr:nth-child(even) {
 }
 
 /* Modal Styles */
-.modal-delete, .modal-details {
+.modal-delete, .modal {
     display: none;
     position: fixed;
     z-index: 1001;
@@ -234,7 +234,7 @@ tbody tr:nth-child(even) {
     padding-top: 60px;
 }
 
-.modal-content-delete, .modal-content-details {
+.modal-content-delete, .modal-content {
     background-color: #fefefe;
     margin: 5% auto;
     padding: 20px;
@@ -242,21 +242,52 @@ tbody tr:nth-child(even) {
     width: 80%;
     max-width: 600px;
     border-radius: 20px;
+    top: 60px;
 }
 
-.close-delete, .close-details {
+.close-delete, .close-btn {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.close-delete:hover, .close-details:hover,
-.close-delete:focus, .close-details:focus {
+.close-delete:hover, .close-btn:hover,
+.close-delete:focus, .close-btn:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
 }
+
+.content-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background-color: #ffffff; /* White background for modal content */
+    border-radius: 8px;
+    font-size: 14px;
+    max-width: 600px;
+    width: 90%; /* Responsive width */
+    flex-wrap: wrap; /* Ensure wrapping on smaller screens */
+}
+
+/* Columns for content */
+.content-column {
+    flex: 1;
+    min-width: 250px; /* Minimum width for columns */
+}
+
+.content-column p {
+    margin: 8px 0;
+    line-height: 1.5;
+    color: #333; /* Text color */
+}
+
+.content-column strong {
+    font-weight: bold;
+    color: #222; /* Slightly darker for emphasis */
+}
+
 
 /* Notification Styles */
 .notification {
@@ -313,3 +344,4 @@ tbody tr:nth-child(even) {
         width: 100%;
     }
 }
+

@@ -1087,31 +1087,38 @@ def set_location_for_books(request):
     
     return redirect('book-list')
 
-def book_details(request, book_number):
-    try:
-        book = BookInventory.objects.get(book_number=book_number)
-        data = {
-            'book_number': book.book_number,
-            'record_date': book.record_date.strftime('%Y-%m-%d'),
-            'class_field': book.class_field,
-            'author': book.author,
-            'book_title': book.book_title,
-            'edition': book.edition,
-            'volume': book.volume,
-            'pages': book.pages,
-            'quantity': book.quantity,
-            'fund_source': book.fund_source,
-            'price': book.price,
-            'publisher': book.publisher,
-            'year': book.year,
-            'remark': book.remark,
-            'category_name': book.category.name,
-            'location': book.location,
-            'qr_code': book.qr_code.url if book.qr_code else None,
-        }
-        return JsonResponse(data)
-    except BookInventory.DoesNotExist:
-        return JsonResponse({'error': 'Book not found'}, status=404)
+@login_required
+def book_detail(request, book_number):
+    # Retrieve the book by book_number
+    book = get_object_or_404(BookInventory, book_number=book_number)
+
+    # Create a dictionary of book details
+    book_data = {
+        'book_number': book.book_number,
+        'author': book.author,
+        'book_title': book.book_title,
+        'edition': book.edition,
+        'volume': book.volume,
+        'pages': book.pages,
+        'quantity': book.quantity,
+        'fund_source': book.fund_source,
+        'price': book.price,
+        'publisher': book.publisher,
+        'year': book.year,
+        'remark': book.remark,
+        'book_type': book.book_type,
+        'category': book.category.name,  # assuming category is related to the Category model
+    }
+
+    # Return the data as JSON
+    return JsonResponse(book_data)
+
+
+
+
+
+
+
 
 
 def generate_selected_books_pdf(request):
@@ -1305,31 +1312,31 @@ def borrow_slip_create(request):
     return render(request, 'library/borrow_slip_form.html', {'form': form})
 
 
-@login_required
-def book_details(request, book_number):
-    try:
-        book = BookInventory.objects.get(book_number=book_number)
-        data = {
-            'book_title': book.book_title,
-            'author': book.author,
-            'book_number': book.book_number,
-            'class_field': book.class_field,
-            'edition': book.edition,
-            'volume': book.volume,
-            'pages': book.pages,
-            'quantity': book.quantity,
-            'fund_source': book.fund_source,
-            'price': book.price,
-            'publisher': book.publisher,
-            'year': book.year,
-            'category': book.category.name if book.category else '',
-            'remark': book.remark,
-            'location': book.location,
+# @login_required
+# def book_details(request, book_number):
+#     try:
+#         book = BookInventory.objects.get(book_number=book_number)
+#         data = {
+#             'book_title': book.book_title,
+#             'author': book.author,
+#             'book_number': book.book_number,
+#             'class_field': book.class_field,
+#             'edition': book.edition,
+#             'volume': book.volume,
+#             'pages': book.pages,
+#             'quantity': book.quantity,
+#             'fund_source': book.fund_source,
+#             'price': book.price,
+#             'publisher': book.publisher,
+#             'year': book.year,
+#             'category': book.category.name if book.category else '',
+#             'remark': book.remark,
+#             'location': book.location,
             
-        }
-    except BookInventory.DoesNotExist:
-        data = {}
-    return JsonResponse(data)
+#         }
+#     except BookInventory.DoesNotExist:
+#         data = {}
+#     return JsonResponse(data)
 
 @login_required
 def borrower_details(request, borrower_uid):
