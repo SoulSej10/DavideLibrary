@@ -935,9 +935,28 @@ def book_list(request):
             if selected_books:
                 BookInventory.objects.filter(book_number__in=selected_books).delete()
             return redirect('book-list')
+        elif 'set-location' in request.POST:  # Handle setting location
+            location_id = request.POST.get('location')
+            selected_books = request.POST.getlist('selected_books')
 
+            if location_id and selected_books:
+                try:
+                    location = Location.objects.get(id=location_id)
+                    BookInventory.objects.filter(book_number__in=selected_books).update(location=location)
+                except Location.DoesNotExist:
+                    messages.error(request, "Invalid location selected.")
+            return redirect('book-list')
+        elif 'add-location' in request.POST:  # Handle adding a new location
+            location_name = request.POST.get('new_location')
+            if location_name:
+                Location.objects.get_or_create(name=location_name)
+            return redirect('book-list')
+
+    # Fetch categories and locations
     categories = Category.objects.all()
+    locations = Location.objects.all()
 
+    # Filter books based on query or category
     if query:
         books = BookInventory.objects.filter(
             models.Q(book_number__icontains=query) | models.Q(book_title__icontains=query)
@@ -1002,6 +1021,7 @@ def book_list(request):
         'category': category_name,
         'form': form,
         'categories': categories,
+        'locations': locations,  # Pass locations to template
         'no_results': no_results,
     }
     return render(request, 'library/book_list.html', context)
@@ -1114,13 +1134,6 @@ def book_detail(request, book_number):
     return JsonResponse(book_data)
 
 
-
-
-
-
-
-
-
 def generate_selected_books_pdf(request):
     # Get selected book numbers from the POST request
     selected_book_numbers = request.POST.getlist('selected_books')
@@ -1187,7 +1200,6 @@ def add_location(request):
         else:
             return JsonResponse({'success': False, 'message': 'Invalid location name.'})
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
-
 
 
 
@@ -1311,32 +1323,6 @@ def borrow_slip_create(request):
         form = BorrowSlipForm(user=request.user)
     return render(request, 'library/borrow_slip_form.html', {'form': form})
 
-
-# @login_required
-# def book_details(request, book_number):
-#     try:
-#         book = BookInventory.objects.get(book_number=book_number)
-#         data = {
-#             'book_title': book.book_title,
-#             'author': book.author,
-#             'book_number': book.book_number,
-#             'class_field': book.class_field,
-#             'edition': book.edition,
-#             'volume': book.volume,
-#             'pages': book.pages,
-#             'quantity': book.quantity,
-#             'fund_source': book.fund_source,
-#             'price': book.price,
-#             'publisher': book.publisher,
-#             'year': book.year,
-#             'category': book.category.name if book.category else '',
-#             'remark': book.remark,
-#             'location': book.location,
-            
-#         }
-#     except BookInventory.DoesNotExist:
-#         data = {}
-#     return JsonResponse(data)
 
 @login_required
 def borrower_details(request, borrower_uid):

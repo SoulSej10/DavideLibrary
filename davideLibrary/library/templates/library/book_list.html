@@ -104,12 +104,11 @@
         </div>
 
         <div id="location-container" class="hidden">
-            <label for="location">Add Location:</label>
-            <input type="text" name="location" id="location" style="width: 94%;" placeholder="Enter location for selected books">
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button type="button" id="set-location-btn" class="btn btn-search" onclick="setLocation()">Set Location</button>
-                <button type="button" id="delete-btn" class="btn btn-delete" data-toggle="modal" data-target="#deleteModal" style="background-color: #ff4d4d;color: white;" onclick="submitDeleteForm()">Delete</button>
-                <button type="button" class="btn btn-download" onclick="downloadPdf()">Download PDF</button>
+           
+                <label for="location">Download Selected Data</label>
+
+                <button type="button" id="delete-btn" class="btn btn-delete" data-toggle="modal" data-target="#deleteModal" style=" display: none; background-color: #ff4d4d;color: white;" onclick="submitDeleteForm()">Delete</button>
+                <button type="button" class="btn btn-download" onclick="downloadPdf()" style="width: 315px; margin-top: 10px;">Download PDF</button>
             </div>
         </div>
     </div>
@@ -155,20 +154,37 @@
     function updateButtonVisibility() {
         const checkboxes = document.querySelectorAll('.book-checkbox');
         const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+
         const deleteBtn = document.getElementById('delete-btn');
         const setLocationBtn = document.getElementById('set-location-btn');
         const locationContainer = document.getElementById('location-container');
 
-        if (anyChecked) {
-            deleteBtn.classList.remove('hidden');
-            setLocationBtn.classList.remove('hidden');
-            locationContainer.classList.remove('hidden');
-        } else {
-            deleteBtn.classList.add('hidden');
-            setLocationBtn.classList.add('hidden');
-            locationContainer.classList.add('hidden');
+        // Check if the elements exist before attempting to access their classList
+        if (deleteBtn) {
+            if (anyChecked) {
+                deleteBtn.classList.remove('hidden');
+            } else {
+                deleteBtn.classList.add('hidden');
+            }
+        }
+
+        if (setLocationBtn) {
+            if (anyChecked) {
+                setLocationBtn.classList.remove('hidden');
+            } else {
+                setLocationBtn.classList.add('hidden');
+            }
+        }
+
+        if (locationContainer) {
+            if (anyChecked) {
+                locationContainer.classList.remove('hidden');
+            } else {
+                locationContainer.classList.add('hidden');
+            }
         }
     }
+
 
     // Individual Checkbox Change
     const checkboxes = document.querySelectorAll('.book-checkbox');
@@ -186,18 +202,6 @@
             form.submit();
         });
     });
-
-    // Set Location Function
-    function setLocation() {
-        const location = document.getElementById('location').value.trim();
-        if (!location) {
-            alert('Please provide a location.');
-            return;
-        }
-
-        document.getElementById('delete-form').action = "{% url 'set-location-for-books' %}";
-        document.getElementById('delete-form').submit();
-    }
 
     document.addEventListener('DOMContentLoaded', function() {
         // Get modal and close button
@@ -260,8 +264,6 @@
         };
     });
 
-
-
     // Close Delete Modal
     function closeDeleteModal() {
         document.getElementById('deleteModal').style.display = 'none';
@@ -277,48 +279,6 @@
         const form = document.getElementById('delete-form');
         const action = "{% url 'generate-selected-books-pdf' %}";
         form.setAttribute('action', action);
-        form.submit();
-    }
-    function setLocation() {
-        const selectedBooks = Array.from(document.querySelectorAll('input[name="selected_books"]:checked')).map(el => el.value);
-        const location = document.getElementById('location').value;
-
-        if (selectedBooks.length === 0 || !location) {
-            alert("No books selected or location not provided.");
-            return;
-        }
-
-        // Create a form programmatically
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = "{% url 'set-location-for-books' %}";  // Update with your actual URL
-
-        // CSRF Token
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = 'csrfmiddlewaretoken';
-        csrfInput.value = csrfToken;
-        form.appendChild(csrfInput);
-
-        // Add selected books to the form
-        selectedBooks.forEach(book => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'selected_books';
-            input.value = book;
-            form.appendChild(input);
-        });
-
-        // Add the location to the form
-        const locationInput = document.createElement('input');
-        locationInput.type = 'hidden';
-        locationInput.name = 'location';
-        locationInput.value = location;
-        form.appendChild(locationInput);
-
-        // Append the form to the body and submit
-        document.body.appendChild(form);
         form.submit();
     }
 </script>
