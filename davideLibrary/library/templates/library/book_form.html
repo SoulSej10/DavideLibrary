@@ -67,9 +67,8 @@
 
         .form-actions {
             display: flex;
-            align-items: center;
-            /* margin-top: 30px;
-            margin-bottom: 30px; */
+            flex-direction: column;
+            /* align-items: center; */
         }
 
         .form-actions button {
@@ -78,16 +77,21 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            text-transform: uppercase;
+            /* text-transform: uppercase; */
             gap: 10px;
+            /* margin-top: 28px; */
         }
 
         .btncategory{
-            background-color: #C5A86A;
+            background-color: #D6B980;
             color: white;
             padding: 7px 20px;
             border-radius: 4px;
-            margin-left: 10px;
+            width: 400px;
+            /* margin-left: 10px; */
+        }
+        .btncategory:hover {
+            background-color: #C5A86A;
         }
 
         .btn-cancel {
@@ -100,22 +104,26 @@
             background-color: #4CAF50;
             color: white;
         }
+        .btn-save:hover{
+            background-color: #3e8e41;
+            cursor: pointer;
+        }
 
         .btn-back {
             background-color: #777;
             color: white;
             text-decoration: none;
-            padding: 7px 20px;
+            padding: 10px 20px;
             border-radius: 4px;
             margin-left: 10px;
+            width: 155px;
+            text-align: center;
         }
 
         .btn-back:hover {
             background-color: #555;
         }
-        .btncategory:hover {
-            background-color: #D6B980;
-        }
+        
         .add-category-form {
             display: flex;
             align-items: center;
@@ -249,6 +257,34 @@
         tbody tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+
+        .btn-secondary{
+            font-family: 'Poppins', sans-serif; 
+            font-size: 10px; 
+            background-color: #007bff; 
+            border: none; 
+            color: white; 
+            border-radius: 4px; 
+            padding: 4px;
+        }
+        .btn-secondary:hover{
+            background-color: #0056b3;
+            cursor: pointer;
+        }
+        .btn-primary{
+            display: flex; 
+            flex-direction: row; 
+            border: none; 
+            color: white; 
+            border-radius: 4px; 
+            background-color: #4CAF50; 
+            font-family: 'Poppins', sans-serif; 
+            padding: 4px;
+        }
+        .btn-primary:hover{
+            background-color: #3e8e41;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -256,7 +292,7 @@
         <!-- <h1>{{ form.instance.pk|yesno:"Edit,Add" }} Book</h1> -->
         <form method="post">
             {% csrf_token %}
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 674px">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 673px">
                 <h1>{{ form.instance.pk|yesno:"Edit,Add" }} Book</h1>
                 <div class="book-type-wrapper" style="display: flex; align-items: center; gap: 10px;">
                     <label for="id_book_type" style="margin: 0; font-weight: bold;">Book Type:</label>
@@ -340,18 +376,20 @@
                         </option>
                         {% endfor %}
                     </select>
-                    <button type="button" class="btn btn-secondary" onclick="toggleNewLocationInput()">+ Add New</button>
+                    <button type="button" class="btn btn-secondary" onclick="toggleNewLocationInput()">Add New</button>
                 </div>
                 <div id="new_location_section" style="display: none; margin-top: 10px;">
-                    <input type="text" id="new_location_input" class="form-control" placeholder="Enter new location" />
+                    <input style="font-family: 'Poppins', sans-serif;" type="text" id="new_location_input" class="form-control" placeholder="Enter new location" />
                     <button type="button" class="btn btn-primary mt-2" onclick="saveNewLocation()">Save Location</button>
                 </div>
             </div>
             
             <div class="form-actions">
-                <button type="submit" class="btn-save" style="font-family: 'Poppins', sans-serif;" >{{ form.instance.pk|yesno:"Save,Create" }}</button>
-                <a href="{% url 'book-list' %}" class="btn-back" style="padding-top: 10px; padding-bottom: 10px;">BACK TO LIST</a>
-                <button class="btncategory" id="categoryBtn" type="button" style="font-family: 'Poppins', sans-serif;">Categories</button>
+                <button class="btncategory" id="categoryBtn" type="button" style="font-family: 'Poppins', sans-serif; margin-top: 28px;">Categories</button>
+                <div class="buttns" style="display: flex; flex-direction: row; margin-top: 10px;">
+                <button type="submit" class="btn-save" style="font-family: 'Poppins', sans-serif; width: 195px;" >{{ form.instance.pk|yesno:"Save,Create" }}</button>
+                <a href="{% url 'book-list' %}" class="btn-back" >Back to List</a>
+            </div>
             </div>
             
                 
@@ -422,7 +460,15 @@
 
             function toggleNewLocationInput() {
                 const section = document.getElementById('new_location_section');
-                section.style.display = section.style.display === 'none' ? 'block' : 'none';
+                
+                if (section.style.display === 'none') {
+                    section.style.display = 'flex'; // Change display to flex
+                    section.style.flexDirection = 'row'; // Apply the styles
+                    section.style.gap = '10px';
+                    section.style.marginTop = '15px';
+                } else {
+                    section.style.display = 'none'; // Hide the section
+                }
             }
 
             function saveNewLocation() {
