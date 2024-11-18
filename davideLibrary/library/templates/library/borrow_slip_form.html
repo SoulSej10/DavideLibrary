@@ -134,13 +134,18 @@
             var bookDetailsDiv = document.getElementById('book-details');
             var borrowerDetailsDiv = document.getElementById('borrower-details');
 
+            function maskUid(uid) {
+                // Mask all but the last 1 characters
+                return uid.slice(0, -1).replace(/\d/g, '*') + uid.slice(-1);
+            }
+
             function fetchBookDetails(bookNumber) {
-                fetch(`/book-details/${bookNumber}/`)
+                fetch(`/book-detail/${bookNumber}/`)
                     .then(response => response.json())
                     .then(data => {
                         if (data) {
                             bookDetailsDiv.innerHTML = `
-                        <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. There are <strong>${data.quantity}</strong> copy/ies available. The book is funded by <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It is published by the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>". The book is located at <strong>${data.location}</strong>.</p>
+                        <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. There are <strong>${data.quantity}</strong> copy/ies available. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>".
                     `;
                         } else {
                             bookDetailsDiv.innerHTML = '<p>No book details found.</p>';
@@ -154,7 +159,7 @@
                     .then(data => {
                         if (data) {
                             borrowerDetailsDiv.innerHTML = `
-                        <p class="enlarged-text">The borrower, <strong>${data.borrower_name}</strong>, with UID number <strong>${data.borrower_uid}</strong>, is currently in grade level <strong>${data.grade_level}</strong> and belongs to the section <strong>${data.section}</strong>. Their adviser is <strong>${data.adviser}</strong>.</p>
+                        <p class="enlarged-text">The borrower, <strong>${data.borrower_name}</strong>, with UID number <strong>${maskUid(data.borrower_uid)}</strong>, is currently in grade level <strong>${data.grade_level}</strong> and belongs to the section <strong>${data.section}</strong>. Their adviser is <strong>${data.adviser}</strong>.</p>
                     `;
                         } else {
                             borrowerDetailsDiv.innerHTML = '<p>No borrower details found.</p>';

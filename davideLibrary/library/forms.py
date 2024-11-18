@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 # from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.forms import PasswordChangeForm
-
+import hashlib
 
 
 #MARK: User

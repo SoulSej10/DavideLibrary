@@ -759,14 +759,6 @@ def edit_borrower(request, pk):
     }
     return render(request, 'library/borrower_list.html', context)
 
-# @login_required
-# def delete_borrower(request, pk):
-#     borrower = get_object_or_404(Borrower, borrower_uid=pk)
-#     if request.method == 'POST':
-#         borrower.delete()
-#         return redirect('borrower-list')
-#     borrowers = Borrower.objects.all().order_by('-date_issued')
-#     return render(request, 'library/borrower_list.html', {'borrowers': borrowers, 'query': '', 'form': BorrowerForm()})
 
 def delete_borrower(request, pk):
     borrower = get_object_or_404(Borrower, borrower_uid=pk)
