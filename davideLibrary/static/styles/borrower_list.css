@@ -189,7 +189,7 @@
             color: white;
             margin-top: 10px;
         }
-        .btn-cancel {
+        .btn-cancels {
             padding: 10px 20px;
             font-size: 16px;
             border: none;
@@ -329,13 +329,13 @@
             background-color: #0056b3;
         }
 
-        .btn-cancel {
+        .btn-cancels {
             background-color: #ff4d4d; /* Red */
             color: white;
             width: 175px;
         }
 
-        .btn-cancel:hover {
+        .btn-cancels:hover {
             background-color: #e63939;
         }
 

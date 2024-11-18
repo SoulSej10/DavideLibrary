@@ -163,20 +163,22 @@
 
         .btn-group {
             display: flex;
-            justify-content: center;
+            justify-content: center; /* Horizontally centers the buttons */
+            gap: 20px;              /* Adds consistent spacing between buttons */
             margin-top: 20px;
+            flex-wrap: nowrap;       /* Prevents wrapping to a new line */
         }
-
         .btn-group button {
-            margin: 0 10px;
             padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
             font-weight: bold;
             text-transform: uppercase;
+            margin: 0;              /* Removes unnecessary margins from conflicting styles */
+            flex-shrink: 0;         /* Prevents buttons from shrinking */
+            align-items: center;
         }
-
         .btn-cancel {
             background-color: #5cb85c;
             color: white;

@@ -71,7 +71,7 @@ tbody tr:nth-child(even) {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.modal-content {
+.modal-contents {
     background-color: white;
     margin: 10% auto;
     padding: 20px;
@@ -79,6 +79,7 @@ tbody tr:nth-child(even) {
     width: 400px;
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
 }
 
  .modal-header h5 {
@@ -90,7 +91,8 @@ tbody tr:nth-child(even) {
     font-size: 30px;
     cursor: pointer;
     border: none;
-    background: none;
+    background: none; 
+    float: right;
 }
 
 .modal-body {

@@ -31,7 +31,6 @@
             pointer-events: none; /* Prevent interaction with the label */
             z-index: 1000; /* Ensure the label is on top of the blurred content */
         }
-
     </style>
 </head>
 <body>
@@ -164,7 +163,7 @@
                     <div class="form-actions">
                         <button type="submit" class="btn btn-save">Save</button>
                         {% if form.instance.pk %}
-                            <button type="button" class="btn btn-cancel" onclick="cancelEdit()">Cancel</button>
+                            <button type="button" class="btn btn-cancels" onclick="cancelEdit()">Cancel</button>
                         {% endif %}
                     </div>
                 </form>
