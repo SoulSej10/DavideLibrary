@@ -228,7 +228,7 @@ class BorrowSlipForm(forms.ModelForm):
         model = BorrowSlip
         fields = ['book_number', 'date_borrow', 'borrower_uid_number', 'due_date', 'librarian_name']
         widgets = {
-            'book_number': forms.TextInput(attrs={'autofocus': True}),  
+            'book_number': forms.TextInput(attrs={'autofocus': True}),
             'date_borrow': forms.TextInput(attrs={'readonly': 'readonly'}),
             'due_date': forms.TextInput(attrs={'readonly': 'readonly'}),
             'librarian_name': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -240,21 +240,28 @@ class BorrowSlipForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(BorrowSlipForm, self).__init__(*args, **kwargs)
+        
+        # Set the librarian name as usual
         if user:
             full_name = f"{user.first_name} {user.middle_name[0] if user.middle_name else ''}. {user.last_name}"
             self.fields['librarian_name'].initial = full_name
+        
+        # Set default date_borrow as the current date
         if not self.instance.pk:
             self.fields['date_borrow'].initial = timezone.now().date()
-            self.fields['due_date'].initial = timezone.now().date() + timedelta(days=3)
+        
+        # We don't set the due_date here anymore, since it's handled by JS
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if not instance.pk:
-            instance.date_borrow = self.cleaned_data.get('date_borrow', timezone.now().date())
-            instance.due_date = self.cleaned_data.get('due_date', timezone.now().date() + timedelta(days=3))
+
+        # The due_date is now being set by JavaScript, so no need to set it here anymore.
+        # If you need to use the due_date from the form (which would be the one updated by JS), you can simply save it as-is.
+
         if commit:
             instance.save()
         return instance
+
 
         
 

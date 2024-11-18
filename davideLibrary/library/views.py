@@ -1298,9 +1298,6 @@ def download_selected_pdf(request):
     return response
 
 
-
-
-
 @login_required
 def borrow_slip_create(request):
     if request.method == 'POST':
@@ -1308,12 +1305,13 @@ def borrow_slip_create(request):
         if form.is_valid():
             borrow_slip = form.save(commit=False)
             borrow_slip.date_borrow = timezone.now().date()
-            borrow_slip.due_date = timezone.now().date() + timezone.timedelta(days=3)
+            # Remove the line that sets due_date here, as it's handled by JS
             borrow_slip.save()
             return redirect('borrow-slip-list')
     else:
         form = BorrowSlipForm(user=request.user)
     return render(request, 'library/borrow_slip_form.html', {'form': form})
+
 
 
 @login_required

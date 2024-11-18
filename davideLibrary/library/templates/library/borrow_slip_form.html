@@ -134,49 +134,86 @@
             var borrowerUidField = document.querySelector('input[name="borrower_uid_number"]');
             var bookDetailsDiv = document.getElementById('book-details');
             var borrowerDetailsDiv = document.getElementById('borrower-details');
-
+            var dueDateField = document.querySelector('input[name="due_date"]');  // Reference to the due_date field
+    
             function maskUid(uid) {
                 // Mask all but the last 1 characters
                 return uid.slice(0, -1).replace(/\d/g, '*') + uid.slice(-1);
             }
-
+    
+            function calculateDueDate(bookType) {
+                // Calculate due date based on the book type
+                let dueDate;
+                const today = new Date();
+                switch (bookType) {
+                    case 'Circulation':
+                    case 'Reference':
+                        dueDate = new Date(today.setDate(today.getDate() + 3)); // 3 days
+                        break;
+                    case 'Novel':
+                        dueDate = new Date(today.setDate(today.getDate() + 5)); // 5 days
+                        break;
+                    case 'Research/Academic':
+                    case 'Encyclopedia':
+                    case 'Dictionary':
+                    case 'Year Book':
+                        dueDate = new Date(today.setDate(today.getDate() + 1)); // 1 day
+                        break;
+                    default:
+                        dueDate = new Date(today.setDate(today.getDate() + 3)); // Default 3 days if unknown
+                }
+                return dueDate;
+            }
+    
             function fetchBookDetails(bookNumber) {
                 fetch(`/book-detail/${bookNumber}/`)
                     .then(response => response.json())
                     .then(data => {
                         if (data) {
+                            // Display book details
                             bookDetailsDiv.innerHTML = `
-                        <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. There are <strong>${data.quantity}</strong> copy/ies available. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>".
-                    `;
+                                <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. There are <strong>${data.quantity}</strong> copy/ies available. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>".
+                            `;
+    
+                            // Now set the due date based on the book type
+                            const dueDate = calculateDueDate(data.book_type);
+                            
+                            // Update the due_date field in the form
+                            if (dueDateField) {
+                                dueDateField.value = dueDate.toISOString().split('T')[0];  // Format the date to yyyy-mm-dd
+                            }
                         } else {
                             bookDetailsDiv.innerHTML = '<p>No book details found.</p>';
                         }
                     });
             }
-
+    
             function fetchBorrowerDetails(borrowerUid) {
                 fetch(`/borrower-details/${borrowerUid}/`)
                     .then(response => response.json())
                     .then(data => {
                         if (data) {
                             borrowerDetailsDiv.innerHTML = `
-                        <p class="enlarged-text">The borrower, <strong>${data.borrower_name}</strong>, with UID number <strong>${maskUid(data.borrower_uid)}</strong>, is currently in grade level <strong>${data.grade_level}</strong> and belongs to the section <strong>${data.section}</strong>. Their adviser is <strong>${data.adviser}</strong>.</p>
-                    `;
+                                <p class="enlarged-text">The borrower, <strong>${data.borrower_name}</strong>, with UID number <strong>${maskUid(data.borrower_uid)}</strong>, is currently in grade level <strong>${data.grade_level}</strong> and belongs to the section <strong>${data.section}</strong>. Their adviser is <strong>${data.adviser}</strong>.</p>
+                            `;
                         } else {
                             borrowerDetailsDiv.innerHTML = '<p>No borrower details found.</p>';
                         }
                     });
             }
-
+    
+            // Add event listeners for changes in book number and borrower UID
             bookNumberField.addEventListener('change', function() {
                 fetchBookDetails(this.value);
             });
-
+    
             borrowerUidField.addEventListener('change', function() {
                 fetchBorrowerDetails(this.value);
             });
         });
     </script>
+    
+    
 </body>
 </html>
 {% endblock %}
