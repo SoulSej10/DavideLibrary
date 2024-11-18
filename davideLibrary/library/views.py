@@ -1207,9 +1207,10 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 @login_required
 def borrow_slip_list(request):
     query = request.GET.get('search', '')
-    sort_order = request.GET.get('sort', '-date_borrow')
+    sort_order = request.GET.get('sort', '-slip_number')  # Sort by slip_number by default (highest first)
     form = BorrowSlipForm()
 
+    # Handle date filter
     date_filter = request.GET.get('date_filter', '')
     if date_filter:
         try:
@@ -1220,12 +1221,14 @@ def borrow_slip_list(request):
     else:
         borrow_slips = BorrowSlip.objects.all().order_by(sort_order)
 
+    # Handle form submission for creating new borrow slip
     if request.method == 'POST':
         form = BorrowSlipForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('borrow-slip-list')
 
+    # Handle search query
     if query:
         borrow_slips = borrow_slips.filter(
             Q(book_number__icontains=query) |
@@ -1241,6 +1244,8 @@ def borrow_slip_list(request):
         'date_filter': date_filter,
     }
     return render(request, 'library/borrow_slip_list.html', context)
+
+
 
 @login_required
 def download_selected_pdf(request):
@@ -1421,8 +1426,8 @@ def recent_attendance_stats(request):
 # ============================================================================================================================================
 @login_required
 def monitor_borrowed_books(request):
-    # Order by 'returned' (False first) and then by '-date_borrow' (most recent first)
-    borrow_slips = BorrowSlip.objects.order_by('returned', '-date_borrow')
+    # Order by 'returned' (False first) and then by '-slip_number' (highest slip number first)
+    borrow_slips = BorrowSlip.objects.order_by('returned', '-slip_number')  # Sort by slip number in descending order
     current_date = timezone.now().date()
 
     for slip in borrow_slips:
@@ -1443,6 +1448,7 @@ def monitor_borrowed_books(request):
         slip.save()  # Save the updated status
 
     return render(request, 'library/monitor_borrowed_books.html', {'borrow_slips': borrow_slips})
+
 
 @csrf_exempt
 def return_book(request, slip_number):
