@@ -1,57 +1,103 @@
 {% load static %}
 
 {% block content %}
-  <h2>Request Password Reset</h2>
-
-  {% if error %}
-    <p style="color: red;">{{ error }}</p>
-  {% endif %}
-
-  {% if temp_password %}
-    <div class="temp-password">
-      <p>Your temporary password is: <strong id="temp-password-display">{{ temp_password }}</strong></p>
-    </div>
-
-    <!-- Show the Copy and Confirm buttons after password generation -->
-    <button id="copy-password" onclick="copyPassword()">Copy</button>
-    <button id="confirm-password" onclick="goToTemporaryLogin()">Confirm</button>
-
-    <!-- Hide the request password reset button -->
-    <style>
-      #request-reset-btn { display: none; }
-    </style>
-  {% else %}
-    <form method="post">
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" name="username" required>
-      </div>
-      <button type="submit" id="request-reset-btn">Request Password Reset</button>
-    </form>
-  {% endif %}
   
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request Password Reset</title>
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/create_attendance.css' %}">
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        #confirm-password{
+            background-color: #7EBC89;
+        }
+        #confirm-password:hover{
+            background-color: #6FAE7B;
+        }
+        
+    </style>
+    {% endblock %}
+</head>
+<body>
+    <div class="overlay-container">
+        <div class="card">
+            <div class="card-header">
+                <div class="logo-container">
+                    <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 150px; height: 150px; border-radius: 50%;">
+                </div>
+                <h1 class="card-title" style="color: black; font-size: 30px; margin: 0; padding: 0;">FORGOT PASSWORD?</h1>
+                <h2 class="card-title">Request Password Reset</h2>
+            </div>
+            <div class="card-content">
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
+
+                {% if temp_password %}
+                    <div class="temp-password">
+                        <p style="font-family: 'Poppins', sans-serif; text-align: center;">Your temporary password is: <strong id="temp-password-display">{{ temp_password }}</strong></p>
+                    </div>
+
+                    <div class="buttons">
+                        <button id="copy-password" class="button" onclick="copyPassword()">Copy</button>
+                        <button id="confirm-password" class="button" onclick="goToTemporaryLogin()">Confirm</button>
+                    </div>
+
+                    <!-- Hide the request password reset button -->
+                <style>
+                    #request-reset-btn { display: none; }
+                </style>
+
+                {% else %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="relative">
+                            <span class="user-check-icon">👤</span>
+                            <input type="text" name="username" required autofocus style="padding: 7px 40px; width: 365px; font-family: 'Poppins', sans-serif; border-radius: 4px;" placeholder="Enter Username" >
+                            </div>
+                        </div>
+                        <button type="submit" class="button" id="request-reset-btn">Request Password Reset</button>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <a href="javascript:void(0);" class="button-back" 
+                style="text-decoration: none; color: black; font-family: 'Poppins', sans-serif;" 
+                onclick="history.back();">Back to Page</a>
+
+                <p style="font-family: 'Poppins', sans-serif;">Thank you for using our library services!</p>
+            </div>
+        </div>
+    </div>
+  
+    <script>
+        // Function to copy the password to clipboard
+        function copyPassword() {
+            var passwordText = document.getElementById("temp-password-display").textContent;
+            navigator.clipboard.writeText(passwordText).then(function() {
+            alert("Password copied to clipboard!");
+            }, function(err) {
+            alert("Error copying password: " + err);
+            });
+        }
+
+        // Function to redirect to the login page after confirmation
+        function confirmPassword() {
+            window.location.href = "{% url 'login' %}";
+        }
+
+
+        function goToTemporaryLogin() {
+            // Redirect to the temporary login page
+            window.location.href = "{% url 'temporary_login' %}";
+        }
+    </script>
+</body>
+</html>
 {% endblock %}
-
-<script>
-  // Function to copy the password to clipboard
-  function copyPassword() {
-    var passwordText = document.getElementById("temp-password-display").textContent;
-    navigator.clipboard.writeText(passwordText).then(function() {
-      alert("Password copied to clipboard!");
-    }, function(err) {
-      alert("Error copying password: " + err);
-    });
-  }
-
-  // Function to redirect to the login page after confirmation
-  function confirmPassword() {
-    window.location.href = "{% url 'login' %}";
-  }
-
-
-  function goToTemporaryLogin() {
-    // Redirect to the temporary login page
-    window.location.href = "{% url 'temporary_login' %}";
-  }
-</script>
