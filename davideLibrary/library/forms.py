@@ -177,6 +177,9 @@ class BookInventoryForm(forms.ModelForm):
         fields = ['class_field', 'book_title', 'edition', 'volume', 'pages', 'quantity', 
                   'fund_source', 'price', 'publisher', 'year', 'category', 'remark', 
                   'location', 'book_type']
+        widgets = {
+            'class_field': forms.TextInput(attrs={'autofocus': 'autofocus'}),  # Add autofocus here
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -225,6 +228,7 @@ class BorrowSlipForm(forms.ModelForm):
         model = BorrowSlip
         fields = ['book_number', 'date_borrow', 'borrower_uid_number', 'due_date', 'librarian_name']
         widgets = {
+            'book_number': forms.TextInput(attrs={'autofocus': True}),  
             'date_borrow': forms.TextInput(attrs={'readonly': 'readonly'}),
             'due_date': forms.TextInput(attrs={'readonly': 'readonly'}),
             'librarian_name': forms.TextInput(attrs={'readonly': 'readonly'}),

@@ -117,7 +117,7 @@
             </div>
             <div class="modal-body">
                 <p>Please enter the book number to confirm the return:</p>
-                <input type="text" id="inputBookNumber" class="form-control" autofocus placeholder="Enter book number">
+                <input type="text" id="inputBookNumber" class="form-control" placeholder="Enter book number">
                 <div id="messageContainer" class="d-none">
                     <p id="returnMessage" class="success-message">VERIFIED! THE BOOK HAS BEEN RETURNED.</p>
                     <p id="errorMessage" class="error-message"></p>
@@ -294,6 +294,11 @@ function openReturnBookModal(button) {
     modal.dataset.bookNumber = bookNumber;
     modal.dataset.slipNumber = slipNumber;
     modal.style.display = 'block';
+
+    const input = document.getElementById('inputBookNumber');
+        if (input) {
+            input.focus();
+        }
 }
 
 // Close the return book modal and reset fields
