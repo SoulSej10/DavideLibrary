@@ -111,15 +111,15 @@
             </form>
         </div>
         <div class="display">
-        <div class="book-details-panel">
-            <h1>Book Details</h1>
+        <div class="book-details-panel" style="height: 290px;">
+            <h1 style="margin: 0; padding: 0;">Book Details</h1>
             <div id="book-details">
                 <!-- Book details will be dynamically inserted here -->
             </div>
         </div>
 
-        <div class="borrower-details-panel">
-            <h1>Borrower Details</h1>
+        <div class="borrower-details-panel" style="height: 180px;">
+            <h1 style="margin: 0; padding: 0;">Borrower Details</h1>
             <div id="borrower-details">
                 <!-- Borrower details will be dynamically inserted here -->
             </div>
@@ -172,7 +172,10 @@
                         if (data) {
                             // Display book details
                             bookDetailsDiv.innerHTML = `
-                                <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. There are <strong>${data.quantity}</strong> copy/ies available. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>".
+                                <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>". <br><br>
+                                
+                                Book Type: ${data.book_type} book <br>
+                                Quantity: There are <strong>${data.quantity}</strong> copies available.
                             `;
     
                             // Now set the due date based on the book type
