@@ -142,44 +142,53 @@
             }
     
             function calculateDueDate(bookType) {
-                // Calculate due date based on the book type
+                // Calculate due date and number of days based on the book type
                 let dueDate;
                 const today = new Date();
+                let borrowDays;
+
                 switch (bookType) {
                     case 'Circulation':
                     case 'Reference':
-                        dueDate = new Date(today.setDate(today.getDate() + 3)); // 3 days
+                        borrowDays = 3; // 3 days
+                        dueDate = new Date(today.setDate(today.getDate() + borrowDays));
                         break;
                     case 'Novel':
-                        dueDate = new Date(today.setDate(today.getDate() + 5)); // 5 days
+                        borrowDays = 5; // 5 days
+                        dueDate = new Date(today.setDate(today.getDate() + borrowDays));
                         break;
                     case 'Research/Academic':
                     case 'Encyclopedia':
                     case 'Dictionary':
                     case 'Year Book':
-                        dueDate = new Date(today.setDate(today.getDate() + 1)); // 1 day
+                        borrowDays = 1; // 1 day
+                        dueDate = new Date(today.setDate(today.getDate() + borrowDays));
                         break;
                     default:
-                        dueDate = new Date(today.setDate(today.getDate() + 3)); // Default 3 days if unknown
+                        borrowDays = 3; // Default 3 days if unknown
+                        dueDate = new Date(today.setDate(today.getDate() + borrowDays));
                 }
-                return dueDate;
+
+                return { dueDate, borrowDays };
             }
+
     
             function fetchBookDetails(bookNumber) {
                 fetch(`/book-detail/${bookNumber}/`)
                     .then(response => response.json())
                     .then(data => {
                         if (data) {
+                            // Now set the due date based on the book type
+                            const { dueDate, borrowDays } = calculateDueDate(data.book_type);
                             // Display book details
                             bookDetailsDiv.innerHTML = `
                                 <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>". <br><br>
                                 
-                                Book Type: ${data.book_type} book <br>
+                                Book Type: ${data.book_type} book, can be borrowed for ${borrowDays} days.<br>
                                 Quantity: There are <strong>${data.quantity}</strong> copies available.
                             `;
     
-                            // Now set the due date based on the book type
-                            const dueDate = calculateDueDate(data.book_type);
+                            
                             
                             // Update the due_date field in the form
                             if (dueDateField) {
