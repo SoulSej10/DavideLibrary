@@ -1,0 +1,119 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reservation List</title>
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .btn-save {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+        }
+        .btn-back {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .status {
+            font-weight: bold;
+        }
+        .reserved {
+            color: green;
+        }
+        .collected {
+            color: blue;
+        }
+        .cancelled {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <h1>Book Reservations</h1>
+        <a href="javascript:void(0);" class="btn-back" onclick="history.back();">Back to List</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Reservation Number</th>
+                    <th>Book Title</th>
+                    <th>Book Number</th>
+                    <th>Borrower Name</th>
+                    <th>Borrower UID</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                    <tr>
+                        <td>{{ reservation.reservation_number }}</td>
+                        <td>{{ reservation.book_title }}</td>
+                        <td>{{ reservation.book_number }}</td>
+                        <td>{{ reservation.borrower_name }}</td>
+                        <td>{{ reservation.borrower_uid }}</td>
+                        <td>{{ reservation.due_date }}</td>
+                        <td>
+                            <span class="status {% if reservation.status == 'Reserved' %}reserved{% elif reservation.status == 'Collected' %}collected{% elif reservation.status == 'Cancelled' %}cancelled{% endif %}">
+                                {{ reservation.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if reservation.status == 'Reserved' %}
+                                <a href="{% url 'collect-reservation' reservation.reservation_number %}" class="btn-save">Collect</a>
+                            {% elif reservation.status == 'Collected' %}
+                                <span>Completed</span>
+                            {% elif reservation.status == 'Cancelled' %}
+                                <span>Cancelled</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align: center;">No reservations found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+{% endblock %}

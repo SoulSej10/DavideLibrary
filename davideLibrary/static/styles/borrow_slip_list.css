@@ -176,6 +176,17 @@
             background-color: #0056b3;
         }
 
+        #list {
+            background-color: #D6B980; /* Bootstrap Primary Blue */
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        #list:hover {
+            background-color: #C5A86A;
+        }
+
         #download-pdf-button {
             display: none; /* Initially hide the button */
         }

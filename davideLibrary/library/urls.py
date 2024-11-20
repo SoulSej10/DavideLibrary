@@ -61,6 +61,10 @@ urlpatterns = [
     # path('book-details/<str:book_number>/', book_details, name='book-details'),
     path('borrower-details/<str:borrower_uid>/', views.borrower_details, name='borrower-details'),
     path('download-selected-pdf/', views.download_selected_pdf, name='download-selected-pdf'),
+    path('reserve-book/', views.reserve_book, name='reserve-book'),
+    path('collect-reservation/<int:reservation_number>/', views.collect_reservation, name='collect-reservation'),
+    path('expire-reservations/', views.expire_reservations, name='expire-reservations'),
+    path('reservation-list/', views.reservation_list, name='reservation-list'),
     
     # attendance
     path('create/', views.create_attendance, name='create-attendance'),

@@ -186,32 +186,43 @@ class BookInventory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True, default=1)
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
+    status = models.CharField(max_length=50, default='Available')
 
     def __str__(self):
         return self.book_title
 
     def save(self, *args, **kwargs):
+        # Automatically update the book number if not set
         if not self.book_number:
             category_prefix = self.get_category_prefix()
             latest_book_number = BookInventory.objects.filter(book_number__startswith=category_prefix).order_by('-book_number').first()
             next_number = 1
-
             if latest_book_number:
                 last_number = int(latest_book_number.book_number.split('-')[1])
                 next_number = last_number + 1
-
             self.book_number = f"{category_prefix}-{next_number:03d}"
 
-        # Generate QR code if not present
+        # Generate QR code if it doesn't exist, regardless of status
         if not self.qr_code:
             qr_code_file = generate_qr_code(self.book_number)
             self.qr_code.save(f"{self.book_number}.png", qr_code_file, save=False)
 
+        # Save the book object
         super().save(*args, **kwargs)
+
+
 
     def get_category_prefix(self):
         category_prefix_map = {category.name: chr(65 + i) for i, category in enumerate(Category.objects.all())}
         return category_prefix_map.get(self.category.name, 'X')
+
+    def check_reservation_status(self):
+        reservations = BookReservation.objects.filter(book_number=self.book_number)
+        if reservations.exists():
+            self.status = 'Reserved'
+        else:
+            self.status = 'Available'
+        self.save()
 
 
 
@@ -265,6 +276,50 @@ class BorrowSlip(models.Model):
         return f"Borrow Slip #{self.slip_number}"
 
     
+class BookReservation(models.Model):
+    reservation_number = models.AutoField(primary_key=True)
+    book_number = models.CharField(max_length=20, blank=True)
+    book_title = models.CharField(max_length=200, blank=True)
+    author = models.CharField(max_length=200, blank=True)
+    
+    borrower_uid_number = models.CharField(max_length=20)
+    borrower_name = models.CharField(max_length=100, blank=True)
+    reservation_date = models.DateTimeField(auto_now_add=True)
+    collected_date = models.DateTimeField(blank=True, null=True)
+    due_date = models.DateTimeField(blank=True, null=True)
+    librarian_name = models.CharField(max_length=100, blank=True)
+
+    status = models.CharField(max_length=50, default='Reserved')
+    penalty = models.CharField(max_length=255, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Automatically populate book_title and author from BookInventory
+        if self.book_number:
+            try:
+                book = BookInventory.objects.get(book_number=self.book_number)
+                self.book_title = book.book_title
+                self.author = book.author
+                
+            except BookInventory.DoesNotExist:
+                self.book_title = ""
+                self.author = ""
+                
+
+        # Automatically populate borrower_name from Borrower using the UID
+        if self.borrower_uid_number:
+            try:
+                borrower = Borrower.objects.get(borrower_uid=self.borrower_uid_number)
+                self.borrower_name = borrower.borrower_name
+            except Borrower.DoesNotExist:
+                self.borrower_name = ""
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Reservation #{self.reservation_number} - {self.book_title}"
+
+
+
 
 
 

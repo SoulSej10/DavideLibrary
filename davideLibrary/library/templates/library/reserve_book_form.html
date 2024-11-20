@@ -1,0 +1,318 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reserve a Book</title>
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+        .main-content {
+            margin-left: 240px; /* Adjust as per your sidebar width */
+            padding: 20px;
+            margin-top: 90px; /* Adjust as per your header height */
+            display: flex; /* Use flexbox for layout */
+        }
+        .form-panel {
+            width: 55%;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+        /* .details-panel {
+            width: 35%;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            margin-left: 20px;
+        } */
+        .details-panel {
+            width: 800px;
+            height: 230px;
+            font-size: 12px;
+            background-color: #555555;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn-save {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-back {
+            background-color: #777;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        .display {
+            display: flex;
+            flex-direction: column;
+        }
+        .enlarged-text {
+            font-size: 16px; /* Adjust the font size as needed */
+            line-height: 1.6; /* Optional: Adjust line spacing for readability */
+        }
+        strong {
+            color: #ddd;
+            text-shadow:
+                -1px -1px 0 #323232, /* Top-left shadow */
+                 1px -1px 0 #323232, /* Top-right shadow */
+                -1px  1px 0 #323232, /* Bottom-left shadow */
+                 1px  1px 0 #323232; /* Bottom-right shadow */
+        }
+        .notice {
+            /* margin-top: 10px; */
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f8f8f8;
+            color: #555;
+            font-size: 12.5px;
+            text-align: justify;
+            width: 20%;
+        }
+        .reserve-book-form input{
+            /* width: 100%; */
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="date"],
+        select,
+        textarea {
+            margin: 0;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            box-sizing: border-box;
+            width: 100%; /* Makes inputs responsive */
+            margin-bottom: 10px; /* Adds spacing between fields */
+        }
+        p{
+            margin: 10px 0px;
+        }
+        #reservation-date{
+            border: solid 1px black;
+            padding: 8px;
+            border-radius: 4px;
+            
+        }
+
+        #duration{
+            border: solid 1px black;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="form-panel">
+            <h1 style="margin: 0; padding: 0;">Reserve a Book</h1>
+            <div style="margin-bottom: 20px;">
+                <!-- Display reservation details dynamically -->
+                <p id="reservation-details">
+                    <span id="reservation-date"></span><br>
+                </p>
+            </div>
+            <form method="post" id="reserve-book-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <p id="reservation-details" style="margin: 20px 0 20px 0;">
+                    <span id="duration">Borrow Duration: <span id="borrow-duration-display">-Choose a book-</span><br></span>
+                </p>                
+                <button type="submit" class="btn-save" style="font-family: 'Poppins', sans-serif;">Reserve Book</button>
+                <a href="javascript:void(0);" class="btn-back" onclick="history.back();">Back to List</a>
+            </form>
+        </div>
+        <div class="display">
+            <div class="details-panel" style="height: 290px;">
+                <h1 style="margin: 0; padding: 0;">Book Details</h1>
+                <div id="book-details">
+                    <!-- Book details will be dynamically inserted here -->
+                </div>
+            </div>
+           
+                <div class="details-panel" id="borrower-container" style="height: 180px; ">
+                <div class="half" style="display: flex; flex-direction: row; gap: 10px; height: 180px;">
+                    <div style="width: 73%;">
+                    <h1 style="margin: 0; padding: 0;">Borrower Details</h1>
+                <div id="borrower-details" class="borrower-details-content" style="font-size: 16px;" >
+                    <!-- Borrower details will be dynamically inserted here -->
+                </div></div>
+                <div class="notice" style="height: 160px; width: 24%; border-radius: 4px;" >
+                    NOTICE!<br>
+                    <span>There is a time limit of approximately one day for collecting a reserved book after the reservation form has been submitted. Please inform the borrower to pick up the book within this time frame.</span>
+                    
+                </div>
+            </div>
+            
+        </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('id_book_number')?.focus();
+
+document.addEventListener('DOMContentLoaded', function () {
+    var bookNumberField = document.querySelector('input[name="book_number"]');
+    var borrowerUidField = document.querySelector('input[name="borrower_uid_number"]');
+    var bookDetailsDiv = document.getElementById('book-details');
+    var borrowerDetailsDiv = document.getElementById('borrower-details');
+    var dueDateField = document.querySelector('input[name="due_date"]'); // Reference to the due_date field
+    var reservationDateElement = document.getElementById('reservation-date');
+    var borrowDurationDisplay = document.getElementById('borrow-duration-display');
+    var dueDateDisplay = document.getElementById('due-date-display');
+
+    function maskUid(uid) {
+        // Mask all but the last 1 characters
+            return uid.slice(0, -1).replace(/\d/g, '*') + uid.slice(-1);
+        }
+
+        function updateReservationDate() {
+        var now = new Date(); // Get the current date and time
+        var formattedDate = now.toLocaleString('en-US', {
+            year: 'numeric',    // e.g., "2024"
+            month: 'short',      // e.g., "November"
+            day: 'numeric',     // e.g., "20"
+            hour: 'numeric',    // e.g., "10"
+            minute: '2-digit',  // e.g., "30"
+            second: '2-digit',  // e.g., "45"
+            hour12: true        // Use 12-hour clock (true) or 24-hour clock (false)
+        });
+
+        reservationDateElement.textContent = `Reservation Date: ${formattedDate}`;
+    }
+
+    // Call the function immediately and update every second for the ticking effect
+    updateReservationDate();
+    setInterval(updateReservationDate, 1000);
+
+    setInterval(updateReservationDate, 1000); // Update every second
+
+    function calculateDueDate(bookType) {
+        // Calculate due date and number of days based on the book type
+        let dueDate;
+        const today = new Date();
+        let borrowDays;
+
+        switch (bookType) {
+            case 'Circulation':
+            case 'Reference':
+                borrowDays = 3; // 3 days
+                break;
+            case 'Novel':
+                borrowDays = 5; // 5 days
+                break;
+            case 'Research/Academic':
+            case 'Encyclopedia':
+            case 'Dictionary':
+            case 'Year Book':
+                borrowDays = 1; // 1 day
+                break;
+            default:
+                borrowDays = 3; // Default 3 days if unknown
+        }
+
+        dueDate = new Date(today.setDate(today.getDate() + borrowDays));
+        return { dueDate, borrowDays };
+    }
+
+    function fetchBookDetails(bookNumber) {
+        fetch(`/book-detail/${bookNumber}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    // Set due date and borrowing duration
+                    const { dueDate, borrowDays } = calculateDueDate(data.book_type);
+
+                    bookDetailsDiv.innerHTML = `
+                        <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>". <br><br>
+                        Book Type: ${data.book_type} book, can be borrowed for ${borrowDays} days.<br>
+                        Quantity: There are <strong>${data.quantity}</strong> copies available.
+                    `;
+
+                    // Update the due date and borrow duration
+                    if (dueDateDisplay) dueDateDisplay.textContent = dueDate.toISOString().split('T')[0];
+                    if (borrowDurationDisplay) borrowDurationDisplay.textContent = `${borrowDays} days`;
+
+                    // Update the due_date field in the form
+                    if (dueDateField) dueDateField.value = dueDate.toISOString().split('T')[0];
+                } else {
+                    bookDetailsDiv.innerHTML = '<p>No book details found.</p>';
+                }
+            });
+    }
+
+    function fetchBorrowerDetails(borrowerUid) {
+        fetch(`/borrower-details/${borrowerUid}/`)
+            .then(response => response.json())
+            .then(data => {
+                const borrowerDetailsDiv = document.getElementById('borrower-details'); // Reference the isolated borrower container
+                if (data) {
+                    borrowerDetailsDiv.innerHTML = `
+                        <p>
+                            The borrower, <strong>${data.borrower_name}</strong>, with UID number 
+                            <strong>${maskUid(data.borrower_uid)}</strong>, is currently in grade level 
+                            <strong>${data.grade_level}</strong> and belongs to the section 
+                            <strong>${data.section}</strong>. Their adviser is <strong>${data.adviser}</strong>.
+                        </p>
+                    `;
+                } else {
+                    borrowerDetailsDiv.innerHTML = '<p>No borrower details found.</p>';
+                }
+            });
+    }
+
+
+    // Add event listeners for changes in book number and borrower UID
+    bookNumberField.addEventListener('change', function () {
+        fetchBookDetails(this.value);
+    });
+
+    borrowerUidField.addEventListener('change', function () {
+        fetchBorrowerDetails(this.value);
+    });
+});
+
+    </script>
+    
+    
+    
+</body>
+</html>
+{% endblock %}

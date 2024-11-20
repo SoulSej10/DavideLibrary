@@ -15,8 +15,8 @@ from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
 from django.conf import settings
 from django.db import models
-from .models import  Borrower, BookInventory, BorrowSlip, Attendance, Category, CustomUser, Location
-from .forms import  BorrowerForm, BookInventoryForm, BorrowSlipForm, AttendanceForm, PenaltyForm
+from .models import  Borrower, BookInventory, BorrowSlip, Attendance, Category, CustomUser, Location, BookReservation
+from .forms import  BorrowerForm, BookInventoryForm, BorrowSlipForm, AttendanceForm, PenaltyForm, BookReservationForm
 from django.contrib import messages
 from datetime import datetime
 from django.utils import timezone  
@@ -49,7 +49,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.hashers import make_password
 from django.core.files import File
 from django.core.files.base import ContentFile
-
+from datetime import timedelta
 # from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -958,6 +958,11 @@ def book_list(request):
     else:
         books = BookInventory.objects.all().order_by('-record_date')
 
+    # Ensure QR codes are generated for all books
+    for book in books:
+        if not book.qr_code:
+            book.save()  # This will trigger the QR code generation logic in the `save` method
+
     no_results = not books.exists() if query else False
 
     if 'download_pdf' in request.GET:
@@ -1335,9 +1340,102 @@ def borrower_details(request, borrower_uid):
     return JsonResponse(data)
 
 
+@login_required
+def reserve_book(request):
+    if request.method == 'POST':
+        form = BookReservationForm(request.POST, user=request.user)
+        if form.is_valid():
+            reservation = form.save(commit=False)
+
+            # Populate borrower_name if borrower_uid_number is provided
+            if reservation.borrower_uid_number:
+                try:
+                    borrower = Borrower.objects.get(borrower_uid=reservation.borrower_uid_number)
+                    reservation.borrower_name = borrower.borrower_name  # Automatically set the name
+                except Borrower.DoesNotExist:
+                    reservation.borrower_name = ""  # Set to empty string if borrower doesn't exist
+
+            reservation.status = 'Reserved'
+            reservation.save()
+
+            # Update book status to 'Reserved'
+            try:
+                book = BookInventory.objects.get(book_number=reservation.book_number)
+                book.status = 'Reserved'
+                book.save()
+            except BookInventory.DoesNotExist:
+                # Handle case where the book doesn't exist
+                pass
+
+            return redirect('reservation-list')  # Redirect to the reservation list or another page
+    else:
+        form = BookReservationForm(user=request.user)
+
+    return render(request, 'library/reserve_book_form.html', {'form': form})
 
 
 
+
+@login_required
+def collect_reservation(request, reservation_number):
+    try:
+        reservation = BookReservation.objects.get(reservation_number=reservation_number)
+
+        # Transfer reservation details to BorrowSlip
+        borrow_slip = BorrowSlip(
+            book_number=reservation.book_number,
+            book_title=reservation.book_title,
+            author=reservation.author,
+            date_borrow=timezone.now().date(),
+            borrower_uid_number=reservation.borrower_uid_number,
+            borrower_name=reservation.borrower_name,
+            due_date=reservation.due_date,
+            librarian_name=reservation.librarian_name,
+            status='Borrowed'
+        )
+        borrow_slip.save()
+
+        # Update reservation status
+        reservation.status = 'Collected'
+        reservation.collected_date = timezone.now()
+        reservation.save()
+
+        # Update book status to 'Borrowed'
+        try:
+            book = BookInventory.objects.get(book_number=reservation.book_number)
+            book.status = 'Borrowed'
+            book.save()
+        except BookInventory.DoesNotExist:
+            # Handle case where the book doesn't exist
+            pass
+
+        return redirect('borrow-slip-list')  # Redirect to borrow slip list
+    except BookReservation.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Reservation not found.'})
+
+
+def expire_reservations():
+    expired_reservations = BookReservation.objects.filter(
+        status='Reserved', 
+        reservation_date__lt=timezone.now() - timedelta(days=1)  # Reservation period of 3 days
+    )
+    for reservation in expired_reservations:
+        try:
+            book = BookInventory.objects.get(book_number=reservation.book_number)
+            book.status = 'Available'
+            book.save()
+        except BookInventory.DoesNotExist:
+            # Handle case where the book doesn't exist
+            pass
+
+        reservation.status = 'Expired'
+        reservation.save()
+
+
+@login_required
+def reservation_list(request):
+    reservations = BookReservation.objects.all()
+    return render(request, 'library/reservation_list.html', {'reservations': reservations})
 
 
 

@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser, Category, Location
+from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser, Category, Location, BookReservation
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth import authenticate
@@ -263,6 +263,47 @@ class BorrowSlipForm(forms.ModelForm):
         return instance
 
 
+
+class BookReservationForm(forms.ModelForm):
+    class Meta:
+        model = BookReservation
+        fields = ['book_number', 'borrower_uid_number', 'due_date', 'librarian_name']
+        widgets = {
+            'book_number': forms.TextInput(attrs={'autofocus': True}),
+            'due_date': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'librarian_name': forms.TextInput(attrs={'readonly': 'readonly'}),
+        }
+
+    book_number = forms.CharField(max_length=20)
+    borrower_uid_number = forms.CharField(max_length=20)
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(BookReservationForm, self).__init__(*args, **kwargs)
+
+        # Set the librarian name as usual
+        if user:
+            full_name = f"{user.first_name} {user.middle_name[0] if user.middle_name else ''}. {user.last_name}"
+            self.fields['librarian_name'].initial = full_name
+
+        # Set default reservation_date as the current date
+        # if not self.instance.pk:
+        #     self.fields['reservation_date'].initial = timezone.now().date()
+
+        # Due date logic can be handled by JavaScript if needed, like in the slip form
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        # Ensure reservation_date is saved correctly
+        if not instance.reservation_date:
+            instance.reservation_date = timezone.now()
+
+        if commit:
+            instance.save()
+        return instance
+
+
         
 
 
@@ -299,13 +340,7 @@ class AttendanceForm(forms.ModelForm):
 # ============================================================================================================================================
 # ===============================================================___MONITORING FORM___========================================================
 # ============================================================================================================================================
-# class PenaltyForm(forms.Form):
-#     ACTION_CHOICES = [
-#         ('replace', 'Replace Book'),
-#         ('ban', 'Ban Student'),
-#     ]
-#     action = forms.ChoiceField(choices=ACTION_CHOICES, label="Choose an action")
-#     ban_duration = forms.IntegerField(required=False, label="Ban Duration (days)", help_text="Only required if banning the student")
+
 class PenaltyForm(forms.Form):
     ACTION_CHOICES = [
         ('replace', 'Replace Book'),

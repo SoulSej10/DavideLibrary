@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser, Category, Location
+from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser, Category, Location, BookReservation
 
 # Borrower Admin
 class BorrowerAdmin(admin.ModelAdmin):
@@ -77,3 +77,11 @@ class LocationAdmin(admin.ModelAdmin):
     search_fields = ('Location',)  # Add a search bar for the Location field
 
 admin.site.register(Location)
+
+class BookReservationAdmin(admin.ModelAdmin):
+    list_display = ('reservation_number', 'book_number', 'book_title', 'borrower_uid_number', 'borrower_name', 'reservation_date', 'status', 'collected_date')
+    list_filter = ('status', 'reservation_date')
+    search_fields = ('book_number', 'book_title', 'borrower_name', 'borrower_uid_number')
+    ordering = ('-reservation_date',)
+
+admin.site.register(BookReservation, BookReservationAdmin)
