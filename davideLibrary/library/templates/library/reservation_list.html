@@ -1,5 +1,6 @@
 {% extends 'main.html' %}
 {% load static %}
+{% load custom_filters %}
 {% block content %}
 <!DOCTYPE html>
 <html>
@@ -10,15 +11,39 @@
             font-family: 'Poppins';
             src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
         }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%; /* Ensures the body takes up the full height of the viewport */
+            overflow: hidden; /* Remove the scrollbars from the body */
+        }
         .main-content {
             margin-left: 240px; /* Adjust as per your sidebar width */
             padding: 20px;
             margin-top: 90px; /* Adjust as per your header height */
+            height: calc(92vh - 90px); /* Full viewport height minus the header */
+            overflow-y: auto; /* Allow scrolling inside the content */
+        }
+        .table-container {
+            display: flex;
+            /* justify-content: space-between; */
+            gap: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-height: 549px; /* You can adjust this height */
+            overflow: auto;
+            /* border: 1px solid #ddd;   */
+        }
+        .table-wrapper {
+            width: 48%; /* Each table will take up 50% of the space */
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            display: block;
+            overflow-y: auto;
+            /* max-height: 415px; Adjust the table height within the wrapper */
+            border-radius: 10px;
         }
         th, td {
             border: 1px solid #ddd;
@@ -26,8 +51,11 @@
             padding: 8px;
         }
         th {
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #555555;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -67,53 +95,180 @@
 </head>
 <body>
     <div class="main-content">
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <h1>Book Reservations</h1>
+        <div style="margin-top: 20px;">
+        <a href="{% url 'reserve-book' %}" class="btn-back" style="background-color: #7EBC89;">Reserve Book</a>
         <a href="javascript:void(0);" class="btn-back" onclick="history.back();">Back to List</a>
-        <table>
-            <thead>
-                <tr>
-                    <th>Reservation Number</th>
-                    <th>Book Title</th>
-                    <th>Book Number</th>
-                    <th>Borrower Name</th>
-                    <th>Borrower UID</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for reservation in reservations %}
-                    <tr>
-                        <td>{{ reservation.reservation_number }}</td>
-                        <td>{{ reservation.book_title }}</td>
-                        <td>{{ reservation.book_number }}</td>
-                        <td>{{ reservation.borrower_name }}</td>
-                        <td>{{ reservation.borrower_uid }}</td>
-                        <td>{{ reservation.due_date }}</td>
-                        <td>
-                            <span class="status {% if reservation.status == 'Reserved' %}reserved{% elif reservation.status == 'Collected' %}collected{% elif reservation.status == 'Cancelled' %}cancelled{% endif %}">
-                                {{ reservation.status }}
-                            </span>
-                        </td>
-                        <td>
+        </div>
+        </div>
+
+        <div class="table-container">
+            <!-- Ongoing Reservations Table -->
+            <div class="table-wrapper" style="width: 100%;">
+                <h3 style="margin: 0 0 10px;">Ongoing Reservations</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Book Number</th>
+                            <th>Book Title</th>
+                            <th>Borrower Name</th>
+                            <th>Borrower UID</th>
+                            <th>Date Reserved</th>
+                            <th>Status</th>
+                            <th>Time Remaining</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations %}
                             {% if reservation.status == 'Reserved' %}
-                                <a href="{% url 'collect-reservation' reservation.reservation_number %}" class="btn-save">Collect</a>
-                            {% elif reservation.status == 'Collected' %}
-                                <span>Completed</span>
-                            {% elif reservation.status == 'Cancelled' %}
-                                <span>Cancelled</span>
+                                <tr class="reserved-row">
+                                    <td>{{ reservation.book_number }}</td>
+                                    <td>{{ reservation.book_title }}</td>
+                                    <td>{{ reservation.borrower_name }}</td>
+                                    <td>{{ reservation.borrower_uid_number|obfuscate }}</td>
+                                    <td>{{ reservation.reservation_date.date }}</td>
+                                    <td>
+                                        <span class="status reserved">{{ reservation.status }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="countdown" data-time-remaining="{{ reservation.time_remaining.total_seconds }}"></span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'collect-reservation' reservation.reservation_number %}" class="btn-save">Collect</a>
+                                    </td>
+                                </tr>
                             {% endif %}
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="8" style="text-align: center;">No reservations found.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" style="text-align: center;">No ongoing reservations found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <!-- Collected Reservations Table -->
+            <div class="table-wrapper" style="width: 50%; float: left;">
+                <h3 style="margin: 20px  0 10px;">Collected Reservations</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Borrower Name</th>
+                            <th>Date Reserved</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations %}
+                            {% if reservation.status == 'Collected' %}
+                                <tr class="collected-row">
+                                    <td>{{ reservation.book_title }}</td>
+                                    <td>{{ reservation.borrower_name }}</td>
+                                    <td>{{ reservation.reservation_date.date }}</td>
+                                    <td>
+                                        <span class="status collected">{{ reservation.status }}</span>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" style="text-align: center;">No collected reservations found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        
+            <!-- Expired Reservations Table -->
+            <div class="table-wrapper" style="width: 50%; float: left;">
+                <h3 style="margin: 20px 0 10px;">Expired Reservations</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Borrower Name</th>
+                            <th>Date Reserved</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations %}
+                            {% if reservation.status == 'Expired' %}
+                                <tr class="cancelled-row">
+                                    <td>{{ reservation.book_title }}</td>
+                                    <td>{{ reservation.borrower_name }}</td>
+                                    <td>{{ reservation.reservation_date.date }}</td>
+                                    <td>
+                                        <span class="status cancelled">{{ reservation.status }}</span>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" style="text-align: center;">No expired reservations found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
+    <script>
+        // This function will reorder the rows based on status
+        function reorderRows() {
+            const tableBody = document.querySelector("table tbody");
+            const rows = Array.from(tableBody.rows);
+
+            // Separate rows into 'reserved', 'collected', and 'expired' arrays
+            const reservedRows = rows.filter(row => row.classList.contains('reserved-row'));
+            const collectedRows = rows.filter(row => row.classList.contains('collected-row'));
+            const expiredRows = rows.filter(row => row.classList.contains('cancelled-row'));
+
+            // Clear the table body
+            tableBody.innerHTML = '';
+
+            // Append reserved rows first
+            reservedRows.forEach(row => tableBody.appendChild(row));
+
+            // Then append collected rows
+            collectedRows.forEach(row => tableBody.appendChild(row));
+
+            // Finally append expired rows
+            expiredRows.forEach(row => tableBody.appendChild(row));
+        }
+
+        // Call reorderRows when the page loads
+        document.addEventListener('DOMContentLoaded', reorderRows);
+
+        // Countdown functionality (if needed)
+        function updateCountdown() {
+            const countdownElements = document.querySelectorAll('.countdown');
+            countdownElements.forEach(element => {
+                const timeRemaining = parseFloat(element.getAttribute('data-time-remaining'));
+                if (timeRemaining > 0) {
+                    const hours = Math.floor(timeRemaining / 3600);
+                    const minutes = Math.floor((timeRemaining % 3600) / 60);
+                    const seconds = Math.floor(timeRemaining % 60);
+    
+                    element.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    element.setAttribute('data-time-remaining', timeRemaining - 1);
+                } else {
+                    element.textContent = 'Expired';
+                    const row = element.closest('tr');
+                    row.querySelector('.status').classList.remove('reserved');
+                    row.querySelector('.status').classList.add('cancelled');
+                    row.querySelector('.status').textContent = 'Expired';
+                }
+            });
+        }
+        setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
 {% endblock %}

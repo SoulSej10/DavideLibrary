@@ -1416,8 +1416,8 @@ def collect_reservation(request, reservation_number):
 
 def expire_reservations():
     expired_reservations = BookReservation.objects.filter(
-        status='Reserved', 
-        reservation_date__lt=timezone.now() - timedelta(days=1)  # Reservation period of 3 days
+        status='Reserved',
+        reservation_date__lt=timezone.now() - timedelta(hours=24)  # 24-hour expiration
     )
     for reservation in expired_reservations:
         try:
@@ -1425,7 +1425,6 @@ def expire_reservations():
             book.status = 'Available'
             book.save()
         except BookInventory.DoesNotExist:
-            # Handle case where the book doesn't exist
             pass
 
         reservation.status = 'Expired'
@@ -1435,7 +1434,26 @@ def expire_reservations():
 @login_required
 def reservation_list(request):
     reservations = BookReservation.objects.all()
-    return render(request, 'library/reservation_list.html', {'reservations': reservations})
+
+    # Calculate the remaining time for each reservation
+    for reservation in reservations:
+        reservation.time_remaining = max(
+            timedelta(hours=24) - (now() - reservation.reservation_date), 
+            timedelta(0)
+        )
+    
+    # Sort reservations:
+    # 1. "Reserved" (active) reservations come first.
+    # 2. Then, by reservation_date (newest first).
+    sorted_reservations = sorted(
+        reservations,
+        key=lambda x: (x.status != 'Reserved', x.reservation_date),
+        reverse=True
+    )
+    
+    return render(request, 'library/reservation_list.html', {'reservations': sorted_reservations})
+
+
 
 
 
