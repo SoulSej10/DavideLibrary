@@ -1,6 +1,5 @@
 {% extends 'main.html' %}
 {% load static %}
-{% load custom_filters %}
 {% block content %}
 <!DOCTYPE html>
 <html>
@@ -26,13 +25,9 @@
         }
         .table-container {
             display: flex;
-            /* justify-content: space-between; */
+            justify-content: space-between;
             gap: 20px;
             border-radius: 10px;
-            width: 100%;
-            max-height: 549px; /* You can adjust this height */
-            overflow: auto;
-            /* border: 1px solid #ddd;   */
         }
         .table-wrapper {
             width: 48%; /* Each table will take up 50% of the space */
@@ -127,7 +122,7 @@
                                     <td>{{ reservation.book_number }}</td>
                                     <td>{{ reservation.book_title }}</td>
                                     <td>{{ reservation.borrower_name }}</td>
-                                    <td>{{ reservation.borrower_uid_number|obfuscate }}</td>
+                                    <td class="borrower-uid">{{ reservation.borrower_uid_number }}</td>
                                     <td>{{ reservation.reservation_date.date }}</td>
                                     <td>
                                         <span class="status reserved">{{ reservation.status }}</span>
@@ -268,6 +263,26 @@
             });
         }
         setInterval(updateCountdown, 1000);
+
+        // Function to mask the middle part of the Borrower UID
+        function maskBorrowerUID(uid) {
+            // Ensure the UID has a length greater than 8 for masking
+            if (uid.length > 8) {
+                const start = uid.slice(0, 8);  // First 4 characters
+               
+                const masked = start + '********'; // Mask the middle part
+                return masked;
+            }
+            // If the UID is less than or equal to 8 characters, no masking needed
+            return uid;
+        }
+
+        // Example of using this function to mask UID in the table
+        document.querySelectorAll('.borrower-uid').forEach(function(element) {
+            const uid = element.textContent.trim();
+            element.textContent = maskBorrowerUID(uid);
+        });
+
     </script>
 </body>
 </html>
