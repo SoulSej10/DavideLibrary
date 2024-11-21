@@ -1464,7 +1464,8 @@ def reservation_list(request):
 
     # Categorize reservations by status
     ongoing_reservations = reservations.filter(status='Reserved')
-    collected_reservations = reservations.filter(status='Collected')
+    # collected_reservations = reservations.filter(status='Collected')
+    collected_reservations = reservations.filter(status='Collected').order_by('-reservation_date')
     expired_reservations = reservations.filter(status='Expired')
 
     # Calculate the time remaining for ongoing reservations
