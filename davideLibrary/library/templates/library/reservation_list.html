@@ -51,6 +51,9 @@
             top: 0;
             z-index: 1;
         }
+        tbody{
+            font-size: 14px;
+        }
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
@@ -209,9 +212,10 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>B.Number</th>
                             <th>Book Title</th>
                             <th>Borrower Name</th>
-                            <th>Date Reserved</th>
+                            <th>D.Reserved</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -219,6 +223,7 @@
                         {% for reservation in collected_reservations %}
                             {% if reservation.status == 'Collected' %}
                                 <tr class="collected-row">
+                                    <td>{{ reservation.book_number }}</td>
                                     <td>{{ reservation.book_title }}</td>
                                     <td>{{ reservation.borrower_name }}</td>
                                     <td>{{ reservation.reservation_date.date }}</td>
@@ -246,7 +251,6 @@
                             <th>Borrower Name</th>
                             <th>D.Reserved</th>
                             <th>Status</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -254,9 +258,8 @@
                             <tr class="cancelled-row">
                                 <td>{{ reservation.book_title }}</td>
                                 <td>{{ reservation.borrower_name }}</td>
-                                <td>{{ reservation.reservation_date.date }}</td>
+                                <td>{{ reservation.reservation_date.date}}</td>
                                 <td><span class="status cancelled">{{ reservation.status }}</span></td>
-                                <td style="text-decoration: underline crimson;">Invalidated</td>
                             </tr>
                         {% empty %}
                             <tr>
