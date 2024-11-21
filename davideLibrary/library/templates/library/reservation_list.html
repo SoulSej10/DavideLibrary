@@ -26,7 +26,7 @@
         .table-container {
             display: flex;
             justify-content: space-between;
-            gap: 20px;
+            gap: 10px;
             border-radius: 10px;
         }
         .table-wrapper {
@@ -86,6 +86,41 @@
         .cancelled {
             color: red;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -116,33 +151,49 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for reservation in reservations %}
-                            {% if reservation.status == 'Reserved' %}
-                                <tr class="reserved-row">
-                                    <td>{{ reservation.book_number }}</td>
-                                    <td>{{ reservation.book_title }}</td>
-                                    <td>{{ reservation.borrower_name }}</td>
-                                    <td class="borrower-uid">{{ reservation.borrower_uid_number }}</td>
-                                    <td>{{ reservation.reservation_date.date }}</td>
-                                    <td>
-                                        <span class="status reserved">{{ reservation.status }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="countdown" data-time-remaining="{{ reservation.time_remaining.total_seconds }}"></span>
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'collect-reservation' reservation.reservation_number %}" class="btn-save">Collect</a>
-                                    </td>
-                                </tr>
-                            {% endif %}
+                        {% for reservation in ongoing_reservations %}
+                            <tr class="reserved-row">
+                                <td>{{ reservation.book_number }}</td>
+                                <td>{{ reservation.book_title }}</td>
+                                <td>{{ reservation.borrower_name }}</td>
+                                <td class="borrower-uid">{{ reservation.borrower_uid_number }}</td>
+                                <td>{{ reservation.reservation_date.date }}</td>
+                                <td><span class="status reserved">{{ reservation.status }}</span></td>
+                                <td>
+                                    <span class="countdown" data-time-remaining="{{ reservation.time_remaining.total_seconds }}"></span>
+                                </td>
+                                <td>
+                                    <!-- <a href="{% url 'collect-reservation' reservation.reservation_number %}" class="btn-save">Collect</a> -->
+                                    <button onclick="openValidationModal('{{ reservation.reservation_number }}')" class="btn-save" style="font-family: 'Poppins', sans-serif;">
+                                        Collect
+                                    </button>                                    
+                                </td>
+                            </tr>
                         {% empty %}
                             <tr>
                                 <td colspan="8" style="text-align: center;">No ongoing reservations found.</td>
                             </tr>
                         {% endfor %}
-                    </tbody>
+                    </tbody>                    
                 </table>
             </div>
+            <!-- Validation Modal -->   
+            <div id="validationModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeValidationModal()">&times;</span>
+                    <h2>Validate Collector</h2>
+                    <form id="validateUIDForm">
+                        <!-- Hidden field to store the reservation number -->
+                        <input type="hidden" id="reservationNumber">
+                        <label for="uid">Enter UID:</label>
+                        <input type="text" id="uid" required>
+                        <button type="button" onclick="validateCollector()">Validate</button>
+                    </form>
+                    <p id="validationMessage"></p>
+                    <button id="confirmButton" style="display: none;" onclick="submitCollection()">Confirm</button>
+                </div>
+            </div>
+
         </div>
         
         <div class="table-container">
@@ -159,7 +210,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for reservation in reservations %}
+                        {% for reservation in collected_reservations %}
                             {% if reservation.status == 'Collected' %}
                                 <tr class="collected-row">
                                     <td>{{ reservation.book_title }}</td>
@@ -189,26 +240,24 @@
                             <th>Borrower Name</th>
                             <th>Date Reserved</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for reservation in reservations %}
-                            {% if reservation.status == 'Expired' %}
-                                <tr class="cancelled-row">
-                                    <td>{{ reservation.book_title }}</td>
-                                    <td>{{ reservation.borrower_name }}</td>
-                                    <td>{{ reservation.reservation_date.date }}</td>
-                                    <td>
-                                        <span class="status cancelled">{{ reservation.status }}</span>
-                                    </td>
-                                </tr>
-                            {% endif %}
+                        {% for reservation in expired_reservations %}
+                            <tr class="cancelled-row">
+                                <td>{{ reservation.book_title }}</td>
+                                <td>{{ reservation.borrower_name }}</td>
+                                <td>{{ reservation.reservation_date.date }}</td>
+                                <td><span class="status cancelled">{{ reservation.status }}</span></td>
+                                <td>Invalidated</td>
+                            </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="4" style="text-align: center;">No expired reservations found.</td>
+                                <td colspan="5" style="text-align: center;">No expired reservations found.</td>
                             </tr>
                         {% endfor %}
-                    </tbody>
+                    </tbody>                    
                 </table>
             </div>
         </div>
@@ -250,19 +299,17 @@
                     const hours = Math.floor(timeRemaining / 3600);
                     const minutes = Math.floor((timeRemaining % 3600) / 60);
                     const seconds = Math.floor(timeRemaining % 60);
-    
                     element.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                     element.setAttribute('data-time-remaining', timeRemaining - 1);
                 } else {
-                    element.textContent = 'Expired';
+                    // Remove expired reservation row from Ongoing table
                     const row = element.closest('tr');
-                    row.querySelector('.status').classList.remove('reserved');
-                    row.querySelector('.status').classList.add('cancelled');
-                    row.querySelector('.status').textContent = 'Expired';
+                    row.parentNode.removeChild(row);
                 }
             });
         }
         setInterval(updateCountdown, 1000);
+
 
         // Function to mask the middle part of the Borrower UID
         function maskBorrowerUID(uid) {
@@ -282,6 +329,76 @@
             const uid = element.textContent.trim();
             element.textContent = maskBorrowerUID(uid);
         });
+
+
+
+
+        function openValidationModal(reservationNumber) {
+            const reservationInput = document.getElementById('reservationNumber');
+            const validationModal = document.getElementById('validationModal');
+
+            if (!reservationInput || !validationModal) {
+                console.error("Validation modal or reservationNumber input is missing from the DOM.");
+                return;
+            }
+
+            reservationInput.value = reservationNumber; // Set the reservation number
+            validationModal.style.display = 'block';   // Display the modal
+        }
+
+        function closeValidationModal() {
+            document.getElementById('validationModal').style.display = 'none';
+            document.getElementById('validationMessage').innerText = '';
+            document.getElementById('confirmButton').style.display = 'none';
+            document.getElementById('uid').value = '';
+        }
+
+        function validateCollector() {
+            const uid = document.getElementById('uid').value;
+            const reservationNumber = document.getElementById('reservationNumber').value;
+
+            fetch(`/validate-collector/${reservationNumber}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ uid })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageElement = document.getElementById('validationMessage');
+                if (data.valid) {
+                    messageElement.innerText = 'Collector Validated, book reservation successful!';
+                    messageElement.style.color = 'green';
+                    document.getElementById('confirmButton').style.display = 'inline-block';
+                } else {
+                    messageElement.innerText = data.message || 'Validation failed!';
+                    messageElement.style.color = 'red';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function submitCollection() {
+            const reservationNumber = document.getElementById('reservationNumber').value;
+
+            fetch(`/collect-reservation/${reservationNumber}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); // Refresh the page to update the status
+                } else {
+                    console.error('Collection failed.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
 
     </script>
 </body>

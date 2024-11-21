@@ -1381,45 +1381,67 @@ def collect_reservation(request, reservation_number):
     try:
         reservation = BookReservation.objects.get(reservation_number=reservation_number)
 
-        # Transfer reservation details to BorrowSlip
-        borrow_slip = BorrowSlip(
-            book_number=reservation.book_number,
-            book_title=reservation.book_title,
-            author=reservation.author,
-            date_borrow=timezone.now().date(),
-            borrower_uid_number=reservation.borrower_uid_number,
-            borrower_name=reservation.borrower_name,
-            due_date=reservation.due_date,
-            librarian_name=reservation.librarian_name,
-            status='Borrowed'
-        )
-        borrow_slip.save()
+        # Check for POST request after validation
+        if request.method == 'POST':
+            # Transfer reservation details to BorrowSlip
+            borrow_slip = BorrowSlip(
+                book_number=reservation.book_number,
+                book_title=reservation.book_title,
+                author=reservation.author,
+                date_borrow=timezone.now().date(),
+                borrower_uid_number=reservation.borrower_uid_number,
+                borrower_name=reservation.borrower_name,
+                due_date=reservation.due_date,
+                librarian_name=reservation.librarian_name,
+                status='Borrowed'
+            )
+            borrow_slip.save()
 
-        # Update reservation status
-        reservation.status = 'Collected'
-        reservation.collected_date = timezone.now()
-        reservation.save()
+            # Update reservation status
+            reservation.status = 'Collected'
+            reservation.collected_date = timezone.now()
+            reservation.save()
 
-        # Update book status to 'Borrowed'
-        try:
-            book = BookInventory.objects.get(book_number=reservation.book_number)
-            book.status = 'Borrowed'
-            book.save()
-        except BookInventory.DoesNotExist:
-            # Handle case where the book doesn't exist
-            pass
+            # Update book status to 'Borrowed'
+            try:
+                book = BookInventory.objects.get(book_number=reservation.book_number)
+                book.status = 'Borrowed'
+                book.save()
+            except BookInventory.DoesNotExist:
+                pass
 
-        return redirect('borrow-slip-list')  # Redirect to borrow slip list
+            return JsonResponse({'success': True})
+
+        return JsonResponse({'success': False, 'message': 'Invalid request.'})
     except BookReservation.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Reservation not found.'})
+
+
+@csrf_exempt
+def validate_collector(request, reservation_number):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        uid = data.get('uid')
+
+        try:
+            reservation = BookReservation.objects.get(reservation_number=reservation_number)
+
+            # Compare UID
+            if reservation.borrower_uid_number == uid:
+                return JsonResponse({'valid': True})
+            else:
+                return JsonResponse({'valid': False, 'message': 'UID does not match.'})
+        except BookReservation.DoesNotExist:
+            return JsonResponse({'valid': False, 'message': 'Reservation not found.'})
 
 
 def expire_reservations():
     expired_reservations = BookReservation.objects.filter(
         status='Reserved',
-        reservation_date__lt=timezone.now() - timedelta(hours=24)  # 24-hour expiration
+        reservation_date__lt=now() - timedelta(hours=24)
     )
     for reservation in expired_reservations:
+        # Update book status to 'Available'
         try:
             book = BookInventory.objects.get(book_number=reservation.book_number)
             book.status = 'Available'
@@ -1427,31 +1449,53 @@ def expire_reservations():
         except BookInventory.DoesNotExist:
             pass
 
+        # Mark reservation as expired
         reservation.status = 'Expired'
         reservation.save()
 
 
 @login_required
 def reservation_list(request):
+    # Run expiration logic (if this is required for your application)
+    expire_reservations()
+
+    # Query all reservations
     reservations = BookReservation.objects.all()
 
-    # Calculate the remaining time for each reservation
-    for reservation in reservations:
+    # Categorize reservations by status
+    ongoing_reservations = reservations.filter(status='Reserved')
+    collected_reservations = reservations.filter(status='Collected')
+    expired_reservations = reservations.filter(status='Expired')
+
+    # Calculate the time remaining for ongoing reservations
+    for reservation in ongoing_reservations:
         reservation.time_remaining = max(
-            timedelta(hours=24) - (now() - reservation.reservation_date), 
+            timedelta(hours=24) - (now() - reservation.reservation_date),
             timedelta(0)
         )
     
-    # Sort reservations:
-    # 1. "Reserved" (active) reservations come first.
-    # 2. Then, by reservation_date (newest first).
-    sorted_reservations = sorted(
-        reservations,
-        key=lambda x: (x.status != 'Reserved', x.reservation_date),
+    # Combine all reservations and sort if needed
+    # Sorting ongoing reservations by reservation date
+    ongoing_reservations = sorted(
+        ongoing_reservations,
+        key=lambda x: x.reservation_date,
         reverse=True
     )
-    
-    return render(request, 'library/reservation_list.html', {'reservations': sorted_reservations})
+    # Sorting expired reservations (optional)
+    expired_reservations = sorted(
+        expired_reservations,
+        key=lambda x: x.reservation_date,
+        reverse=True
+    )
+
+    # Pass categorized data to the template
+    context = {
+        'ongoing_reservations': ongoing_reservations,
+        'collected_reservations': collected_reservations,
+        'expired_reservations': expired_reservations,
+    }
+    return render(request, 'library/reservation_list.html', context)
+
 
 
 

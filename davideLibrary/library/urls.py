@@ -65,6 +65,8 @@ urlpatterns = [
     path('collect-reservation/<int:reservation_number>/', views.collect_reservation, name='collect-reservation'),
     path('expire-reservations/', views.expire_reservations, name='expire-reservations'),
     path('reservation-list/', views.reservation_list, name='reservation-list'),
+    path('validate-collector/<str:reservation_number>/', views.validate_collector, name='validate-collector'),
+    path('collect-reservation/<str:reservation_number>/', views.collect_reservation, name='collect-reservation'),
     
     # attendance
     path('create/', views.create_attendance, name='create-attendance'),
