@@ -26,7 +26,6 @@
         .table-container {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
             border-radius: 10px;
         }
         .table-wrapper {
@@ -245,7 +244,7 @@
                         <tr>
                             <th>Book Title</th>
                             <th>Borrower Name</th>
-                            <th>Date Reserved</th>
+                            <th>D.Reserved</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -257,7 +256,7 @@
                                 <td>{{ reservation.borrower_name }}</td>
                                 <td>{{ reservation.reservation_date.date }}</td>
                                 <td><span class="status cancelled">{{ reservation.status }}</span></td>
-                                <td>Invalidated</td>
+                                <td style="text-decoration: underline crimson;">Invalidated</td>
                             </tr>
                         {% empty %}
                             <tr>
