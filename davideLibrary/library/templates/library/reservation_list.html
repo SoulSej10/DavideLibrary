@@ -64,6 +64,7 @@
             background-color: #4CAF50;
             color: white;
             text-decoration: none;
+            font-family: 'Poppins',sans-serif;
         }
         .btn-back {
             background-color: #777;
@@ -102,10 +103,16 @@
         .modal-content {
             background-color: #fefefe;
             margin: auto;
+            margin-top: 40px;
             padding: 20px;
             border: 1px solid #888;
             width: 40%;
             text-align: center;
+        }
+
+        .modal-content input{
+            padding: 8px;
+            border-radius: 4px;
         }
 
         .close {
@@ -164,7 +171,7 @@
                                 </td>
                                 <td>
                                     <!-- <a href="{% url 'collect-reservation' reservation.reservation_number %}" class="btn-save">Collect</a> -->
-                                    <button onclick="openValidationModal('{{ reservation.reservation_number }}')" class="btn-save" style="font-family: 'Poppins', sans-serif;">
+                                    <button onclick="openValidationModal('{{ reservation.reservation_number }}')" class="btn-save">
                                         Collect
                                     </button>                                    
                                 </td>
@@ -187,10 +194,10 @@
                         <input type="hidden" id="reservationNumber">
                         <label for="uid">Enter UID:</label>
                         <input type="text" id="uid" required>
-                        <button type="button" onclick="validateCollector()">Validate</button>
+                        <button type="button" onclick="validateCollector()" class="btn-save">Validate</button>
                     </form>
                     <p id="validationMessage"></p>
-                    <button id="confirmButton" style="display: none;" onclick="submitCollection()">Confirm</button>
+                    <button id="confirmButton" style="display: none;" onclick="submitCollection()" class="btn-save">Confirm</button>
                 </div>
             </div>
 
