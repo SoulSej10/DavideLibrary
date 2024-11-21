@@ -167,7 +167,7 @@
                                 <td>{{ reservation.reservation_date.date }}</td>
                                 <td><span class="status reserved">{{ reservation.status }}</span></td>
                                 <td>
-                                    <span class="countdown" data-time-remaining="{{ reservation.time_remaining.total_seconds }}"></span>
+                                    Countdown Exactly: <span class="countdown" data-time-remaining="{{ reservation.time_remaining.total_seconds }}" style="color: #ff4d4d;"></span>
                                 </td>
                                 <td>
                                     <!-- <a href="{% url 'collect-reservation' reservation.reservation_number %}" class="btn-save">Collect</a> -->
