@@ -42,10 +42,11 @@
                         <h4>Lost</h4>
                         <p id="lost-count">0</p>
                     </div>
-                    <div class="stat-box" style="background-color: #fafad2;">
+                    <div class="stat-box" style="background-color: #fafad2;" onclick="directReservationList()" id="hover-label-container">
                         <h4>Reserved</h4>
-                        <p id="reserved-count">0</p>
-                    </div>
+                        <p id="reserved-count">{{ statistics_data.reservedBooks }}</p>
+                        <div class="hover-label">Reservation List</div>
+                    </div>                                                                            
                 </div>
             </div>
         </div>
@@ -95,7 +96,7 @@
         
         <!-- Borrowed Books Table -->
         
-    <div class="borrowed-table-container">
+    <div class="borrowed-table-container" id="borrow">
         <div class="table-header">
             <span>Borrowed Books</span>
         </div>
@@ -826,15 +827,37 @@ function confirmReturn() {
     document.getElementById('returned-count').textContent = statisticsData.returnedBooks;
     document.getElementById('overdue-count').textContent = statisticsData.overdueBooks;
     document.getElementById('lost-count').textContent = statisticsData.lostBooks;
-    document.getElementById('reserved-count').textContent = statisticsData.reservedBooks;
+    document.getElementById('reserved-count').textContent = statisticsData.reservedBooks;  // Dynamically updated
 
-    // Populate the most borrowed books list
-    const mostBorrowedBooksList = document.getElementById('most-borrowed-books');
-    statisticsData.mostBorrowedBooks.forEach(book => {
-        const li = document.createElement('li');
-        li.textContent = `${book.book_title} - ${book.count} times`;
-        mostBorrowedBooksList.appendChild(li);
-    });
+    // Populate the most borrowed books list with styling for ranking
+const mostBorrowedBooksList = document.getElementById('most-borrowed-books');
+statisticsData.mostBorrowedBooks.forEach((book, index) => {
+    const li = document.createElement('li');
+
+    // Create rank number
+    const rankNumber = document.createElement('span');
+    rankNumber.textContent = `${index + 1}`;
+    rankNumber.className = 'rank-number';
+
+    // Create book title
+    const bookTitle = document.createElement('span');
+    bookTitle.textContent = book.book_title;
+    bookTitle.className = 'book-title';
+
+    // Create borrow count
+    const borrowCount = document.createElement('span');
+    borrowCount.textContent = `${book.count} times`;
+    borrowCount.className = 'borrow-count';
+
+    // Append elements to the list item
+    li.appendChild(rankNumber);
+    li.appendChild(bookTitle);
+    li.appendChild(borrowCount);
+
+    // Append the list item to the ordered list
+    mostBorrowedBooksList.appendChild(li);
+});
+
 
     const monthlyBorrowingData = statisticsData.monthlyBorrowCounts;
     const last3MonthsLabels = statisticsData.last3MonthsLabels;
@@ -884,7 +907,12 @@ function confirmReturn() {
             }
         });
     });
+
+    function directReservationList(){
+    window.location.href = "{% url 'reservation-list' %}";
+    }
 </script>
+
 
 
 

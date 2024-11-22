@@ -286,13 +286,17 @@ tbody tr:nth-child(even) {
 .most-borrowed {
     flex: 2 1 calc(60% - 10px);
     background-color: #e0ffff;
-    padding: 15px;
+    padding: 10px;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     height: 150px;
+    overflow-y: auto;
+}
+.most-borrowed::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in Chrome, Safari, and Edge */
 }
 
 .most-borrowed h3 {
@@ -334,3 +338,79 @@ tbody tr:nth-child(even) {
     font-weight: bold;
     color: #00796b;
 }
+
+#hover-label-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    background-color: #fafad2; /* Same as the background of the stat-box */
+}
+
+/* Label that will appear on hover */
+.hover-label {
+    position: absolute;
+    bottom: -25px; /* Adjusts label position below the box */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7); /* Dark background for the label */
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s ease; /* Smooth fade-in effect */
+    pointer-events: none; /* Avoids blocking other clicks */
+}
+
+/* Show label when container is hovered */
+#hover-label-container:hover .hover-label {
+    opacity: 1; /* Makes the label visible on hover */
+}
+
+#most-borrowed-books {
+    list-style: none; /* Remove default numbering */
+    padding: 0;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+#most-borrowed-books li {
+    display: flex;
+    justify-content: space-between; /* Align text on a single row */
+    align-items: center; /* Vertically center content */
+    padding: 3px 8px; /* Compact padding */
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 3px; /* Slightly rounded corners */
+    margin-bottom: 5px; /* Space between items */
+    transition: background-color 0.3s ease;
+    font-size: 0.6rem; /* Compact font size */
+}
+
+#most-borrowed-books li:hover {
+    background-color: #f1f1f1;
+}
+
+.rank-number {
+    font-weight: bold;
+    color: #ff9800;
+    font-size: 0.8rem; /* Highlight rank */
+    margin-right: 8px; /* Space from title */
+}
+
+.book-title {
+    flex: 1; /* Allow title to take up remaining space */
+    font-weight: bold;
+    font-size: 0.8rem; /* Highlight book title */
+    margin: 0 8px; /* Add space around */
+    text-align: left; /* Align title to the left */
+}
+
+.borrow-count {
+    font-size: 0.6rem;
+    color: #555;
+    text-align: right; /* Align count to the right */
+}
+
+

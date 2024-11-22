@@ -1633,6 +1633,9 @@ def monitor_borrowed_books(request):
     lost_books = borrow_slips.filter(status="Lost").count()
     reserved_books = borrow_slips.filter(status="Reserved").count()
 
+    # Reserved Books from the reservation list
+    reserved_books_count = BookReservation.objects.filter(status="Reserved").count()
+
     # Monthly Borrow Count for the last 3 months (current month and the previous two months)
     monthly_borrow_counts = [
         BorrowSlip.objects.filter(date_borrow__year=current_year, date_borrow__month=month).count()
@@ -1648,7 +1651,7 @@ def monitor_borrowed_books(request):
         'returnedBooks': returned_books,
         'overdueBooks': overdue_books,
         'lostBooks': lost_books,
-        'reservedBooks': reserved_books,
+        'reservedBooks': reserved_books_count,  # Updated reserved count
         'mostBorrowedBooks': list(most_borrowed_books),
         'monthlyBorrowCounts': monthly_borrow_counts,  # Add monthly borrow counts
         'last3MonthsLabels': last_3_months_labels,  # Add the month names
@@ -1663,6 +1666,7 @@ def monitor_borrowed_books(request):
     }
 
     return render(request, 'library/monitor_borrowed_books.html', context)
+
 
 
 
