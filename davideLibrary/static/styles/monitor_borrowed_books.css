@@ -3,24 +3,52 @@
     src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
 }
 
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Full height for body and html */
+    overflow: hidden; /* No scrolling for the body, only specific elements */
+}
+
 .main-content {
-    margin-left: 240px; /* Adjust as per your sidebar width */
+    margin-left: 240px; /* Adjust for sidebar width */
     padding: 20px;
-    margin-top: 90px; /* Adjust as per your header height */
+    margin-top: 90px; /* Adjust for header height */
+    height: calc(92vh - 90px); /* Height of the main content */
+    overflow-y: auto; /* Enable vertical scrolling within main-content */
     display: flex;
     flex-direction: column;
 }
 
 .table-container {
-    max-height: 470px; /* Set the height for the scrollable area */
-    overflow-y: auto; /* Add vertical scrollbar when needed */
-    border: 1px solid #ddd; /* Optional: border around the scrollable area */
-    border-radius: 10px;
+    flex-grow: 1; /* Ensures the table container takes up available space */
+    overflow-y: auto; /* Enable scrolling within the table container */
+    display: flex; 
+    flex-direction: row; 
+    gap: 20px;
+}
+.table-header {
+    position: sticky; /* Make the header sticky */
+    top: 0; /* Stick to the top */
+    background-color: white; /* Match the table's background */
+    z-index: 2; /* Ensure it stays above table content */
+    padding: 10px;
+    /* border-bottom: 1px solid #ddd;  */
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+.table-content {
+    max-height: 430px; /* Set maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid #ddd; /* Add a border around the table */
+    border-radius: 10px; /* Add rounded corners */
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    /* border: 1px solid #ddd;   */
 }
 
 th, td {
@@ -31,13 +59,13 @@ th, td {
 th {
     background-color: #555555;
     color: white;
-    position: sticky; /* Make header sticky */
-    top: 0; /* Stick to the top */
-    z-index: 2; /* Ensure header stays on top of the table body */
+    position: sticky; /* Sticky header */
+    top: 0; /* Stick to the top of the table container */
+    z-index: 2; /* Ensure header stays above content */
 }
 
 tbody {
-    font-size: 14px;
+    font-size: 13px;
 }
 
 tbody tr:nth-child(even) {
@@ -132,30 +160,6 @@ tbody tr:nth-child(even) {
     display: none;
 }
 
-.penalty-status {
-    color: red;
-    font-weight: bold;
-}
-
-.success-message {
-    color: green;
-    font-weight: bold;
-}
-
-.error-message {
-    color: red;
-    font-weight: bold;
-}
-
-.status-returned {
-    color: green;
-    font-weight: bold;
-}
-
-.text-danger {
-    color: red;
-}
-
 .return-btn{
     background-color: #7EBC89; /* Green */
     color: white;
@@ -212,4 +216,121 @@ tbody tr:nth-child(even) {
 
 .btn-secondary:hover {
     background-color: #e63939;
+}
+.borrow-slip {
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.borrow-slip p{
+    margin: 0;
+}
+
+#borrow-history-container {
+    overflow-y: scroll;
+    color: black;
+    font-size: 14px;
+    max-height: 275px;
+}
+#borrow-history-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in Chrome, Safari, and Edge */
+}
+
+.side-container {
+    width: 45%;
+    height: calc(92vh - 100px);
+    background-color: #555;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    /* position: fixed; */
+    top: 70px;
+    right: 0;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.side-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in Chrome, Safari, and Edge */
+}
+
+.section-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    /* font-weight: lighter; */
+}
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+
+.statistics-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    width: 95%;
+}
+
+/* Most Borrowed Books - Takes the largest space */
+.most-borrowed {
+    flex: 2 1 calc(60% - 10px);
+    background-color: #e0ffff;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    height: 150px;
+}
+
+.most-borrowed h3 {
+    margin-bottom: 10px;
+}
+
+.most-borrowed ol {
+    margin: 0;
+    padding-left: 20px;
+    list-style: decimal inside;
+}
+
+/* Small Stats - Common container for grouped stats */
+.small-stats {
+    flex: 1 1 calc(20% - 10px);
+    /* display: flex; */
+    /* flex-direction: column; */
+    gap: 10px;
+}
+
+/* Individual Stat Box */
+.stat-box {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.stat-box h4 {
+    margin: 0 0 5px;
+    font-size: 1rem;
+}
+
+.stat-box p {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00796b;
 }

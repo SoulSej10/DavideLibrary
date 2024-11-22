@@ -73,7 +73,7 @@ urlpatterns = [
     path('list/', views.attendance_list, name='attendance-list'),
     path('recent-attendance-stats/', views.recent_attendance_stats, name='recent_attendance_stats'),
 
-    # # Borrowed books
+    # Monitoring Borrowed books
     path('monitor-borrowed-books/', views.monitor_borrowed_books, name='monitor-borrowed-books'),
     path('return-book/<int:slip_number>/', views.return_book, name='return-book'),
     path('set-penalty/<str:slip_number>/', views.set_penalty, name='set-penalty'),

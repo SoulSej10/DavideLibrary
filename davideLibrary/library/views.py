@@ -42,7 +42,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
 from django.contrib.auth.models import Group 
 from django.http import HttpResponseForbidden
-
+import calendar
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
@@ -62,6 +62,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
 from .forms import CustomPasswordResetForm
+from django.db.models import ExpressionWrapper, F, IntegerField, DurationField
 
 #MARK: Landing Page
 # ============================================================================================================================================
@@ -1587,18 +1588,21 @@ def recent_attendance_stats(request):
 # ============================================================================================================================================
 @login_required
 def monitor_borrowed_books(request):
-    # Order by 'returned' (False first) and then by '-slip_number' (highest slip number first)
-    borrow_slips = BorrowSlip.objects.order_by('returned', '-slip_number')  # Sort by slip number in descending order
-    current_date = timezone.now().date()
+    # Get the current date
+    current_date = now().date()
+    current_month = current_date.month
+    current_year = current_date.year
 
+    # Get the name of the current month
+    current_month_name = calendar.month_name[current_month]
+
+    # Filter borrow_slips by the current month and year
+    borrow_slips = BorrowSlip.objects.filter(date_borrow__year=current_year, date_borrow__month=current_month)
+
+    # Update status of borrow slips based on due date and return status
     for slip in borrow_slips:
-        # Ensure 'due_date' is a date object for comparison
-        if isinstance(slip.due_date, datetime):
-            slip_due_date = slip.due_date.date()
-        else:
-            slip_due_date = slip.due_date
+        slip_due_date = slip.due_date.date() if isinstance(slip.due_date, datetime) else slip.due_date
 
-        # Update status based on due_date and return status
         if slip_due_date < current_date and not slip.returned:
             slip.status = 'Overdue'
         elif slip.returned:
@@ -1606,9 +1610,65 @@ def monitor_borrowed_books(request):
         else:
             slip.status = 'Borrowed'
 
-        slip.save()  # Save the updated status
+        slip.save()
 
-    return render(request, 'library/monitor_borrowed_books.html', {'borrow_slips': borrow_slips})
+    # Get overdue books from previous months (status = Overdue and date_borrowed before the current month)
+    overdue_previous_months = BorrowSlip.objects.filter(
+        status="Overdue", 
+        due_date__lt=current_date,
+        date_borrow__lt=f"{current_year}-{current_month:02d}-01"
+    )
+
+    # Most Borrowed Books (Top 5 by count for this month)
+    most_borrowed_books = (
+        borrow_slips.values("book_title")
+        .annotate(count=Count("book_title"))
+        .order_by("-count")[:5]
+    )
+
+    # Count for different statuses for this month
+    ongoing_borrowing = borrow_slips.filter(status="Borrowed").count()
+    returned_books = borrow_slips.filter(status="Returned").count()
+    overdue_books = borrow_slips.filter(status="Overdue").count()
+    lost_books = borrow_slips.filter(status="Lost").count()
+    reserved_books = borrow_slips.filter(status="Reserved").count()
+
+    # Monthly Borrow Count for the last 3 months (current month and the previous two months)
+    monthly_borrow_counts = [
+        BorrowSlip.objects.filter(date_borrow__year=current_year, date_borrow__month=month).count()
+        for month in [current_month, current_month - 1, current_month - 2] if month > 0
+    ]
+
+    # Get the names of the last 3 months
+    last_3_months_labels = [calendar.month_name[(current_month - i - 1) % 12] for i in range(3)]
+
+    # Prepare statistics data
+    statistics_data = {
+        'ongoingBorrowing': ongoing_borrowing,
+        'returnedBooks': returned_books,
+        'overdueBooks': overdue_books,
+        'lostBooks': lost_books,
+        'reservedBooks': reserved_books,
+        'mostBorrowedBooks': list(most_borrowed_books),
+        'monthlyBorrowCounts': monthly_borrow_counts,  # Add monthly borrow counts
+        'last3MonthsLabels': last_3_months_labels,  # Add the month names
+    }
+
+    # Pass statistics data and month name to the template
+    context = {
+        "borrow_slips": borrow_slips,
+        "overdue_previous_months": overdue_previous_months,  # Pass overdue books from previous months
+        "statistics_data": json.dumps(statistics_data),  # Add the statistics data to context
+        "current_month_name": current_month_name  # Add the current month name to context
+    }
+
+    return render(request, 'library/monitor_borrowed_books.html', context)
+
+
+
+
+
+
 
 
 @csrf_exempt

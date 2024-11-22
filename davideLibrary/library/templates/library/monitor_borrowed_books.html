@@ -7,69 +7,318 @@
 {% endblock %}
 
 <div class="main-content">
-    <div class="head"> 
-        <h2>Monitor Borrowed Books</h2>
+    <div class="display" style="display: flex; flex-direction: column;">
+    <div class="half" style="display: flex; flex-direction: row;">
+        <div class="stat-display" style="display: flex; flex-direction: column; width: 60%;">
+            <div class="statistics-container">
+                <h3 style="font-weight: bold; margin: 0;">Statistics in the month of:  {{ current_month_name }}</h3>
+                    <div class="first" style="display: flex; flex-direction: row; gap: 10px;">
+                        <div class="most-borrowed">
+                            <h3 style="margin: 0;">Top Books</h3>
+                            <ol id="most-borrowed-books">
+                                <!-- Dynamic content will populate here -->
+                            </ol>
+                        </div>
+                    <div class="first-two" style="display: flex; flex-direction: row; width: 32.5%;">
+                        <div class="small-stats">
+                            <div class="stat-box" style="margin-bottom: 10px; background-color: #fafad2;">
+                                <h4>Ongoing</h4>
+                                <p id="ongoing-count">0</p>
+                            </div>
+                            <div class="stat-box" style="background-color: #ffdead;">
+                                <h4>Returned</h4>
+                                <p id="returned-count">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <div class="second" style="display: flex; flex-direction: row;">
+                <div class="small-stats" style="display: flex;">
+                    <div class="stat-box" style="background-color: #f5f5dc;">
+                        <h4>Overdue</h4>
+                        <p id="overdue-count">0</p>
+                    </div>
+                    <div class="stat-box" style="background-color: #ffdead;">
+                        <h4>Lost</h4>
+                        <p id="lost-count">0</p>
+                    </div>
+                    <div class="stat-box" style="background-color: #fafad2;">
+                        <h4>Reserved</h4>
+                        <p id="reserved-count">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="width: 100%; margin-top: 20px;">
+            <canvas id="monthly-borrowing-chart"></canvas>
+        </div>
+        <span style="font-size: 12px; border: solid 1px grey; margin: 5px; padding: 0 5px; color: gray; border-radius: 4px;">Note: The line graph represents recorded book borrowing data over a range of months, with the data sourced from the <a href="{% url 'borrow-slip-list' %}" style="text-decoration: none;">borrowing records</a>.</span>
     </div>
-    <div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>Book No.</th>
-                <th>Book Title</th>
-                <th>Borrower</th>
-                <th>Borrow Date</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for slip in borrow_slips %}
-            <tr id="row-{{ slip.slip_number }}">
-                <td>{{ slip.book_number }}</td>
-            <td>{{ slip.book_title }}</td>
-            <td>{{ slip.borrower_name }}</td>
-            <td>{{ slip.date_borrow|date}}</td>
-            <td>{{ slip.due_date|date}}</td>
-            <td>
-                {% if slip.penalty %}
-                    <span class="penalty-status">UNRETURNED ({{ slip.penalty }})</span>
-                {% elif slip.status == "Returned" %}
-                    <span class="status-returned">RETURNED</span>
-                {% else %}
-                    {{ slip.status }}
-                {% endif %}
-            </td>
+        
+<!-- Side Container -->
+<div class="side-container">
+    <div class="section-label" style="color: white; font-weight: lighter;">
+        <h1 style="font-size: 18px;">Enter Borrower Account to view History...</h1>
+    </div>
+    <div class="search-container">
+        <!-- Input field for scanning UID -->
+         <!-- Container for displaying the QR code -->
+        <div class="who-container" style="display: flex;">
+            <div id="qr-code-container" style="margin-bottom: 10px; margin-right: 15px;">
+                <img id="qr-code-image" src="{% static 'images/hpdslogo.png' %}" alt="QR Code" style="width: 100px; height: 100px; border-radius: 10px; background-color: white;"/>
+            </div>
+            <div class="side" style="width: 70%;">
+            <!-- Container for displaying the welcome message and the history of borrowed books -->
+            <div id="welcome-message" style="color: white; font-size: 16px; font-weight: lighter; margin-bottom: 5px;"></div>
 
-                
-            <td id="actions-{{ slip.slip_number }}" style="display: flex; gap: 10px;">
-                {% if slip.status != 'Returned' %}
-                    <button type="button"
-                            data-slip-number="{{ slip.slip_number }}"
-                            class="return-btn"
-                            data-book-number="{{ slip.book_number }}"
-                            onclick="openReturnBookModal(this)">
-                        Return Book
-                    </button>
-                    {% if slip.status == 'Overdue' %}
-                        <button type="button" class="btn btn-warning"
-                                data-slip-number="{{ slip.slip_number }}"
-                                onclick="openPenaltyModal('{{ slip.slip_number }}')">
-                            Set Penalty
-                        </button>
+            <div class="UID_field">
+                <input type="password" id="uid-input" placeholder="Scan UID here..." oninput="fetchBorrowHistory()"
+                    style="width: 95%; padding: 10px; border-radius: 5px; margin-bottom: 5px; font-family: 'Poppins', sans-serif;">
+                    <p style="font-size: 15px; color: white; margin: 0;">Below is your book borrowing history:</p>
+        </div>
+
+    </div>
+    </div>
+        
+        
+
+        <div id="borrow-history-container" style="color: black;">
+            <!-- Borrow history will be displayed here -->
+        </div>
+        <button id="retry-button" style="background-color: #6aa476; color: white; display: none; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; font-family: 'Poppins', sans-serif;" onclick="retryInput()">Retry</button>
+        <button id="exit-button" onclick="exitView()" style="background-color: #ff4d4d; color: white; border: none; border-radius: 5px; padding: 10px 15px; cursor: pointer; display: none; font-family: 'Poppins', sans-serif;">Exit</button>
+    </div>
+</div>
+</div>
+<div style="background-color: #e0ffff; display:inline ; "><h2 style="margin: 0; text-align: center;">Monitor Borrowed Books</h2></div>
+    <div class="table-container">
+        
+        <!-- Borrowed Books Table -->
+        
+    <div class="borrowed-table-container">
+        <div class="table-header">
+            <span>Borrowed Books</span>
+        </div>
+        <div class="table-content">
+        <table>
+            <thead>
+                <tr>
+                    <!-- <th>Book No.</th> -->
+                    <th>Book Title</th>
+                    <th>Borrower</th>
+                    <!-- <th>Borrow Date</th> -->
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for slip in borrow_slips %}
+                    {% if slip.status == "Borrowed" %}
+                        <tr id="row-{{ slip.slip_number }}">
+                            <!-- <td>{{ slip.book_number }}</td> -->
+                            <td>{{ slip.book_title }}</td>
+                            <td>{{ slip.borrower_name }}</td>
+                            <!-- <td>{{ slip.date_borrow|date }}</td> -->
+                            <td>{{ slip.due_date|date }}</td>
+                            <td class="status-cell" data-status="{{ slip.status }}">
+                                {% if slip.penalty %}
+                                    <span class="penalty-status">UNRETURNED ({{ slip.penalty }})</span>
+                                {% elif slip.status == "Returned" %}
+                                    <span class="status-returned">RETURNED</span>
+                                {% else %}
+                                    {{ slip.status }}
+                                {% endif %}
+                            </td>
+                            
+                            <td id="actions-{{ slip.slip_number }}" style="display: flex; gap: 10px;" >
+                                {% if slip.status != 'Returned' %}
+                                    <button type="button" data-slip-number="{{ slip.slip_number }}" class="return-btn" data-book-number="{{ slip.book_number }}" onclick="openReturnBookModal(this)">
+                                        Return Book
+                                    </button>
+                                    {% if slip.status == 'Overdue' %}
+                                        <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}')">
+                                            Set Penalty
+                                        </button>
+                                    {% endif %}
+                                {% else %}
+                                    NOT APPLICABLE
+                                {% endif %}
+                            </td>
+                        </tr>
                     {% endif %}
-                {% else %}
-                    NOT APPLICABLE
-                {% endif %}
-            </td>
-            
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+    <!-- Overdue Books Table -->
+    <div class="overdue-table-container">
+        <div class="table-header">
+            <span>Overdue Books</span>
+        </div>
+        <div class="table-content">
+        <table>
+            <thead>
+                <tr>
+                    <!-- <th>Book No.</th> -->
+                    <th>Book Title</th>
+                    <th>Borrower</th>
+                    <!-- <th>Borrow Date</th> -->
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for slip in borrow_slips %}
+                    {% if slip.status == "Overdue" %}
+                        <tr id="row-{{ slip.slip_number }}">
+                            <!-- <td>{{ slip.book_number }}</td> -->
+                            <td>{{ slip.book_title }}</td>
+                            <td>{{ slip.borrower_name }}</td>
+                            <!-- <td>{{ slip.date_borrow|date }}</td>/ -->
+                            <td>{{ slip.due_date|date }}</td>
+                            <td class="status-cell" data-status="{{ slip.status }}">
+                                {% if slip.penalty %}
+                                    <span class="penalty-status">UNRETURNED ({{ slip.penalty }})</span>
+                                {% elif slip.status == "Returned" %}
+                                    <span class="status-returned">RETURNED</span>
+                                {% else %}
+                                    {{ slip.status }}
+                                {% endif %}
+                            </td>
+                            
+                            <td id="actions-{{ slip.slip_number }}" style="display: flex; gap: 10px;">
+                                {% if slip.status != 'Returned' %}
+                                    <button type="button" data-slip-number="{{ slip.slip_number }}" class="return-btn" data-book-number="{{ slip.book_number }}" onclick="openReturnBookModal(this)">
+                                        Return Book
+                                    </button>
+                                    {% if slip.status == 'Overdue' %}
+                                        <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}')">
+                                            Set Penalty
+                                        </button>
+                                    {% endif %}
+                                {% else %}
+                                    NOT APPLICABLE
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+        
+    </div>
+    <!-- Returned Books Table -->
+    <div class="returned-table-container">
+        <div class="table-header">
+            <span>Returned Books</span>
+        </div>
+        <div class="table-content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book No.</th>
+                        <th>Book Title</th>
+                        <th>Borrower</th>
+                        <th>Status</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for slip in borrow_slips %}
+                        {% if slip.status == "Returned" %}
+                            <tr>
+                                <td>{{ slip.book_number }}</td>
+                                <td>{{ slip.book_title }}</td>
+                                <td>{{ slip.borrower_name }}</td>
+                                <td class="status-cell" data-status="{{ slip.status }}">
+                                    {% if slip.penalty %}
+                                        <span class="penalty-status">UNRETURNED ({{ slip.penalty }})</span>
+                                    {% elif slip.status == "Returned" %}
+                                        <span class="status-returned">RETURNED</span>
+                                    {% else %}
+                                        {{ slip.status }}
+                                    {% endif %}
+                                </td>
+                                
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Books Overdue for More Than 2 Weeks Table -->
+<!-- Overdue Books from Previous Months -->
+<div class="overdue-previous-months-table-container">
+    <div class="table-header">
+        <span>Overdue Books from Previous Months</span>
+        <p style="color: gray; font-size: 12px; font-weight: lighter;"> Note: This section contains a list of book records that were overdue in previous months and have not yet been returned. </p>
+    </div>
+    <div class="table-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Borrower</th>
+                    <th>Due Date</th>
+                    <th>Date Borrowed</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for slip in overdue_previous_months %}
+                    <tr>
+                        <td>{{ slip.book_title }}</td>
+                        <td>{{ slip.borrower_name }}</td>
+                        <td>{{ slip.due_date|date }}</td>
+                        <td>{{ slip.date_borrow|date }}</td>
+                        <td class="status-cell" data-status="{{ slip.status }}">
+                            {% if slip.penalty %}
+                                <span class="penalty-status">UNRETURNED ({{ slip.penalty }})</span>
+                            {% elif slip.status == "Returned" %}
+                                <span class="status-returned">RETURNED</span>
+                            {% else %}
+                                {{ slip.status }}
+                            {% endif %}
+                        </td>
+                        
+                        <td id="actions-{{ slip.slip_number }}" style="display: flex; gap: 10px;" class="status-cell" data-status="{{ slip.status }}">
+                            {% if slip.status != 'Returned' %}
+                                <button type="button" data-slip-number="{{ slip.slip_number }}" class="return-btn" data-book-number="{{ slip.book_number }}" onclick="openReturnBookModal(this)">
+                                    Return Book
+                                </button>
+                                {% if slip.status == 'Overdue' %}
+                                    <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}')">
+                                        Set Penalty
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                NOT APPLICABLE
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No overdue books from previous months.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
-   <!-- Custom Penalty Modal -->
+
+
+</div>
+     <!-- Custom Penalty Modal -->
 <div id="penaltyModal" class="custom-modal">
     <div class="modal-contents">
         <div class="modal-header">
@@ -130,11 +379,20 @@
             </div>
         </div>
     </div>
-
-
-
-
 </div>
+
+<script src="{% static 'js/chart.umd.js' %}"></script>
+<script type="application/json" id="statistics-data">
+    {
+        "ongoingBorrowing": {{ ongoing_borrowing|default:0 }},
+        "returnedBooks": {{ returned_books|default:0 }},
+        "overdueBooks": {{ overdue_books|default:0 }},
+        "lostBooks": {{ lost_books|default:0 }},
+        "reservedBooks": {{ reserved_books|default:0 }},
+        "mostBorrowedBooks": {{ most_borrowed_books|safe }}
+    }
+</script>
+
 
 <script>
         function submitReturnForm(slipNumber) {
@@ -387,6 +645,248 @@ function confirmReturn() {
 }
 
 
+
+
+
+
+
+
+
+ // Function to fetch borrow history
+ function fetchBorrowHistory() {
+        let uid = document.getElementById('uid-input').value;
+
+        // Check if the UID length is exactly 13 characters
+        if (uid.length === 13) {
+            fetch(`/borrow-history/?uid=${uid}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let historyContainer = document.getElementById('borrow-history-container');
+                let welcomeMessage = document.getElementById('welcome-message');
+                let qrCodeImage = document.getElementById('qr-code-image');
+                let exitButton = document.getElementById('exit-button');
+                let retryButton = document.getElementById('retry-button'); // Get the retry button
+                let uidInput = document.getElementById('uid-input');
+
+                historyContainer.innerHTML = ''; // Clear previous content
+                welcomeMessage.innerHTML = '';   // Clear previous welcome message
+                qrCodeImage.src = ''; // Clear previous QR code image
+                
+                // Disable the UID input field
+                uidInput.disabled = true;
+
+                if (data.history.length > 0) {
+                    // Show the welcome message with the user's full name
+                    welcomeMessage.innerHTML = `Welcome ${data.full_name}!`;
+
+                    // Set QR code image source
+                    qrCodeImage.src = data.qr_code;
+
+                    // Build the list of borrowed books
+                    data.history.forEach(slip => {
+                        let statusClass = slip.status === 'Returned' ? 'status-returned' : 'penalty-status';
+                        historyContainer.innerHTML += `
+                            <div class="borrow-slip" style="margin: 0;">
+                                <p><strong>Book No.:</strong> ${slip.book_number}</p>
+                                <p><strong>Book Title:</strong> ${slip.book_title}</p>
+                                <p><strong>Borrow Date:</strong> ${slip.date_borrow}</p>
+                                <p><strong>Due Date:</strong> ${slip.due_date}</p>
+                                <p><strong>Status:</strong> <span class="${statusClass}">${slip.status}</span></p>
+                            </div><hr>`;
+                    });
+
+                    // Show the exit button
+                    exitButton.style.display = 'block';
+                    retryButton.style.display = 'none'; // Hide the retry button
+
+                    // Store the data in localStorage
+                    localStorage.setItem('uid', uid);
+                    localStorage.setItem('fullName', data.full_name);
+                    localStorage.setItem('qrCode', data.qr_code);
+                    localStorage.setItem('borrowHistory', JSON.stringify(data.history));
+                } else {
+                    welcomeMessage.innerHTML = "UID not found.";
+                    historyContainer.innerHTML = `
+                        <p style="color: #f5c6cb; font-size: 20px; text-align: center;">No books borrowed with this UID.</p>`;
+                        qrCodeImage.src = '{% static "images/hpdslogo.png" %}'; 
+                    // Show the retry button
+                    retryButton.style.display = 'block'; // Show the retry button
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } else if (uid.length > 0) {
+            // Show a message if the UID is not 13 characters long
+            document.getElementById('welcome-message').innerHTML = "Please enter a valid UID (13 characters).";
+            document.getElementById('borrow-history-container').innerHTML = ''; // Clear previous history
+
+            // Show the retry button
+            document.getElementById('retry-button').style.display = 'block'; // Show the retry button
+        }
+    }
+
+
+        // Function to reset the input for retrying
+        function retryInput() {
+            let uidInput = document.getElementById('uid-input');
+            uidInput.value = ''; // Clear the input field
+            uidInput.disabled = false; // Re-enable the input field
+            uidInput.focus(); // Set focus back to the input field
+            document.getElementById('retry-button').style.display = 'none'; // Hide the retry button
+        }
+
+
+
+// Function to load data from localStorage when the page loads
+    function loadStoredData() {
+        const uid = localStorage.getItem('uid');
+        const fullName = localStorage.getItem('fullName');
+        const qrCode = localStorage.getItem('qrCode');
+        const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
+
+        if (uid && fullName && qrCode) {
+            document.getElementById('uid-input').value = uid; // Set the UID input
+            document.getElementById('uid-input').disabled = true; // Disable the input
+
+            // Update the UI with the stored data
+            document.getElementById('welcome-message').innerHTML = `Welcome ${fullName}!`;
+            document.getElementById('qr-code-image').src = qrCode;
+
+            const historyContainer = document.getElementById('borrow-history-container');
+            historyContainer.innerHTML = ''; // Clear previous content
+            history.forEach(slip => {
+                let statusClass = slip.status === 'Returned' ? 'status-returned' : 'penalty-status';
+                historyContainer.innerHTML += `
+                    <div class="borrow-slip" style="margin: 0;">
+                        <p><strong>Book No.:</strong> ${slip.book_number}</p>
+                        <p><strong>Book Title:</strong> ${slip.book_title}</p>
+                        <p><strong>Borrow Date:</strong> ${slip.date_borrow}</p>
+                        <p><strong>Due Date:</strong> ${slip.due_date}</p>
+                        <p><strong>Status:</strong> <span class="${statusClass}">${slip.status}</span></p>
+                    </div><hr>`;
+            });
+
+            // Show the exit button
+            document.getElementById('exit-button').style.display = 'block';
+        }
+    }
+
+    // Function to exit view and clear data
+    function exitView() {
+        // Re-enable the UID input field and clear its value
+        let uidInput = document.getElementById('uid-input');
+        uidInput.disabled = false;
+        uidInput.value = '';  // Clear the input field
+
+        // Clear the borrow history and related UI elements
+        document.getElementById('borrow-history-container').innerHTML = '';
+        document.getElementById('welcome-message').innerHTML = '';
+        document.getElementById('qr-code-image').src = '{% static "images/hpdslogo.png" %}';
+
+        // Clear localStorage
+        localStorage.removeItem('uid');
+        localStorage.removeItem('borrowHistory');
+        localStorage.removeItem('fullName');
+        localStorage.removeItem('qrCode');
+
+        // Hide the exit button
+        document.getElementById('exit-button').style.display = 'none';
+    }
+
+    // Load stored data on page load
+    window.onload = loadStoredData;
+
+    function clearDefaultValue() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput.value === 'None') {
+            searchInput.value = ''; // Clear the default value when the field is focused
+        }
+    }
+
+
+
+    
+
+
 </script>
+<script type="text/javascript">
+    // Parse the JSON data that was passed in the context
+    const statisticsData = JSON.parse('{{ statistics_data|escapejs }}');
+
+    console.log(statisticsData);  // You can now access statisticsData as a JavaScript object
+
+    // Populate the statistics on the page
+    document.getElementById('ongoing-count').textContent = statisticsData.ongoingBorrowing;
+    document.getElementById('returned-count').textContent = statisticsData.returnedBooks;
+    document.getElementById('overdue-count').textContent = statisticsData.overdueBooks;
+    document.getElementById('lost-count').textContent = statisticsData.lostBooks;
+    document.getElementById('reserved-count').textContent = statisticsData.reservedBooks;
+
+    // Populate the most borrowed books list
+    const mostBorrowedBooksList = document.getElementById('most-borrowed-books');
+    statisticsData.mostBorrowedBooks.forEach(book => {
+        const li = document.createElement('li');
+        li.textContent = `${book.book_title} - ${book.count} times`;
+        mostBorrowedBooksList.appendChild(li);
+    });
+
+    const monthlyBorrowingData = statisticsData.monthlyBorrowCounts;
+    const last3MonthsLabels = statisticsData.last3MonthsLabels;
+
+    // Chart.js Line Chart
+    const ctx = document.getElementById('monthly-borrowing-chart').getContext('2d');
+    const monthlyBorrowingChart = new Chart(ctx, {
+        type: 'line',  // Line chart
+        data: {
+            labels: last3MonthsLabels,  // Use the labels for the last 3 months
+            datasets: [{
+                label: 'Monthly Book Borrowings',  // Label for the line
+                data: monthlyBorrowingData,  // Borrowing data passed from the view
+                borderColor: 'rgba(75, 192, 192, 1)',  // Line color
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Line area color
+                borderWidth: 2,
+                fill: true,  // Fill the area under the line
+                tension: 0.4  // Smooth curve
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const statusCells = document.querySelectorAll(".status-cell");
+
+        statusCells.forEach(function(cell) {
+            const status = cell.getAttribute("data-status").trim().toLowerCase();
+
+            if (status === "borrowed") {
+                cell.style.color = "#FBC02D"; // Yellowish color for Borrowed text
+            } else if (status === "returned") {
+                cell.style.color = "#388E3C"; // Greenish color for Returned text
+            } else if (status === "overdue") {
+                cell.style.color = "#D32F2F"; // Reddish color for Overdue text
+            }
+        });
+    });
+</script>
+
+
+
 
 {% endblock %}
