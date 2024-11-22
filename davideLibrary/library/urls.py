@@ -28,6 +28,7 @@ urlpatterns = [
     path('password_reset/', views.request_password_reset, name='password_reset'),
     path('change_password/', views.change_password, name='change_password'),
     path('login/temporary/', views.temporary_login_view, name='temporary_login'),
+    path("validate-username/", views.validate_username, name="validate_username"),
     
     #register
     path('user-details/<str:user_id>/', views.user_details, name='user_details'),

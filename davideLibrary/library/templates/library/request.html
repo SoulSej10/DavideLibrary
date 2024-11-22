@@ -19,7 +19,40 @@
         #confirm-password:hover{
             background-color: #6FAE7B;
         }
-        
+        @keyframes dotAnimation {
+        0% {
+            content: "";
+        }
+        33% {
+            content: ".";
+        }
+        66% {
+            content: "..";
+        }
+        100% {
+            content: "...";
+        }
+    }
+
+    .dot {
+        display: inline-block;
+        animation: dotAnimation 1.5s steps(4, end) infinite;
+    }
+
+    .dot:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .dot:nth-child(2) {
+        animation-delay: 0.5s;
+    }
+
+    .dot:nth-child(3) {
+        animation-delay: 1s;
+    }
+    #usernameModal {
+    z-index: 1000;  /* Ensure modal appears above other content */
+}
     </style>
     {% endblock %}
 </head>
@@ -62,7 +95,9 @@
                             <input type="text" name="username" required autofocus style="padding: 7px 40px; width: 365px; font-family: 'Poppins', sans-serif; border-radius: 4px;" placeholder="Enter Username" >
                             </div>
                         </div>
-                        <button type="submit" class="button" id="request-reset-btn">Request Password Reset</button>
+                        <!-- <button type="submit" class="button" id="request-reset-btn">Request Password Reset</button> -->
+                        <button type="button" class="button" id="request-reset-btn" onclick="validateUsername()">Request Password Reset</button>
+
                     </form>
                 {% endif %}
             </div>
@@ -74,18 +109,48 @@
                 <p style="font-family: 'Poppins', sans-serif;">Thank you for using our library services!</p>
             </div>
         </div>
+
+        <!-- Custom Modal for Username Validation -->
+        <div id="usernameModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000;">
+            <div style="background-color: rgb(255, 255, 255); margin: 10% auto; padding: 20px; width: 50%; text-align: center; border-radius: 8px;">
+                
+                <!-- Logo with animation -->
+                <div id="logoContainer" style="margin-bottom: 20px;">
+                    <img id="loadingLogo" src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 150px; height: 150px; border-radius: 50%; animation: rotateScale 1s infinite;"/>
+                </div>
+                
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" style="display: none; margin: 20px; font-family: 'Poppins', sans-serif; font-size: 30px; color: #3498db;">
+                    <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+                </div>
+
+                
+                <!-- Message in Modal -->
+                <p id="modalMessage" style="font-family: 'Poppins', sans-serif;"></p>
+                
+                <!-- Close Button -->
+                <button id="closeBtn" onclick="closeModal()" style="background-color: #7EBC89; border: none; padding: 10px 20px; border-radius: 4px; color: rgb(60, 58, 58); font-family: 'Poppins', sans-serif; cursor: pointer;">
+                    Close
+                </button>
+            </div>
+        </div>
+
     </div>
   
     <script>
         // Function to copy the password to clipboard
-        function copyPassword() {
-            var passwordText = document.getElementById("temp-password-display").textContent;
-            navigator.clipboard.writeText(passwordText).then(function() {
-            alert("Password copied to clipboard!");
-            }, function(err) {
-            alert("Error copying password: " + err);
-            });
-        }
+    function copyPassword() {
+        var passwordText = document.getElementById("temp-password-display").textContent;
+
+        navigator.clipboard.writeText(passwordText).then(function() {
+            // Use the modal to display the success message
+            showModal("Password copied to clipboard!");
+        }, function(err) {
+            // Use the modal to display the error message
+            showModal("Error copying password: " + err);
+        });
+    }
+
 
         // Function to redirect to the login page after confirmation
         function confirmPassword() {
@@ -97,6 +162,109 @@
             // Redirect to the temporary login page
             window.location.href = "{% url 'temporary_login' %}";
         }
+
+
+
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+    // Add the event listener after the DOM is fully loaded
+    document.getElementById("request-reset-btn").addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Get the entered username
+        const username = document.querySelector("input[name='username']").value.trim();
+
+        if (!username) {
+            showModal("Please enter a username.");
+            return;
+        }
+
+        // Show loading spinner and logo animation before making the request
+        showLoading(true);
+
+        // Send validation request to the server
+        fetch("/validate-username/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"), // Add CSRF token
+            },
+            body: JSON.stringify({ username: username }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.is_valid) {
+                    showModal("Username is valid. Proceeding...");
+
+                    // Simulate processing delay (3 seconds) before submitting the form
+                    setTimeout(() => {
+                        document.querySelector("form").submit(); // Submit form after delay
+                    }, 3000);
+                } else {
+                    showModal("Invalid username. Please try again.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error validating username:", error);
+                showModal("An unexpected error occurred. Please try again later.");
+            });
+    });
+});
+
+// Helper function to display the modal
+function showModal(message) {
+    const modalMessage = document.getElementById("modalMessage");
+    modalMessage.textContent = message;  // Update modal content
+
+    const modal = document.getElementById("usernameModal");
+    modal.style.display = "block"; // Show modal
+
+    // Hide the loading spinner after showing the modal content
+    showLoading(false);
+}
+
+// Helper function to show/hide the loading spinner and logo animation
+function showLoading(isLoading) {
+    const spinner = document.getElementById("loadingSpinner");
+    const closeButton = document.getElementById("closeBtn");
+    const logo = document.getElementById("loadingLogo");
+
+    if (isLoading) {
+        spinner.style.display = "block"; // Show the infinity dot spinner
+        logo.style.display = "none"; // Hide logo animation while loading
+        closeButton.style.display = "none"; // Hide close button while loading
+    } else {
+        spinner.style.display = "none"; // Hide the infinity dot spinner
+        logo.style.display = "inline-block"; // Show logo animation after loading
+        closeButton.style.display = "inline-block"; // Show close button after loading
+    }
+}
+
+// Helper function to close the modal
+function closeModal() {
+    const modal = document.getElementById("usernameModal");
+    modal.style.display = "none"; // Hide modal
+}
+
+// Helper function to fetch CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
     </script>
 </body>
 </html>

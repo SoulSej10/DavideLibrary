@@ -500,6 +500,19 @@ def request_password_reset(request):
 
     return render(request, 'library/request.html', {'temp_password': temp_password})
 
+def validate_username(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        username = data.get("username", "").strip()
+
+        if CustomUser.objects.filter(username=username).exists():
+            return JsonResponse({"is_valid": True})
+        else:
+            return JsonResponse({"is_valid": False})
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
+    
+
 def change_password(request):
     if request.method == 'POST':
         form = CustomPasswordResetForm(request.POST)
