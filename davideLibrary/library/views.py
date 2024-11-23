@@ -563,6 +563,27 @@ def temporary_login_view(request):
 
     return render(request, 'library/temporary_login.html')
 
+@csrf_exempt  # Use only for debugging; remove in production for security
+def validate_uid(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            uid = data.get("uid", "").strip()
+
+            if not uid:
+                return JsonResponse({"is_valid": False, "error": "UID is required."})
+
+            # Check if admin_id (formerly uid) exists in the database
+            if CustomUser.objects.filter(admin_id=uid).exists():
+                return JsonResponse({"is_valid": True})
+            else:
+                return JsonResponse({"is_valid": False, "error": "UID does not exist."})
+        except json.JSONDecodeError:
+            return JsonResponse({"is_valid": False, "error": "Invalid JSON format."}, status=400)
+        except Exception as e:
+            return JsonResponse({"is_valid": False, "error": f"Unexpected error: {str(e)}"}, status=500)
+
+    return JsonResponse({"is_valid": False, "error": "Invalid request method."}, status=405)
 
 
 

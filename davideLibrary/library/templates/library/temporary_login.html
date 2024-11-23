@@ -18,6 +18,52 @@
         #login-btn:hover {
             background-color: #6FAE7B;
         }
+        .card {
+            margin: 20px auto;
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input {
+            padding: 7px 40px;
+            width: 80%;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        #uid-container, #login-form-container {
+            display: block; /* Both forms are visible initially */
+        }
+        
+        .message-container {
+            text-align: center;
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .alert-success {
+            background-color: #D4EDDA;
+            color: #155724;
+            border: 1px solid #C3E6CB;
+        }
+
+        .alert-error {
+            background-color: #F8D7DA;
+            color: #721C24;
+            border: 1px solid #F5C6CB;
+        }
     </style>
     {% endblock %}
 </head>
@@ -31,30 +77,46 @@
                 <h1 class="card-title" style="color: black; font-size: 30px; margin: 0; padding: 0;">TEMPORARY LOGIN</h1>
                 <h2 class="card-title">Please Enter Your Credentials</h2>
             </div>
-            <div class="card-content">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}" style="font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 15px;">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
 
+            <!-- Message Container -->
+            <div id="message-container" class="message-container">
+                <!-- Validation messages will be dynamically inserted here -->
+            </div>
+
+            <!-- UID input form (initial view) -->
+            <div id="uid-container" style="display: block;">
+                <h3 style="font-family: 'Poppins', sans-serif; text-align: center;">Enter UID for Validation</h3>
+                <form id="uid-form" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="uid" id="uid-input" placeholder="Enter UID" required style="padding: 7px; width: 96%; margin-top: 10px; border-radius: 4px;">
+                    <button type="submit" id="validate-uid-btn" style="margin-top: 15px; background-color: #7EBC89; color: white; padding: 10px; border: none; border-radius: 4px; font-family: 'Poppins', sans-serif; align-content:center; width: 100%;">Validate</button>
+                </form>
+            </div>
+
+            <!-- Login form (hidden initially) -->
+            <div id="login-form-container" style="display: none;">
                 <form method="post">
                     {% csrf_token %}
                     <div class="form-group">
                         <div class="relative">
                             <span class="user-check-icon">👤</span>
-                            <input type="text" name="username" required autofocus style="padding: 7px 40px; width: 365px; font-family: 'Poppins', sans-serif; border-radius: 4px;" placeholder="Enter Username">
+                            <input type="text" name="username" required autofocus placeholder="Enter Username">
                         </div>
                         <div class="relative" style="margin-top: 15px;">
                             <span class="user-check-icon">🔒</span>
-                            <input type="text" name="temporary_password" required style="padding: 7px 40px; width: 365px; font-family: 'Poppins', sans-serif; border-radius: 4px;" placeholder="Enter Temporary Password">
+                            <input type="password" name="temporary_password" required placeholder="Enter Copied Temporary Password">
                         </div>
                     </div>
-                    <button type="submit" id="login-btn" class="button">Login</button>
+                    <button type="submit" id="login-btn" class="button" onclick="validatePassword()">Login</button>
                 </form>
+
+                <!-- Validation message for temporary password -->
+                <div id="password-message-container" class="message-container">
+                    <!-- This will be dynamically populated if necessary -->
+                </div>
             </div>
+
+
             <div class="card-footer">
                 <a href="javascript:void(0);" class="button-back" 
                 style="text-decoration: none; color: black; font-family: 'Poppins', sans-serif;" 
@@ -64,6 +126,69 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const uidContainer = document.getElementById("uid-container");
+            const loginFormContainer = document.getElementById("login-form-container");
+            const validateBtn = document.getElementById("validate-uid-btn");
+            const messageContainer = document.getElementById("message-container");
+
+            // Handle UID validation
+            validateBtn.addEventListener("click", function (event) {
+                event.preventDefault(); // Prevent the form from submitting normally
+                const uid = document.getElementById("uid-input").value.trim();
+
+                if (!uid) {
+                    displayMessage("Please enter a UID.", "error");
+                    return;
+                }
+
+                // Send UID validation request to server
+                fetch("{% url 'validate_uid' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                    body: JSON.stringify({ uid: uid }),
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.is_valid) {
+                        // Show success message and transition to login form after 3 seconds
+                        displayMessage("UID is valid. Please wait...", "success");
+                        setTimeout(function() {
+                            uidContainer.style.display = "none";
+                            loginFormContainer.style.display = "block";
+                            messageContainer.innerHTML = ''; // Clear message after transition
+                        }, 3000);
+                    } else {
+                        displayMessage(data.error || "Invalid UID. Please try again.", "error");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error validating UID:", error);
+                    displayMessage("An unexpected error occurred. Please try again later.", "error");
+                });
+            });
+
+            // Function to display messages in the container
+            function displayMessage(message, type) {
+                const messageElement = document.createElement("div");
+                messageElement.classList.add("alert", type === "success" ? "alert-success" : "alert-error");
+                messageElement.textContent = message;
+                messageContainer.innerHTML = ''; // Clear previous messages
+                messageContainer.appendChild(messageElement);
+            }
+        });
+        
+    </script>
 </body>
 </html>
 {% endblock %}
