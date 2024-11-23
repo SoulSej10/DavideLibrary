@@ -112,6 +112,7 @@ class Borrower(models.Model):
     section = models.CharField(max_length=100, blank=True)
     adviser = models.CharField(max_length=100, blank=True)
     date_issued = models.DateTimeField()
+    status = models.CharField(max_length=20, default='Normal')
     qr_code = models.ImageField(upload_to='qr_codes', blank=True)
 
     def save(self, *args, **kwargs):

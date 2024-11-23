@@ -124,13 +124,12 @@ class BorrowerForm(forms.ModelForm):
         ('10', '10'),
         ('11', '11'),
         ('12', '12'),
-        ('others', 'Others'),
     ]
     grade_level = forms.ChoiceField(choices=GRADE_CHOICES, required=False)
 
     class Meta:
         model = Borrower
-        exclude = ['borrower_uid', 'borrower_name','qr_code', 'date_issued']
+        exclude = ['borrower_uid', 'borrower_name', 'qr_code', 'date_issued', 'status']  # Exclude status here
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -156,8 +155,11 @@ class BorrowerForm(forms.ModelForm):
             self.instance.borrower_name = f"{firstname} {middle_initial} {lastname}".strip()
         else:
             self.instance.borrower_name = f"{firstname} {lastname}".strip()
-
+        
+        self.instance.status = 'Normal'  # Set the status to 'Normal' by default
+        
         return super().save(commit)
+
         
         
 

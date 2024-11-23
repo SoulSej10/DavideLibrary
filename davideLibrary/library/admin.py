@@ -4,7 +4,7 @@ from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser,
 
 # Borrower Admin
 class BorrowerAdmin(admin.ModelAdmin):
-    list_display = ('pk_display', 'borrower_name', 'age', 'grade_level', 'section', 'adviser', 'date_issued')
+    list_display = ('pk_display', 'borrower_name', 'age', 'grade_level', 'section', 'adviser', 'date_issued','status')
     
     def pk_display(self, obj):
         return obj.borrower_uid
