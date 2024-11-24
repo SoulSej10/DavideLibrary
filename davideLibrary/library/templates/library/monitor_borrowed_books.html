@@ -872,38 +872,60 @@ statisticsData.mostBorrowedBooks.forEach((book, index) => {
 });
 
 
-    const monthlyBorrowingData = statisticsData.monthlyBorrowCounts;
-    const last3MonthsLabels = statisticsData.last3MonthsLabels;
+    // Assuming statisticsData.last3MonthsLabels has the correct full month names in the right order.
+// Generate dynamic last 3 months' labels based on the current month
+// Function to dynamically generate the last three months' labels
+function getLast3MonthsLabels() {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                    'July', 'August', 'September', 'October', 'November', 'December'];
+    const currentMonth = new Date().getMonth(); // Get the current month (0-based index)
 
-    // Chart.js Line Chart
-    const ctx = document.getElementById('monthly-borrowing-chart').getContext('2d');
-    const monthlyBorrowingChart = new Chart(ctx, {
-        type: 'line',  // Line chart
-        data: {
-            labels: last3MonthsLabels,  // Use the labels for the last 3 months
-            datasets: [{
-                label: 'Monthly Book Borrowings',  // Label for the line
-                data: monthlyBorrowingData,  // Borrowing data passed from the view
-                borderColor: 'rgba(75, 192, 192, 1)',  // Line color
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Line area color
-                borderWidth: 2,
-                fill: true,  // Fill the area under the line
-                tension: 0.4  // Smooth curve
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    beginAtZero: true
-                },
-                y: {
-                    beginAtZero: true
-                }
+    // Generate the labels for the last 3 months
+    const last3Months = [];
+    for (let i = 0; i < 3; i++) {
+        const monthIndex = (currentMonth - i + 12) % 12; // Handle negative month indices
+        last3Months.push(months[monthIndex]);
+    }
+
+    return last3Months;
+}
+
+// Generate the labels for the last 3 months dynamically
+const last3MonthsLabels = getLast3MonthsLabels();
+const monthlyBorrowingData = statisticsData.monthlyBorrowCounts; // Ensure this aligns with the correct data
+
+// Chart.js Line Chart
+const ctx = document.getElementById('monthly-borrowing-chart').getContext('2d');
+const monthlyBorrowingChart = new Chart(ctx, {
+    type: 'line',  // Line chart
+    data: {
+        labels: last3MonthsLabels,  // Use dynamically generated labels for the last 3 months
+        datasets: [{
+            label: 'Monthly Book Borrowings',  // Label for the line
+            data: monthlyBorrowingData,  // Borrowing data passed from the view
+            borderColor: 'rgba(75, 192, 192, 1)',  // Line color
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Line area color
+            borderWidth: 2,
+            fill: true,  // Fill the area under the line
+            tension: 0.4  // Smooth curve
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                beginAtZero: true
+            },
+            y: {
+                beginAtZero: true
             }
         }
-    });
+    }
+});
+
+
+
 
     document.addEventListener("DOMContentLoaded", function() {
         const statusCells = document.querySelectorAll(".status-cell");
