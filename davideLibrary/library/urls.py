@@ -16,6 +16,7 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('directory/', views.directory, name='directory'),
     path('book/<str:book_number>/', views.book_detail, name='book_detail'),
+    path('book-details/<str:book_number>/', views.book_details, name='book-details'),
     
     # directories in accounts
     path('register/', views.register, name='register'),

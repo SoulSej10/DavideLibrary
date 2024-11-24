@@ -729,6 +729,39 @@ def book_detail(request, book_number):
 
 
 
+def book_details(request, book_number):
+    # Get the book instance
+    book = get_object_or_404(BookInventory, book_number=book_number)
+
+    # Calculate statuses directly based on database records
+    total_quantity = book.quantity
+
+    borrowed_count = BorrowSlip.objects.filter(book_number=book_number, status='Borrowed').count()
+    reserved_count = BookReservation.objects.filter(book_number=book_number, status='Reserved').count()
+    overdue_count = BorrowSlip.objects.filter(book_number=book_number, status='Overdue').count()
+    lost_count = BorrowSlip.objects.filter(book_number=book_number, status='Lost').count()
+
+    # Available copies based on quantity and existing records
+    unavailable_copies = borrowed_count + reserved_count + overdue_count + lost_count
+    available_count = total_quantity - unavailable_copies
+
+    # Ensure available copies do not go below 0
+    available_count = max(available_count, 0)
+
+    # Return the status counts as JSON data
+    data = {
+        'book_title': book.book_title,
+        'status_counts': {
+            'Available': available_count,
+            'Borrowed': borrowed_count,
+            'Reserved': reserved_count,
+            'Overdue': overdue_count,
+            'Lost': lost_count,
+        },
+    }
+
+    return JsonResponse(data)
+
 
 
 
