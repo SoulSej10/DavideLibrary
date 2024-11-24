@@ -104,7 +104,7 @@
         <table>
             <thead>
                 <tr>
-                    <!-- <th>Book No.</th> -->
+                    <th>Book No.</th>
                     <th>Book Title</th>
                     <th>Borrower</th>
                     <!-- <th>Borrow Date</th> -->
@@ -117,7 +117,7 @@
                 {% for slip in borrow_slips %}
                     {% if slip.status == "Borrowed" %}
                         <tr id="row-{{ slip.slip_number }}">
-                            <!-- <td>{{ slip.book_number }}</td> -->
+                            <td>{{ slip.book_number }}</td>
                             <td>{{ slip.book_title }}</td>
                             <td>{{ slip.borrower_name }}</td>
                             <!-- <td>{{ slip.date_borrow|date }}</td> -->
@@ -163,7 +163,7 @@
         <table>
             <thead>
                 <tr>
-                    <!-- <th>Book No.</th> -->
+                    <th>Book No.</th>
                     <th>Book Title</th>
                     <th>Borrower</th>
                     <!-- <th>Borrow Date</th> -->
@@ -176,7 +176,7 @@
                 {% for slip in borrow_slips %}
                     {% if slip.status == "Overdue" %}
                         <tr id="row-{{ slip.slip_number }}">
-                            <!-- <td>{{ slip.book_number }}</td> -->
+                            <td>{{ slip.book_number }}</td>
                             <td>{{ slip.book_title }}</td>
                             <td>{{ slip.borrower_name }}</td>
                             <!-- <td>{{ slip.date_borrow|date }}</td>/ -->
@@ -227,7 +227,7 @@
                         <th>Book Title</th>
                         <th>Borrower</th>
                         <th>Status</th>
-                        
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -246,7 +246,20 @@
                                         {{ slip.status }}
                                     {% endif %}
                                 </td>
-                                
+                                <td id="actions-{{ slip.slip_number }}" style="display: flex; gap: 10px;">
+                                    {% if slip.status != 'Returned' %}
+                                        <button type="button" data-slip-number="{{ slip.slip_number }}" class="return-btn" data-book-number="{{ slip.book_number }}" onclick="openReturnBookModal(this)">
+                                            Return Book
+                                        </button>
+                                        {% if slip.status == 'Overdue' %}
+                                            <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}')">
+                                                Set Penalty
+                                            </button>
+                                        {% endif %}
+                                    {% else %}
+                                        NOT APPLICABLE
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endif %}
                     {% endfor %}
