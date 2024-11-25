@@ -80,7 +80,7 @@
             border-collapse: collapse;
             overflow-y: auto;
             display: block;
-            max-height: 485px; /* Adjust the height as needed */
+            max-height: 515px; /* Adjust the height as needed */
             border-radius: 10px;
             border: 1px solid #ddd;
         }

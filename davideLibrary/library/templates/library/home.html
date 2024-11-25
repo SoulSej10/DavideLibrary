@@ -250,6 +250,48 @@
         display: flex;
         align-items: center;
     }
+
+    #status-summary {
+        font-family: 'Poppins', sans-serif;
+        font-size: 12px;
+        /* padding: 6px; */
+        border-radius: 5px;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .status-item {
+        border-radius: 3px;
+        margin-right: 6px;
+        margin-bottom: 4px;
+        display: inline-block;
+    }
+
+    #available-count {
+        background-color: #d4edda; /* Soft green */
+    }
+
+    #borrowed-count {
+        background-color: #cce5ff; /* Soft blue */
+    }
+
+    #reserved-count {
+        background-color: #fff3cd; /* Soft yellow */
+    }
+
+    #overdue-count, #lost-count {
+        background-color: #f8d7da; /* Soft red */
+    }
+
+    .status-item strong {
+        font-weight: normal;
+    }
+
+    label {
+        display: inline-block;
+        font-weight: normal;
+    }
 </style>
 
 <div class="main-content">
@@ -263,28 +305,44 @@
         <div class="first-container">
             {% if book_detail %}
                 <!-- Display Book Details -->
-                <strong style="background-color: #73532C; color:#ECECEC; border-radius: 5px; padding-left: 5px; padding-right: 5px; ">{{ book_detail.book_title }}</strong>
+                <strong style="background-color: #73532C; color:#ECECEC; border-radius: 5px;">{{ book_detail.book_title }}</strong>
                 <div class="book-details">
                     <p style="text-align: justify;">This was authored by <strong>{{ book_detail.author }}</strong>. 
                         It has the book number <strong>{{ book_detail.book_number }}</strong>. The book falls under the category of 
                         <strong>{{ book_detail.category.name }}</strong>. This book has <strong>{{ book_detail.edition }}</strong> edition, and it comprises 
                         <strong>{{ book_detail.volume }}</strong> volume(s) with <strong>{{ book_detail.pages }}</strong> pages. 
-                        There are only <strong>{{ book_detail.quantity }}</strong> copy/copies available. The book is funded as <strong>{{ book_detail.fund_source }}</strong> 
+                        There are <strong>{{ book_detail.quantity }}</strong> copy/copies available. The book is funded as <strong>{{ book_detail.fund_source }}</strong> 
                         and is priced at <strong>{{ book_detail.price }}</strong>. It was published at <strong>{{ book_detail.publisher }}</strong> in the year 
-                        <strong>{{ book_detail.year }}</strong>. The location of this book is at <strong style="color: green;">{{ book_detail.location }}</strong>. 
+                        <strong>{{ book_detail.year }}</strong>. <br><br>  
+                    </p>
                     
-                        <p>The current status of the book is: 
-                        {% if book_detail.status == 'Returned' %}
-                            <span class="book-status status-available">Available</span>.
-                        {% elif book_detail.status == 'Borrowed' %}
-                            <span class="book-status status-ongoing">Ongoing Borrowing</span>.
-                        {% elif book_detail.status == 'Overdue' %}
-                            <span class="book-status status-pending">Pending for return</span>.
-                        {% else %}
-                            <span class="book-status status-available">Available</span>.
-                        {% endif %}
-                        </p>
+                    <h2 id="book-title"></h2>
+                    <p id="status-summary">
+                        <label style="font-size: 14px; margin-right: 210px; margin-bottom: 4px;">
+                            <strong>Copies:</strong> <span>{{ book_detail.quantity }}</span>
+                        </label>
+                        <label for="available-count" class="status-item" style="background-color: #d4edda; padding: 2px 6px; border-radius: 3px; margin-right: 6px; margin-bottom: 4px;">
+                            <strong>Available:</strong> <span id="available-count">Loading...</span>
+                        </label>
+                        <label for="borrowed-count" class="status-item" style="background-color: #cce5ff; padding: 2px 6px; border-radius: 3px; margin-right: 6px; margin-bottom: 4px;">
+                            <strong>Borrowed:</strong> <span id="borrowed-count">Loading...</span>
+                        </label>
+                        <label for="reserved-count" class="status-item" style="background-color: #fff3cd; padding: 2px 6px; border-radius: 3px; margin-right: 6px; margin-bottom: 4px;">
+                            <strong>Reserved:</strong> <span id="reserved-count">Loading...</span>
+                        </label>
+                        <label for="overdue-count" class="status-item" style="background-color: #f8d7da; padding: 2px 6px; border-radius: 3px; margin-right: 6px; margin-bottom: 4px;">
+                            <strong>Overdue:</strong> <span id="overdue-count">Loading...</span>
+                        </label>
+                        <label for="lost-count" class="status-item" style="background-color: #f8d7da; padding: 2px 6px; border-radius: 3px; margin-bottom: 4px;">
+                            <strong>Lost:</strong> <span id="lost-count">Loading...</span>
+                        </label>
+                    </p>
+                    <strong>Book Location:</strong> <strong style="color: green;">{{ book_detail.location }}</strong>.
+                    
+                    
                 </div>
+                
+                
                 <div class="button-container" style="padding-top: 20px; padding-left: 300px; gap: 10px;">
                     <a href="javascript:void(0);" class="search-button" style="text-decoration: none; background-color: #757575;"onclick="history.back();">Back to Search Results</a>
                     <a href="{% url 'borrow-slip-create' %}" class="search-button" style="text-decoration: none;background-color: #D6B980;">Borrow Book</a>
@@ -300,17 +358,6 @@
                                     <div class="book-details">
                                         <strong>Author:</strong> {{ book.author }}<br>
                                         <strong>Book Number:</strong> {{ book.book_number }}<br>
-                                        <strong>Status:</strong>
-
-                                        {% if book.status == 'Returned' %}
-                                            <span class="book-status status-available">Available</span>
-                                        {% elif book.status == 'Borrowed' %}
-                                            <span class="book-status status-ongoing">Ongoing Borrowing</span>
-                                        {% elif book.status == 'Overdue' %}
-                                            <span class="book-status status-pending">Pending for return</span>
-                                        {% else %}
-                                            <span class="book-status status-lost">Lost</span>
-                                        {% endif %}
                                     </div>
                                 </a>
                                 <hr>
@@ -448,6 +495,27 @@
             searchInput.value = ''; // Clear the default value when the field is focused
         }
     }
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const bookNumber = "{{ book_detail.book_number }}";  // Ensure this value is passed from the context
+
+        // Fetch the book details dynamically using AJAX
+        fetch(`/book-details/${bookNumber}/`)
+            .then(response => response.json())
+            .then(data => {
+                // Update the page with the fetched data
+                document.getElementById('book-title').style.display = 'none';
+                document.getElementById('available-count').textContent = data.status_counts.Available;
+                document.getElementById('borrowed-count').textContent = data.status_counts.Borrowed;
+                document.getElementById('reserved-count').textContent = data.status_counts.Reserved;
+                document.getElementById('overdue-count').textContent = data.status_counts.Overdue;
+                document.getElementById('lost-count').textContent = data.status_counts.Lost;
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    });
 </script>
 
 {% endblock content %}

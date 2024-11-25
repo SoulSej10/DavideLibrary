@@ -14,7 +14,7 @@
                 <h3 style="font-weight: bold; margin: 0;">Statistics in the month of:  {{ current_month_name }}</h3>
                     <div class="first" style="display: flex; flex-direction: row; gap: 10px;">
                         <div class="most-borrowed">
-                            <h3 style="margin: 0;">Top Books</h3>
+                            <h5 style="margin: 0;">Top Books</h5>
                             <ol id="most-borrowed-books">
                                 <!-- Dynamic content will populate here -->
                             </ol>
@@ -104,7 +104,7 @@
         <table>
             <thead>
                 <tr>
-                    <!-- <th>Book No.</th> -->
+                    <th>Book No.</th>
                     <th>Book Title</th>
                     <th>Borrower</th>
                     <!-- <th>Borrow Date</th> -->
@@ -117,7 +117,7 @@
                 {% for slip in borrow_slips %}
                     {% if slip.status == "Borrowed" %}
                         <tr id="row-{{ slip.slip_number }}">
-                            <!-- <td>{{ slip.book_number }}</td> -->
+                            <td>{{ slip.book_number }}</td>
                             <td>{{ slip.book_title }}</td>
                             <td>{{ slip.borrower_name }}</td>
                             <!-- <td>{{ slip.date_borrow|date }}</td> -->
@@ -163,7 +163,7 @@
         <table>
             <thead>
                 <tr>
-                    <!-- <th>Book No.</th> -->
+                    <th>Book No.</th>
                     <th>Book Title</th>
                     <th>Borrower</th>
                     <!-- <th>Borrow Date</th> -->
@@ -176,7 +176,7 @@
                 {% for slip in borrow_slips %}
                     {% if slip.status == "Overdue" %}
                         <tr id="row-{{ slip.slip_number }}">
-                            <!-- <td>{{ slip.book_number }}</td> -->
+                            <td>{{ slip.book_number }}</td>
                             <td>{{ slip.book_title }}</td>
                             <td>{{ slip.borrower_name }}</td>
                             <!-- <td>{{ slip.date_borrow|date }}</td>/ -->
@@ -227,7 +227,7 @@
                         <th>Book Title</th>
                         <th>Borrower</th>
                         <th>Status</th>
-                        
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -246,7 +246,20 @@
                                         {{ slip.status }}
                                     {% endif %}
                                 </td>
-                                
+                                <td id="actions-{{ slip.slip_number }}" style="display: flex; gap: 10px;">
+                                    {% if slip.status != 'Returned' %}
+                                        <button type="button" data-slip-number="{{ slip.slip_number }}" class="return-btn" data-book-number="{{ slip.book_number }}" onclick="openReturnBookModal(this)">
+                                            Return Book
+                                        </button>
+                                        {% if slip.status == 'Overdue' %}
+                                            <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}')">
+                                                Set Penalty
+                                            </button>
+                                        {% endif %}
+                                    {% else %}
+                                        NOT APPLICABLE
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endif %}
                     {% endfor %}
@@ -859,38 +872,60 @@ statisticsData.mostBorrowedBooks.forEach((book, index) => {
 });
 
 
-    const monthlyBorrowingData = statisticsData.monthlyBorrowCounts;
-    const last3MonthsLabels = statisticsData.last3MonthsLabels;
+    // Assuming statisticsData.last3MonthsLabels has the correct full month names in the right order.
+// Generate dynamic last 3 months' labels based on the current month
+// Function to dynamically generate the last three months' labels
+function getLast3MonthsLabels() {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                    'July', 'August', 'September', 'October', 'November', 'December'];
+    const currentMonth = new Date().getMonth(); // Get the current month (0-based index)
 
-    // Chart.js Line Chart
-    const ctx = document.getElementById('monthly-borrowing-chart').getContext('2d');
-    const monthlyBorrowingChart = new Chart(ctx, {
-        type: 'line',  // Line chart
-        data: {
-            labels: last3MonthsLabels,  // Use the labels for the last 3 months
-            datasets: [{
-                label: 'Monthly Book Borrowings',  // Label for the line
-                data: monthlyBorrowingData,  // Borrowing data passed from the view
-                borderColor: 'rgba(75, 192, 192, 1)',  // Line color
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Line area color
-                borderWidth: 2,
-                fill: true,  // Fill the area under the line
-                tension: 0.4  // Smooth curve
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    beginAtZero: true
-                },
-                y: {
-                    beginAtZero: true
-                }
+    // Generate the labels for the last 3 months
+    const last3Months = [];
+    for (let i = 0; i < 3; i++) {
+        const monthIndex = (currentMonth - i + 12) % 12; // Handle negative month indices
+        last3Months.push(months[monthIndex]);
+    }
+
+    return last3Months;
+}
+
+// Generate the labels for the last 3 months dynamically
+const last3MonthsLabels = getLast3MonthsLabels();
+const monthlyBorrowingData = statisticsData.monthlyBorrowCounts; // Ensure this aligns with the correct data
+
+// Chart.js Line Chart
+const ctx = document.getElementById('monthly-borrowing-chart').getContext('2d');
+const monthlyBorrowingChart = new Chart(ctx, {
+    type: 'line',  // Line chart
+    data: {
+        labels: last3MonthsLabels,  // Use dynamically generated labels for the last 3 months
+        datasets: [{
+            label: 'Monthly Book Borrowings',  // Label for the line
+            data: monthlyBorrowingData,  // Borrowing data passed from the view
+            borderColor: 'rgba(75, 192, 192, 1)',  // Line color
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Line area color
+            borderWidth: 2,
+            fill: true,  // Fill the area under the line
+            tension: 0.4  // Smooth curve
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                beginAtZero: true
+            },
+            y: {
+                beginAtZero: true
             }
         }
-    });
+    }
+});
+
+
+
 
     document.addEventListener("DOMContentLoaded", function() {
         const statusCells = document.querySelectorAll(".status-cell");
