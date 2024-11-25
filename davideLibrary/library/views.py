@@ -1765,10 +1765,18 @@ def return_book(request, slip_number):
 
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
+
+
+
+
+
+
+
 @login_required
 @csrf_exempt
 def set_penalty(request, slip_number):
     borrow_slip = get_object_or_404(BorrowSlip, slip_number=slip_number)
+    borrower = get_object_or_404(Borrower, borrower_uid=borrow_slip.borrower_uid_number)
     
     if request.method == 'POST':
         try:
@@ -1776,6 +1784,7 @@ def set_penalty(request, slip_number):
             action = data.get('action')
             ban_duration = data.get('ban_duration')
             
+            # Apply action to the borrow slip
             if action == 'replace':
                 borrow_slip.status = 'Pending Replacement'
                 borrow_slip.penalty = 'Replace Book'
@@ -1784,10 +1793,44 @@ def set_penalty(request, slip_number):
                 if ban_duration:
                     borrow_slip.status = f'Banned for {ban_duration} days'
                     borrow_slip.penalty = f'Banned for {ban_duration} days'
-                    
+            
+            # Update borrower status based on rules
+            if borrower.status == 'Normal':
+                borrower.status = '1st Violation'  # If 'Normal' or '1st Violation', promote to '2nd Violation'
+            elif borrower.status == '1st Violation':
+                borrower.status = '2nd Violation'
+            elif borrower.status == '2nd Violation':
+                borrower.status = '3rd Violation'  # If '2nd Violation', promote to '3rd Violation'
+            elif borrower.status == '3rd Violation':
+                borrower.status = 'Banned'  # Final penalty, banned after 3rd violation
+            
             borrow_slip.save()
+            borrower.save()
+
             return JsonResponse({'success': True, 'message': 'Penalty applied successfully.'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)})
-    
+
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+
+
+
+
+
+
+
+
+
+
+
+
+def get_borrower_status(request, borrower_uid):
+    try:
+        # Get the borrower by their UID
+        borrower = Borrower.objects.get(borrower_uid=borrower_uid)
+        # Return the status as a JSON response
+        return JsonResponse({'status': borrower.status})
+    except Borrower.DoesNotExist:
+        # If the borrower does not exist, return an error message
+        return JsonResponse({'error': 'Borrower not found'}, status=404)

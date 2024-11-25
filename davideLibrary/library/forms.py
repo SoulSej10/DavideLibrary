@@ -345,8 +345,9 @@ class AttendanceForm(forms.ModelForm):
 
 class PenaltyForm(forms.Form):
     ACTION_CHOICES = [
-        ('replace', 'Replace Book'),
-        ('ban', 'Ban Student'),
+        ('warning', 'Issue Warning'),
+        ('ban', 'Ban Borrower'),
+        ('community_service', 'Community Service')
     ]
     
     action = forms.ChoiceField(choices=ACTION_CHOICES, required=True)
@@ -357,7 +358,8 @@ class PenaltyForm(forms.Form):
         action = cleaned_data.get('action')
         ban_duration = cleaned_data.get('ban_duration')
 
+        # Check for ban duration requirement if 'ban' action is selected
         if action == 'ban' and not ban_duration:
-            self.add_error('ban_duration', 'Ban duration is required when banning a student.')
+            self.add_error('ban_duration', 'Ban duration is required when banning a borrower.')
 
         return cleaned_data

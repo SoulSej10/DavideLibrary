@@ -138,9 +138,9 @@
                                         Return Book
                                     </button>
                                     {% if slip.status == 'Overdue' %}
-                                        <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}')">
-                                            Set Penalty
-                                        </button>
+                                    <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}', '{{ slip.borrower_name }}', '{{ slip.borrower_uid_number }}')">
+                                        Set Penalty
+                                    </button>
                                     {% endif %}
                                 {% else %}
                                     NOT APPLICABLE
@@ -197,9 +197,9 @@
                                         Return Book
                                     </button>
                                     {% if slip.status == 'Overdue' %}
-                                        <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}')">
-                                            Set Penalty
-                                        </button>
+                                    <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}', '{{ slip.borrower_name }}', '{{ slip.borrower_uid_number }}')">
+                                        Set Penalty
+                                    </button>
                                     {% endif %}
                                 {% else %}
                                     NOT APPLICABLE
@@ -252,9 +252,9 @@
                                             Return Book
                                         </button>
                                         {% if slip.status == 'Overdue' %}
-                                            <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}')">
-                                                Set Penalty
-                                            </button>
+                                        <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}', '{{ slip.borrower_name }}', '{{ slip.borrower_uid_number }}')">
+                                            Set Penalty
+                                        </button>
                                         {% endif %}
                                     {% else %}
                                         NOT APPLICABLE
@@ -310,9 +310,9 @@
                                     Return Book
                                 </button>
                                 {% if slip.status == 'Overdue' %}
-                                    <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}')">
-                                        Set Penalty
-                                    </button>
+                                    <button type="button" class="btn btn-warning" data-slip-number="{{ slip.slip_number }}" onclick="openPenaltyModal('{{ slip.slip_number }}', '{{ slip.borrower_name }}', '{{ slip.borrower_uid_number }}')">
+                                            Set Penalty
+                                        </button>
                                 {% endif %}
                             {% else %}
                                 NOT APPLICABLE
@@ -332,29 +332,30 @@
 
 
 </div>
-     <!-- Custom Penalty Modal -->
+
+
 <div id="penaltyModal" class="custom-modal">
     <div class="modal-contents">
         <div class="modal-header">
-            <h3>Set Penalty</h3>
             <button class="close" onclick="closePenaltyModal()">&times;</button>
+            <h3>Set Penalty</h3>    
         </div>
         <div class="modal-body">
             <form id="penaltyForm" method="post">
-                {% csrf_token %}
-                <input type="hidden" id="penaltySlipNumber" name="slip_number">
+                <input type="hidden" id="penaltySlipNumber" name="slip_number" value="{{ slip.slip_number }}">
                 <div class="mb-3">
+                    For: <span class="borrower-name" style="font-weight: bold;"></span><br>
+                    Borrower Status: <span class="borrower-status" style="font-weight: bold;"></span>
+                    {% csrf_token %}<br>
                     <label for="action" class="form-label">Choose an action</label>
                     <select id="action" name="action" class="form-select">
-                        <option value="replace">Replace Book</option>
-                        <option value="ban">Ban Student</option>
+                        <!-- Dynamic options will be populated by JS based on status -->
                     </select>
-                </div>
+                </div>                                
                 <div class="mb-3 d-none" id="banDurationField">
                     <label for="ban_duration" class="form-label">Ban Duration (days)</label>
                     <input type="number" id="ban_duration" name="ban_duration" class="form-control">
                 </div>
-                <!-- Container for penalty message -->
                 <div id="penaltyMessageContainer" class="d-none">
                     <p id="penaltyMessage" class="penalty-message text-danger"></p>
                 </div>
@@ -371,12 +372,12 @@
 
 
 
-    <!-- Return Book Modal -->
+    <!-- Return Book Modal --> 
     <div id="returnBookModal" class="custom-modal">
         <div class="modal-contents">
             <div class="modal-header">
-                <h3>Return Book</h3>
                 <button class="close" onclick="closeReturnModal()">&times;</button>
+                <h3>Return Book</h3>
             </div>
             <div class="modal-body">
                 <p>Please enter the book number to confirm the return:</p>
@@ -462,6 +463,12 @@ function submitPenaltyForm() {
     var action = document.getElementById('action').value;
     var banDuration = document.getElementById('ban_duration').value;
 
+    // Basic validation for ban duration if the action is "ban"
+    if (action === 'ban' && (!banDuration || isNaN(banDuration) || parseInt(banDuration) <= 0)) {
+        alert("Please enter a valid ban duration (positive number).");
+        return;
+    }
+
     var data = {
         action: action
     };
@@ -470,6 +477,7 @@ function submitPenaltyForm() {
         data.ban_duration = banDuration;
     }
 
+    // Send the penalty data to the server
     fetch('/set-penalty/' + slipNumber + '/', {
         method: 'POST',
         headers: {
@@ -488,14 +496,19 @@ function submitPenaltyForm() {
             // Show the Confirm button
             document.getElementById('confirm-penalty-btn').style.display = 'block';
 
-            // Display the penalty message
+            // Display the penalty message based on the action
             var messageContainer = document.getElementById('penaltyMessageContainer');
             var penaltyMessage = document.getElementById('penaltyMessage');
             if (action === 'ban') {
                 penaltyMessage.textContent = 'A ban of ' + banDuration + ' days has been applied.';
+            } else if (action === 'warning') {
+                penaltyMessage.textContent = 'A warning has been issued.';
+            } else if (action === 'community_service') {
+                penaltyMessage.textContent = 'Community service has been assigned.';
             } else {
-                penaltyMessage.textContent = 'Book replacement has been applied.';
+                penaltyMessage.textContent = 'Book replacement action has been applied.';
             }
+
             messageContainer.classList.remove('d-none');
         } else {
             alert('Error applying penalty: ' + data.message);
@@ -506,34 +519,89 @@ function submitPenaltyForm() {
     });
 }
 
-function openPenaltyModal(slipNumber) {
+
+function openPenaltyModal(slipNumber, borrowerName, borrowerUid) {
     var modal = document.getElementById('penaltyModal');
     var penaltyForm = document.getElementById('penaltyForm');
     var actionSelect = document.getElementById('action');
     var banDurationField = document.getElementById('banDurationField');
     var messageContainer = document.getElementById('penaltyMessageContainer');
+    var confirmButton = document.getElementById('confirm-penalty-btn');
 
-    penaltyForm.action = '/set-penalty/' + slipNumber + '/'; 
+    // Update the form action URL and slip number
+    penaltyForm.action = '/set-penalty/' + slipNumber + '/';
     document.getElementById('penaltySlipNumber').value = slipNumber;
+
+    // Update the borrower name in the modal
+    document.querySelector('#penaltyModal .modal-body .borrower-name').innerText = borrowerName;
+
+    // Fetch the borrower's status using the borrower_uid_number
+    fetch(`/get-borrower-status/${borrowerUid}/`) // assuming you have a URL route to fetch the status
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.status) {
+                // Display the borrower's status
+                document.querySelector('#penaltyModal .modal-body .borrower-status').innerText = data.status;
+
+                // Dynamically change the action options based on borrower status
+                if (data.status === 'Normal') {
+                    actionSelect.innerHTML = `
+                        <option value="warning">Issue Warning</option>
+                        <option value="ban">Ban Borrower</option>
+                    `;
+                } else if (data.status === '1st Violation') {
+                    actionSelect.innerHTML = `
+                        <option value="warning">Issue Warning</option>
+                        <option value="ban">Ban Borrower</option>
+                    `;
+                } else if (data.status === '2nd Violation') {
+                    actionSelect.innerHTML = `
+                        <option value="community_service">Community Service</option>
+                        <option value="ban">Ban Borrower</option>
+                    `;
+                } else if (data.status === '3rd Violation') {
+                    actionSelect.innerHTML = `
+                        <option value="ban">Ban Borrower</option>
+                    `;
+                    actionSelect.disabled = true; // Disable further action after third violation
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching borrower status:", error);
+        });
+
+    // Show the modal
     modal.style.display = 'block';
 
     // Hide the Confirm button and message container initially
-    document.getElementById('confirm-penalty-btn').style.display = 'none';
+    confirmButton.style.display = 'none';
     messageContainer.classList.add('d-none');
 
-    actionSelect.addEventListener('change', function() {
+    // Handle action change dynamically
+    actionSelect.removeEventListener('change', handleActionChange);
+    actionSelect.addEventListener('change', handleActionChange);
+
+    function handleActionChange() {
         if (actionSelect.value === 'ban') {
             banDurationField.classList.remove('d-none');
         } else {
             banDurationField.classList.add('d-none');
         }
-    });
+    }
 }
 
 function closePenaltyModal() {
-    const modal = document.getElementById('penaltyModal');
-    modal.style.display = 'none';
+    document.getElementById('penaltyModal').style.display = 'none';
 }
+
+
+
+
+
+// function closePenaltyModal() {
+//     document.getElementById('penaltyModal').style.display = 'none';
+// }
 
 function confirmPenalty() {
     // Redirect or refresh the page

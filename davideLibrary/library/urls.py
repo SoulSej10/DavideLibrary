@@ -82,6 +82,7 @@ urlpatterns = [
     path('monitor-borrowed-books/', views.monitor_borrowed_books, name='monitor-borrowed-books'),
     path('return-book/<int:slip_number>/', views.return_book, name='return-book'),
     path('set-penalty/<str:slip_number>/', views.set_penalty, name='set-penalty'),
+    path('get-borrower-status/<str:borrower_uid>/', views.get_borrower_status, name='get_borrower_status'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
