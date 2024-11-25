@@ -1782,17 +1782,17 @@ def set_penalty(request, slip_number):
         try:
             data = json.loads(request.body)
             action = data.get('action')
-            ban_duration = data.get('ban_duration')
+            # ban_duration = data.get('ban_duration')
             
             # Apply action to the borrow slip
             if action == 'replace':
                 borrow_slip.status = 'Pending Replacement'
                 borrow_slip.penalty = 'Replace Book'
             
-            elif action == 'ban':
-                if ban_duration:
-                    borrow_slip.status = f'Banned for {ban_duration} days'
-                    borrow_slip.penalty = f'Banned for {ban_duration} days'
+            # elif action == 'ban':
+            #     if ban_duration:
+            #         borrow_slip.status = f'Banned for {ban_duration} days'
+            #         borrow_slip.penalty = f'Banned for {ban_duration} days'
             
             # Update borrower status based on rules
             if borrower.status == 'Normal':

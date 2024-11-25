@@ -352,16 +352,18 @@
                         <!-- Dynamic options will be populated by JS based on status -->
                     </select>
                 </div>                                
-                <div class="mb-3 d-none" id="banDurationField">
+                <!-- <div class="mb-3 d-none" id="banDurationField">
                     <label for="ban_duration" class="form-label">Ban Duration (days)</label>
                     <input type="number" id="ban_duration" name="ban_duration" class="form-control">
-                </div>
+                </div> -->
+                <span style="font-size: 10px; color: gray; margin-top: 15px;"> <strong style="color: #ff4d4d;">⚠</strong> Notice: When the status of the Borrower is '<strong style="color: #ff4d4d;">Banned</strong>' there are no further penalties to be set.</span>
                 <div id="penaltyMessageContainer" class="d-none">
                     <p id="penaltyMessage" class="penalty-message text-danger"></p>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
+            
             <button id="cancel-penalty-btn" type="button" class="btn btn-secondary" onclick="closePenaltyModal()">Cancel</button>
             <button id="submit-penalty-btn" type="button" class="btn btn-primary" onclick="submitPenaltyForm()">Apply Penalty</button>
             <button id="confirm-penalty-btn" type="button" class="btn btn-success d-none" onclick="confirmPenalty()">Confirm</button>
@@ -461,21 +463,21 @@ function submitPenaltyForm() {
     var form = document.getElementById('penaltyForm');
     var slipNumber = document.getElementById('penaltySlipNumber').value;
     var action = document.getElementById('action').value;
-    var banDuration = document.getElementById('ban_duration').value;
+    // var banDuration = document.getElementById('ban_duration').value;
 
-    // Basic validation for ban duration if the action is "ban"
-    if (action === 'ban' && (!banDuration || isNaN(banDuration) || parseInt(banDuration) <= 0)) {
-        alert("Please enter a valid ban duration (positive number).");
-        return;
-    }
+    // // Basic validation for ban duration if the action is "ban"
+    // if (action === 'ban' && (!banDuration || isNaN(banDuration) || parseInt(banDuration) <= 0)) {
+    //     alert("Please enter a valid ban duration (positive number).");
+    //     return;
+    // }
 
     var data = {
         action: action
     };
 
-    if (action === 'ban') {
-        data.ban_duration = banDuration;
-    }
+    // if (action === 'ban') {
+    //     data.ban_duration = banDuration;
+    // }
 
     // Send the penalty data to the server
     fetch('/set-penalty/' + slipNumber + '/', {
@@ -499,14 +501,15 @@ function submitPenaltyForm() {
             // Display the penalty message based on the action
             var messageContainer = document.getElementById('penaltyMessageContainer');
             var penaltyMessage = document.getElementById('penaltyMessage');
-            if (action === 'ban') {
-                penaltyMessage.textContent = 'A ban of ' + banDuration + ' days has been applied.';
-            } else if (action === 'warning') {
+            // if (action === 'ban') {
+            //     penaltyMessage.textContent = 'A ban of ' + banDuration + ' days has been applied.';
+            // } else 
+            if (action === 'warning') {
                 penaltyMessage.textContent = 'A warning has been issued.';
             } else if (action === 'community_service') {
                 penaltyMessage.textContent = 'Community service has been assigned.';
             } else {
-                penaltyMessage.textContent = 'Book replacement action has been applied.';
+                penaltyMessage.textContent = 'Ban Borrower has been applied. <br>Borrower has been banned PERMANENTLY.';
             }
 
             messageContainer.classList.remove('d-none');
@@ -547,23 +550,35 @@ function openPenaltyModal(slipNumber, borrowerName, borrowerUid) {
                 if (data.status === 'Normal') {
                     actionSelect.innerHTML = `
                         <option value="warning">Issue Warning</option>
-                        <option value="ban">Ban Borrower</option>
+                     
                     `;
                 } else if (data.status === '1st Violation') {
                     actionSelect.innerHTML = `
                         <option value="warning">Issue Warning</option>
-                        <option value="ban">Ban Borrower</option>
+            
                     `;
                 } else if (data.status === '2nd Violation') {
                     actionSelect.innerHTML = `
                         <option value="community_service">Community Service</option>
-                        <option value="ban">Ban Borrower</option>
+
                     `;
                 } else if (data.status === '3rd Violation') {
                     actionSelect.innerHTML = `
                         <option value="ban">Ban Borrower</option>
                     `;
                     actionSelect.disabled = true; // Disable further action after third violation
+                }
+
+
+                // Hide the buttons if the borrower is Banned
+                if (data.status === 'Banned') {
+                    document.getElementById('submit-penalty-btn').style.display = 'none';
+                    document.getElementById('cancel-penalty-btn').style.display = 'none';
+                    document.getElementById('confirm-penalty-btn').style.display = 'none';
+                } else {
+                    document.getElementById('submit-penalty-btn').style.display = '';
+                    document.getElementById('cancel-penalty-btn').style.display = '';
+                    document.getElementById('confirm-penalty-btn').style.display = 'none';
                 }
             }
         })
