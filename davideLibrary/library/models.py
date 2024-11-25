@@ -22,6 +22,7 @@ from django.db.models import Max
 import re
 import random
 import string
+import datetime
 
 
 # ============================================================================================================================================
@@ -116,6 +117,7 @@ class Borrower(models.Model):
     qr_code = models.ImageField(upload_to='qr_codes', blank=True)
 
     def save(self, *args, **kwargs):
+        # Automatically handle borrower_uid
         if not self.borrower_uid:
             max_id = Borrower.objects.all().aggregate(max_id=models.Max('borrower_uid'))['max_id']
             if max_id:
@@ -124,9 +126,13 @@ class Borrower(models.Model):
                 new_id = 1
             self.borrower_uid = f"hpdsnhs{new_id:06d}"
 
-        super().save(*args, **kwargs)
+        # Make sure date_issued is timezone-aware
+        if self.date_issued and timezone.is_naive(self.date_issued):
+            self.date_issued = timezone.make_aware(self.date_issued, timezone.get_current_timezone())
 
-        # Generate QR code after saving the borrower
+        # Generate the QR code after saving the borrower
+        super().save(*args, **kwargs)  # Save to generate borrower_uid if not already created
+
         qr_image = qrcode.make(self.borrower_uid)
         qr_offset = Image.new('RGB', (qr_image.pixel_size, qr_image.pixel_size), 'white')
         qr_offset.paste(qr_image)
@@ -134,7 +140,7 @@ class Borrower(models.Model):
         qr_offset.save(stream, format="PNG")
         self.qr_code.save(f'{self.borrower_uid}.png', File(stream), save=False)
 
-        super().save(*args, **kwargs)
+        super().save(*args, **kwargs)  # Save the QR code
 
     def __str__(self):
         return self.borrower_name
@@ -234,6 +240,9 @@ class BookInventory(models.Model):
 # ============================================================================================================================================
 # ==============================================================___SLIP MODEL___==============================================================
 # ============================================================================================================================================
+from django.db import models
+from django.utils import timezone  # Import timezone utility
+
 class BorrowSlip(models.Model):
     slip_number = models.AutoField(primary_key=True)
     book_number = models.CharField(max_length=20, blank=True)
@@ -247,7 +256,7 @@ class BorrowSlip(models.Model):
     librarian_name = models.CharField(max_length=100)
 
     status = models.CharField(max_length=50, default='Borrowed')
-    returned = models.BooleanField(default=False)  # Add this line
+    returned = models.BooleanField(default=False)
     penalty = models.CharField(max_length=255, blank=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -257,12 +266,11 @@ class BorrowSlip(models.Model):
                 book = BookInventory.objects.get(book_number=self.book_number)
                 self.book_title = book.book_title
                 self.author = book.author
-                
             except BookInventory.DoesNotExist:
                 self.book_title = ""
                 self.author = ""
                 self.category_number = None
-        
+
         # Automatically populate borrower_name from Borrower
         if self.borrower_uid_number:
             try:
@@ -271,6 +279,20 @@ class BorrowSlip(models.Model):
             except Borrower.DoesNotExist:
                 self.borrower_name = ""
         
+        # Convert `date` objects to `datetime` before checking for timezone
+        if isinstance(self.date_borrow, datetime.date) and not isinstance(self.date_borrow, datetime.datetime):
+            self.date_borrow = timezone.make_aware(datetime.datetime.combine(self.date_borrow, datetime.datetime.min.time()), timezone.get_current_timezone())
+
+        if isinstance(self.due_date, datetime.date) and not isinstance(self.due_date, datetime.datetime):
+            self.due_date = timezone.make_aware(datetime.datetime.combine(self.due_date, datetime.datetime.min.time()), timezone.get_current_timezone())
+
+        # Now check for timezone-awareness
+        if self.date_borrow and timezone.is_naive(self.date_borrow):
+            self.date_borrow = timezone.make_aware(self.date_borrow, timezone.get_current_timezone())
+            
+        if self.due_date and timezone.is_naive(self.due_date):
+            self.due_date = timezone.make_aware(self.due_date, timezone.get_current_timezone())
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -282,14 +304,12 @@ class BookReservation(models.Model):
     book_number = models.CharField(max_length=20, blank=True)
     book_title = models.CharField(max_length=200, blank=True)
     author = models.CharField(max_length=200, blank=True)
-    
     borrower_uid_number = models.CharField(max_length=20)
     borrower_name = models.CharField(max_length=100, blank=True)
     reservation_date = models.DateTimeField(auto_now_add=True)
     collected_date = models.DateTimeField(blank=True, null=True)
     due_date = models.DateTimeField(blank=True, null=True)
     librarian_name = models.CharField(max_length=100, blank=True)
-
     status = models.CharField(max_length=50, default='Reserved')
     penalty = models.CharField(max_length=255, blank=True, null=True)
 
@@ -300,11 +320,9 @@ class BookReservation(models.Model):
                 book = BookInventory.objects.get(book_number=self.book_number)
                 self.book_title = book.book_title
                 self.author = book.author
-                
             except BookInventory.DoesNotExist:
                 self.book_title = ""
                 self.author = ""
-                
 
         # Automatically populate borrower_name from Borrower using the UID
         if self.borrower_uid_number:
@@ -313,6 +331,16 @@ class BookReservation(models.Model):
                 self.borrower_name = borrower.borrower_name
             except Borrower.DoesNotExist:
                 self.borrower_name = ""
+
+        # Make sure all datetime fields are timezone-aware
+        if self.reservation_date and timezone.is_naive(self.reservation_date):
+            self.reservation_date = timezone.make_aware(self.reservation_date, timezone.get_current_timezone())
+        
+        if self.collected_date and timezone.is_naive(self.collected_date):
+            self.collected_date = timezone.make_aware(self.collected_date, timezone.get_current_timezone())
+        
+        if self.due_date and timezone.is_naive(self.due_date):
+            self.due_date = timezone.make_aware(self.due_date, timezone.get_current_timezone())
 
         super().save(*args, **kwargs)
 
@@ -335,6 +363,13 @@ class Attendance(models.Model):
     borrower_name = models.CharField(max_length=100)
     grade_level = models.IntegerField(null=True, blank=True)
     section = models.CharField(max_length=100, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Make sure the date_time is timezone-aware
+        if self.date_time and timezone.is_naive(self.date_time):
+            self.date_time = timezone.make_aware(self.date_time, timezone.get_current_timezone())
+        
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Attendance #{self.attendance_number}"

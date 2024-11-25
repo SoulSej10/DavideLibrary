@@ -1298,7 +1298,9 @@ def borrow_slip_list(request):
     if request.method == 'POST':
         form = BorrowSlipForm(request.POST)
         if form.is_valid():
-            form.save()
+            borrow_slip = form.save(commit=False)
+            borrow_slip.date_borrow = timezone.now().date()  # Make date_borrow timezone-aware
+            borrow_slip.save()
             return redirect('borrow-slip-list')
 
     # Handle search query
@@ -1382,14 +1384,19 @@ def borrow_slip_create(request):
         form = BorrowSlipForm(request.POST, user=request.user)
         if form.is_valid():
             borrow_slip = form.save(commit=False)
-            borrow_slip.date_borrow = timezone.now().date()
-            # Remove the line that sets due_date here, as it's handled by JS
+
+            # Ensure that date_borrow is timezone-aware
+            if timezone.is_naive(borrow_slip.date_borrow):
+                borrow_slip.date_borrow = timezone.make_aware(borrow_slip.date_borrow, timezone.get_current_timezone())
+            
+            # The due_date is handled by JS, so it is already timezone-aware when submitted
+            
             borrow_slip.save()
             return redirect('borrow-slip-list')
     else:
         form = BorrowSlipForm(user=request.user)
+    
     return render(request, 'library/borrow_slip_form.html', {'form': form})
-
 
 
 @login_required
@@ -1506,7 +1513,7 @@ def validate_collector(request, reservation_number):
 def expire_reservations():
     expired_reservations = BookReservation.objects.filter(
         status='Reserved',
-        reservation_date__lt=now() - timedelta(hours=24)
+        reservation_date__lt=timezone.now() - timedelta(hours=24)  
     )
     for reservation in expired_reservations:
         # Update book status to 'Available'
@@ -1539,7 +1546,7 @@ def reservation_list(request):
     # Calculate the time remaining for ongoing reservations
     for reservation in ongoing_reservations:
         reservation.time_remaining = max(
-            timedelta(hours=24) - (now() - reservation.reservation_date),
+            timedelta(hours=24) - (timezone.now() - reservation.reservation_date),
             timedelta(0)
         )
     
@@ -1656,7 +1663,7 @@ def recent_attendance_stats(request):
 @login_required
 def monitor_borrowed_books(request):
     # Get the current date
-    current_date = now().date()
+    current_date = timezone.now().date()
     current_month = current_date.month
     current_year = current_date.year
 
@@ -1668,6 +1675,10 @@ def monitor_borrowed_books(request):
 
     # Update status of borrow slips based on due date and return status
     for slip in borrow_slips:
+        # Skip updating the status if the book is marked as 'Lost'
+        if slip.status == 'Lost':
+            continue  # Skip this slip, don't modify its status
+
         slip_due_date = slip.due_date.date() if isinstance(slip.due_date, datetime) else slip.due_date
 
         if slip_due_date < current_date and not slip.returned:
@@ -1742,28 +1753,55 @@ def monitor_borrowed_books(request):
 
 
 
+
+import logging
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import BorrowSlip
+
+logger = logging.getLogger(__name__)
+
 @csrf_exempt
 def return_book(request, slip_number):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             book_number = data.get('book_number')
+            lost = data.get('lost', False)
 
+            # Fetch borrow slip
             borrow_slip = BorrowSlip.objects.get(slip_number=slip_number, book_number=book_number)
 
+            logger.info(f"Before Update: {borrow_slip.status}")
+
+            # Mark as lost
+            if lost:
+                borrow_slip.status = 'Lost'
+                borrow_slip.returned = False  # Ensure it’s not marked as returned
+                borrow_slip.save()
+                logger.info(f"After Update (Lost): {borrow_slip.status}")
+                return JsonResponse({'success': True, 'message': 'The book has been marked as Lost.'})
+
+            # Handle normal return
             if borrow_slip.status in ['Borrowed', 'Overdue']:
                 borrow_slip.returned = True
                 borrow_slip.status = 'Returned'
                 borrow_slip.save()
-
+                logger.info(f"After Update (Returned): {borrow_slip.status}")
                 return JsonResponse({'success': True, 'message': 'Book returned successfully!'})
-            else:
-                return JsonResponse({'success': False, 'message': 'This book has already been returned.'})
+
+            return JsonResponse({'success': False, 'message': 'This book has already been returned or marked as lost.'})
 
         except BorrowSlip.DoesNotExist:
+            logger.error(f"No record found for slip_number={slip_number}, book_number={book_number}")
             return JsonResponse({'success': False, 'message': 'No record found for the given slip number and book number.'})
 
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+
+
+
 
 
 
@@ -1782,23 +1820,18 @@ def set_penalty(request, slip_number):
         try:
             data = json.loads(request.body)
             action = data.get('action')
-            # ban_duration = data.get('ban_duration')
             
             # Apply action to the borrow slip
             if action == 'replace':
                 borrow_slip.status = 'Pending Replacement'
                 borrow_slip.penalty = 'Replace Book'
-            
-            # elif action == 'ban':
-            #     if ban_duration:
-            #         borrow_slip.status = f'Banned for {ban_duration} days'
-            #         borrow_slip.penalty = f'Banned for {ban_duration} days'
+
             
             # Update borrower status based on rules
             if borrower.status == 'Normal':
-                borrower.status = '1st Violation'  # If 'Normal' or '1st Violation', promote to '2nd Violation'
+                borrower.status = '1st Violation'  # If 'Normal' or '1st Violation'
             elif borrower.status == '1st Violation':
-                borrower.status = '2nd Violation'
+                borrower.status = '2nd Violation'   
             elif borrower.status == '2nd Violation':
                 borrower.status = '3rd Violation'  # If '2nd Violation', promote to '3rd Violation'
             elif borrower.status == '3rd Violation':

@@ -108,14 +108,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
+LANGUAGE_CODE = 'en-us'  # You can leave this as 'en-us' or change it based on your preference.
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Manila'  # Set to the timezone of the Philippines
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = True  # Keep this True to use timezone-aware datetimes
 
 
 # Static files (CSS, JavaScript, Images)

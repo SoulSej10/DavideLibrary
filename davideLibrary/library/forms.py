@@ -16,6 +16,7 @@ from django.utils.translation import gettext_lazy as _
 # from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.forms import PasswordChangeForm
 import hashlib
+import datetime
 
 
 #MARK: User
@@ -225,6 +226,10 @@ class BookInventoryForm(forms.ModelForm):
 # ============================================================================================================================================
 # ==============================================================___SLIP FORM___===============================================================
 # ============================================================================================================================================
+from django import forms
+from django.utils import timezone
+from .models import BorrowSlip
+
 class BorrowSlipForm(forms.ModelForm):
     class Meta:
         model = BorrowSlip
@@ -242,27 +247,33 @@ class BorrowSlipForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(BorrowSlipForm, self).__init__(*args, **kwargs)
-        
-        # Set the librarian name as usual
+
+        # Set the librarian name
         if user:
             full_name = f"{user.first_name} {user.middle_name[0] if user.middle_name else ''}. {user.last_name}"
             self.fields['librarian_name'].initial = full_name
         
-        # Set default date_borrow as the current date
+        # Set default date_borrow as the current date, timezone-aware
         if not self.instance.pk:
-            self.fields['date_borrow'].initial = timezone.now().date()
-        
-        # We don't set the due_date here anymore, since it's handled by JS
+            self.fields['date_borrow'].initial = timezone.now()  # Using timezone-aware now()
+
+        # No need to set the due_date here anymore, it's handled by JS
 
     def save(self, commit=True):
         instance = super().save(commit=False)
 
-        # The due_date is now being set by JavaScript, so no need to set it here anymore.
-        # If you need to use the due_date from the form (which would be the one updated by JS), you can simply save it as-is.
+        # Make sure the `date_borrow` is timezone-aware before saving
+        if timezone.is_naive(instance.date_borrow):
+            instance.date_borrow = timezone.make_aware(instance.date_borrow, timezone.get_current_timezone())
+
+        # The `due_date` is handled by JS, so no need to modify it here
+        if timezone.is_naive(instance.due_date):
+            instance.due_date = timezone.make_aware(instance.due_date, timezone.get_current_timezone())
 
         if commit:
             instance.save()
         return instance
+
 
 
 
@@ -288,18 +299,18 @@ class BookReservationForm(forms.ModelForm):
             full_name = f"{user.first_name} {user.middle_name[0] if user.middle_name else ''}. {user.last_name}"
             self.fields['librarian_name'].initial = full_name
 
-        # Set default reservation_date as the current date
-        # if not self.instance.pk:
-        #     self.fields['reservation_date'].initial = timezone.now().date()
-
-        # Due date logic can be handled by JavaScript if needed, like in the slip form
-
     def save(self, commit=True):
         instance = super().save(commit=False)
 
-        # Ensure reservation_date is saved correctly
+        # Ensure reservation_date, collected_date, and due_date are timezone-aware
         if not instance.reservation_date:
             instance.reservation_date = timezone.now()
+
+        if instance.collected_date and timezone.is_naive(instance.collected_date):
+            instance.collected_date = timezone.make_aware(instance.collected_date, timezone.get_current_timezone())
+
+        if instance.due_date and timezone.is_naive(instance.due_date):
+            instance.due_date = timezone.make_aware(instance.due_date, timezone.get_current_timezone())
 
         if commit:
             instance.save()

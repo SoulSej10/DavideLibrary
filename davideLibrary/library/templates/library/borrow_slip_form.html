@@ -121,19 +121,18 @@
     </div>
 
     <script>
-        document.getElementById('id_book_number')?.focus();
-        document.addEventListener('DOMContentLoaded', function() {
+       document.addEventListener('DOMContentLoaded', function() {
             var bookNumberField = document.querySelector('input[name="book_number"]');
             var borrowerUidField = document.querySelector('input[name="borrower_uid_number"]');
             var bookDetailsDiv = document.getElementById('book-details');
             var borrowerDetailsDiv = document.getElementById('borrower-details');
             var dueDateField = document.querySelector('input[name="due_date"]');  // Reference to the due_date field
-    
+            
             function maskUid(uid) {
                 // Mask all but the last 1 characters
                 return uid.slice(0, -1).replace(/\d/g, '*') + uid.slice(-1);
             }
-    
+
             function calculateDueDate(bookType) {
                 // Calculate due date and number of days based on the book type
                 let dueDate;
@@ -165,7 +164,6 @@
                 return { dueDate, borrowDays };
             }
 
-    
             function fetchBookDetails(bookNumber) {
                 fetch(`/book-detail/${bookNumber}/`)
                     .then(response => response.json())
@@ -173,6 +171,7 @@
                         if (data) {
                             // Now set the due date based on the book type
                             const { dueDate, borrowDays } = calculateDueDate(data.book_type);
+
                             // Display book details
                             bookDetailsDiv.innerHTML = `
                                 <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>". <br><br>
@@ -180,9 +179,7 @@
                                 Book Type: ${data.book_type} book, can be borrowed for ${borrowDays} days.<br>
                                 Quantity: There are <strong>${data.quantity}</strong> copies available.
                             `;
-    
-                            
-                            
+            
                             // Update the due_date field in the form
                             if (dueDateField) {
                                 dueDateField.value = dueDate.toISOString().split('T')[0];  // Format the date to yyyy-mm-dd
@@ -192,7 +189,7 @@
                         }
                     });
             }
-    
+
             function fetchBorrowerDetails(borrowerUid) {
                 fetch(`/borrower-details/${borrowerUid}/`)
                     .then(response => response.json())
@@ -206,16 +203,17 @@
                         }
                     });
             }
-    
+
             // Add event listeners for changes in book number and borrower UID
             bookNumberField.addEventListener('change', function() {
                 fetchBookDetails(this.value);
             });
-    
+
             borrowerUidField.addEventListener('change', function() {
                 fetchBorrowerDetails(this.value);
             });
         });
+
     </script>
     
     

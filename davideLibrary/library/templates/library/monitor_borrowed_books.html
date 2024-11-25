@@ -338,7 +338,7 @@
     <div class="modal-contents">
         <div class="modal-header">
             <button class="close" onclick="closePenaltyModal()">&times;</button>
-            <h3>Set Penalty</h3>    
+            <h2>Set Penalty</h2>    
         </div>
         <div class="modal-body">
             <form id="penaltyForm" method="post">
@@ -352,10 +352,6 @@
                         <!-- Dynamic options will be populated by JS based on status -->
                     </select>
                 </div>                                
-                <!-- <div class="mb-3 d-none" id="banDurationField">
-                    <label for="ban_duration" class="form-label">Ban Duration (days)</label>
-                    <input type="number" id="ban_duration" name="ban_duration" class="form-control">
-                </div> -->
                 <span style="font-size: 10px; color: gray; margin-top: 15px;"> <strong style="color: #ff4d4d;">⚠</strong> Notice: When the status of the Borrower is '<strong style="color: #ff4d4d;">Banned</strong>' there are no further penalties to be set.</span>
                 <div id="penaltyMessageContainer" class="d-none">
                     <p id="penaltyMessage" class="penalty-message text-danger"></p>
@@ -375,27 +371,39 @@
 
 
     <!-- Return Book Modal --> 
-    <div id="returnBookModal" class="custom-modal">
-        <div class="modal-contents">
-            <div class="modal-header">
-                <button class="close" onclick="closeReturnModal()">&times;</button>
-                <h3>Return Book</h3>
+<!-- Return Book Modal --> 
+<div id="returnBookModal" class="custom-modal">
+    <div class="modal-contents">
+        <div class="modal-header">
+            <button class="close" onclick="closeReturnModal()">&times;</button>
+            <h3>Return Book</h3>
+        </div>
+        <div class="modal-body">
+            <p>Please enter the book number to confirm the return:</p>
+            <!-- Book number input -->
+            <input type="text" id="inputBookNumber" class="form-control" placeholder="Enter book number">
+
+            <!-- Checkbox to mark the book as lost -->
+            <div class="form-check mt-3">
+                <span style="color: #ff4d4d;">Is the Book Lost?</span>
+                <input type="checkbox" id="lostBookCheckbox" class="form-check-input">
+                <label for="lostBookCheckbox" class="form-check-label">Mark as Lost</label>
             </div>
-            <div class="modal-body">
-                <p>Please enter the book number to confirm the return:</p>
-                <input type="text" id="inputBookNumber" class="form-control" placeholder="Enter book number">
-                <div id="messageContainer" class="d-none">
-                    <p id="returnMessage" class="success-message">VERIFIED! THE BOOK HAS BEEN RETURNED.</p>
-                    <p id="errorMessage" class="error-message"></p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="cancel-return-btn" type="button" class="btn btn-secondary" onclick="closeReturnModal()">Cancel</button>
-                <button id="submit-return-btn" type="button" class="btn btn-primary" onclick="verifyBookNumber()">Submit</button>
-                <button id="confirm-return-btn" type="button" class="btn btn-success d-none" onclick="confirmReturn()">Confirm</button>
+
+            <!-- Messages and status -->
+            <div id="messageContainer" class="d-none mt-3">
+                <p id="returnMessage" class="success-message">VERIFIED! THE BOOK HAS BEEN RETURNED.</p>
+                <p id="errorMessage" class="error-message"></p>
             </div>
         </div>
+        <div class="modal-footer">
+            <button id="cancel-return-btn" type="button" class="btn btn-secondary" onclick="closeReturnModal()">Cancel</button>
+            <button id="submit-return-btn" type="button" class="btn btn-primary" onclick="verifyBookNumber()">Submit</button>
+        </div>
     </div>
+</div>
+
+
 </div>
 
 <script src="{% static 'js/chart.umd.js' %}"></script>
@@ -412,38 +420,191 @@
 
 
 <script>
-        function submitReturnForm(slipNumber) {
-    const bookNumber = document.getElementById('bookNumberInput').value;
-    const submitButton = document.getElementById('submitButton');
-    
-    submitButton.disabled = true; // Disable button to prevent multiple clicks
+// Function to handle the return process
+// Function to handle the return process
+function verifyBookNumber() {
+    var modal = document.getElementById('returnBookModal');
+    var inputBookNumberField = document.getElementById('inputBookNumber');
+    var inputBookNumber = inputBookNumberField.value;
+    var actualBookNumber = modal.dataset.bookNumber;
+    var slipNumber = modal.dataset.slipNumber;
+    var messageContainer = document.getElementById('messageContainer');
+    var returnMessage = document.getElementById('returnMessage');
+    var errorMessage = document.getElementById('errorMessage');
+    var lostBookCheckbox = document.getElementById('lostBookCheckbox');
+    var submitButton = document.getElementById('submit-return-btn');
 
-    fetch(`/return-book/${slipNumber}/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ book_number: bookNumber })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update the UI to reflect the new status
-            document.getElementById(`status-${bookNumber}`).textContent = 'Returned';
-            alert(data.message);
+    // Reset messages and enable submit button after processing
+    function handleResponse(success, message) {
+        if (success) {
+            returnMessage.textContent = message;
+            returnMessage.classList.remove('d-none');
+            errorMessage.classList.add('d-none');
+
+            // Disable further interactions after successful submission
+            submitButton.disabled = true;
+            inputBookNumberField.disabled = true;
+            lostBookCheckbox.disabled = true;
+
+            // Optionally close the modal after a short delay
+            setTimeout(() => closeReturnModal(), 2000);
         } else {
-            alert(`Error returning book: ${data.message}`);
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('d-none');
+            returnMessage.classList.add('d-none');
         }
-        submitButton.disabled = false; // Re-enable button
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An unexpected error occurred. Please try again later.');
-        submitButton.disabled = false; // Re-enable button
-    });
+        messageContainer.classList.remove('d-none');
+    }
+
+    // Check if the book is marked as lost
+    if (lostBookCheckbox.checked) {
+        // Send request to mark the book as lost
+        fetch(`/return-book/${slipNumber}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                book_number: actualBookNumber,
+                lost: true // Indicate it's a lost book
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            handleResponse(data.success, data.success ? 'The book has been marked as lost.' : `Error marking book as lost: ${data.message}`);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            handleResponse(false, 'An unexpected error occurred. Please try again later.');
+        });
+    } else {
+        // Normal book return process
+        if (inputBookNumber === actualBookNumber) {
+            fetch(`/return-book/${slipNumber}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    book_number: actualBookNumber
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                handleResponse(data.success, data.success ? 'The book has been successfully returned.' : `Error returning book: ${data.message}`);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                handleResponse(false, 'An unexpected error occurred. Please try again later.');
+            });
+        } else {
+            handleResponse(false, 'Incorrect book number');
+        }
+    }
 }
 
+
+
+// Event Listener for 'Lost Book' checkbox
+document.getElementById('lostBookCheckbox').addEventListener('change', function () {
+    var inputBookNumberField = document.getElementById('inputBookNumber');
+    // Disable or enable the input field based on checkbox state
+    inputBookNumberField.disabled = this.checked;
+});
+
+
+
+
+// Function to handle the modal opening and setting data attributes
+function openReturnBookModal(button) {
+    var modal = document.getElementById('returnBookModal');
+    var bookNumber = button.dataset.bookNumber;
+    var slipNumber = button.dataset.slipNumber;
+
+    modal.dataset.bookNumber = bookNumber;
+    modal.dataset.slipNumber = slipNumber;
+    modal.style.display = 'block';
+
+    const input = document.getElementById('inputBookNumber');
+    if (input) {
+        input.focus();
+    }
+}
+
+// Function to close the modal
+function closeReturnModal() {
+    var modal = document.getElementById('returnBookModal');
+    modal.style.display = 'none';
+
+    // Reset modal inputs and messages
+    document.getElementById('inputBookNumber').value = '';
+    document.getElementById('lostBookCheckbox').checked = false;
+    document.getElementById('messageContainer').classList.add('d-none');
+    document.getElementById('returnMessage').classList.add('d-none');
+    document.getElementById('errorMessage').classList.add('d-none');
+    document.getElementById('submit-return-btn').disabled = false;
+    document.getElementById('inputBookNumber').disabled = false;
+    document.getElementById('lostBookCheckbox').disabled = false;
+}
+
+
+
+// function submitReturnForm(slipNumber) {
+//     const bookNumber = document.getElementById('bookNumberInput').value;
+//     const submitButton = document.getElementById('submitButton');
+    
+//     submitButton.disabled = true; // Disable button to prevent multiple clicks
+
+//     fetch(`/return-book/${slipNumber}/`, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-CSRFToken': getCookie('csrftoken')
+//         },
+//         body: JSON.stringify({ book_number: bookNumber })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             // Update the UI to reflect the new status
+//             document.getElementById(`status-${bookNumber}`).textContent = 'Returned';
+//             alert(data.message);
+//         } else {
+//             alert(`Error returning book: ${data.message}`);
+//         }
+//         submitButton.disabled = false; // Re-enable button
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         alert('An unexpected error occurred. Please try again later.');
+//         submitButton.disabled = false; // Re-enable button
+//     });
+// }
+
+
+
+
+
+
+
+// function confirmReturn() {
+//     var modal = document.getElementById('returnBookModal');
+//     var slipNumber = modal.dataset.slipNumber;
+//     var row = document.getElementById('row-' + slipNumber);
+//     var actionsCell = document.getElementById('actions-' + slipNumber);
+
+//     modal.style.display = 'none';
+    
+//     // Update the Actions cell to display 'NOT APPLICABLE'
+//     actionsCell.innerHTML = 'NOT APPLICABLE';
+
+//     // Reload the page or perform other cleanup
+//     location.reload(); 
+// }
+
+// Function to get CSRF token for fetch requests
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -459,25 +620,22 @@ function getCookie(name) {
     return cookieValue;
 }
 
+
+
+
+
+
+
+
+
 function submitPenaltyForm() {
     var form = document.getElementById('penaltyForm');
     var slipNumber = document.getElementById('penaltySlipNumber').value;
     var action = document.getElementById('action').value;
-    // var banDuration = document.getElementById('ban_duration').value;
-
-    // // Basic validation for ban duration if the action is "ban"
-    // if (action === 'ban' && (!banDuration || isNaN(banDuration) || parseInt(banDuration) <= 0)) {
-    //     alert("Please enter a valid ban duration (positive number).");
-    //     return;
-    // }
-
+    
     var data = {
         action: action
     };
-
-    // if (action === 'ban') {
-    //     data.ban_duration = banDuration;
-    // }
 
     // Send the penalty data to the server
     fetch('/set-penalty/' + slipNumber + '/', {
@@ -501,15 +659,13 @@ function submitPenaltyForm() {
             // Display the penalty message based on the action
             var messageContainer = document.getElementById('penaltyMessageContainer');
             var penaltyMessage = document.getElementById('penaltyMessage');
-            // if (action === 'ban') {
-            //     penaltyMessage.textContent = 'A ban of ' + banDuration + ' days has been applied.';
-            // } else 
+          
             if (action === 'warning') {
                 penaltyMessage.textContent = 'A warning has been issued.';
             } else if (action === 'community_service') {
                 penaltyMessage.textContent = 'Community service has been assigned.';
             } else {
-                penaltyMessage.textContent = 'Ban Borrower has been applied. <br>Borrower has been banned PERMANENTLY.';
+                penaltyMessage.textContent = 'Borrower has been banned PERMANENTLY.';
             }
 
             messageContainer.classList.remove('d-none');
@@ -608,15 +764,10 @@ function openPenaltyModal(slipNumber, borrowerName, borrowerUid) {
 
 function closePenaltyModal() {
     document.getElementById('penaltyModal').style.display = 'none';
+    
 }
 
 
-
-
-
-// function closePenaltyModal() {
-//     document.getElementById('penaltyModal').style.display = 'none';
-// }
 
 function confirmPenalty() {
     // Redirect or refresh the page
@@ -640,106 +791,6 @@ function getCookie(name) {
 }
 
 
-// Open the return book modal and set data attributes
-function openReturnBookModal(button) {
-    var modal = document.getElementById('returnBookModal');
-    var bookNumber = button.dataset.bookNumber;
-    var slipNumber = button.dataset.slipNumber;
-
-    modal.dataset.bookNumber = bookNumber;
-    modal.dataset.slipNumber = slipNumber;
-    modal.style.display = 'block';
-
-    const input = document.getElementById('inputBookNumber');
-        if (input) {
-            input.focus();
-        }
-}
-
-// Close the return book modal and reset fields
-function closeReturnModal() {
-    var modal = document.getElementById('returnBookModal');
-    modal.style.display = 'none';
-    document.getElementById('inputBookNumber').value = ''; // Clear input
-    document.getElementById('returnMessage').classList.add('d-none'); // Hide success message
-
-    // Reset buttons
-    document.getElementById('submit-return-btn').style.display = 'block';
-    document.getElementById('cancel-return-btn').style.display = 'block';
-    document.getElementById('confirm-return-btn').style.display = 'none';
-
-    location.reload();
-}
-
-// Verify the book number and handle response
-function verifyBookNumber() {
-    var modal = document.getElementById('returnBookModal');
-    var inputBookNumber = document.getElementById('inputBookNumber').value;
-    var actualBookNumber = modal.dataset.bookNumber;
-    var slipNumber = modal.dataset.slipNumber;
-    var messageContainer = document.getElementById('messageContainer');
-    var returnMessage = document.getElementById('returnMessage');
-    var errorMessage = document.getElementById('errorMessage');
-
-    if (inputBookNumber === actualBookNumber) {
-        fetch(`/return-book/${slipNumber}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                book_number: actualBookNumber
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                returnMessage.textContent = 'VERIFIED! THE BOOK HAS BEEN RETURNED.'; // Set success message
-                returnMessage.classList.remove('d-none'); // Show success message
-                errorMessage.classList.add('d-none'); // Hide error message
-
-                // Hide Submit and Cancel buttons, show Confirm button
-                document.getElementById('submit-return-btn').style.display = 'none';
-                document.getElementById('cancel-return-btn').style.display = 'none';
-                document.getElementById('confirm-return-btn').style.display = 'block';
-            } else {
-                returnMessage.classList.add('d-none'); // Hide success message
-                errorMessage.textContent = 'Error returning book: ' + data.message; // Set error message
-                errorMessage.classList.remove('d-none'); // Show error message
-            }
-            messageContainer.classList.remove('d-none'); // Show message container
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            returnMessage.classList.add('d-none'); // Hide success message
-            errorMessage.textContent = 'An unexpected error occurred. Please try again later.'; // Set error message
-            errorMessage.classList.remove('d-none'); // Show error message
-            messageContainer.classList.remove('d-none'); // Show message container
-        });
-    } else {
-        returnMessage.classList.add('d-none'); // Hide success message
-        errorMessage.textContent = 'Incorrect book number'; // Set error message
-        errorMessage.classList.remove('d-none'); // Show error message
-        messageContainer.classList.remove('d-none'); // Show message container
-    }
-}
-
-
-function confirmReturn() {
-    var modal = document.getElementById('returnBookModal');
-    var slipNumber = modal.dataset.slipNumber;
-    var row = document.getElementById('row-' + slipNumber);
-    var actionsCell = document.getElementById('actions-' + slipNumber);
-
-    modal.style.display = 'none';
-    
-    // Update the Actions cell to display 'NOT APPLICABLE'
-    actionsCell.innerHTML = 'NOT APPLICABLE';
-
-  
-    location.reload(); 
-}
 
 
 
