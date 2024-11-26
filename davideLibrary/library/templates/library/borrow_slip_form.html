@@ -16,6 +16,7 @@
             margin-top: 90px; /* Adjust as per your header height */
             display: flex; /* Use flexbox for layout */
         }
+
         .form-panel {
             width: 30%;
             background-color: #f9f9f9;
@@ -23,7 +24,15 @@
             border-radius: 4px;
             border: 1px solid #ddd;
             margin-top: 10px;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
         }
+
+        .form-panel-disabled {
+            opacity: 0.5;  /* Make the form appear disabled */
+            background-color: #f0f0f0;  /* Lighter background to indicate disabled state */
+            pointer-events: none;
+        }
+
         .book-details-panel,
         .borrower-details-panel {
             width: 35%;
@@ -34,6 +43,7 @@
             margin-top: 10px;
             margin-left: 20px;
         }
+
         .form-group input,
         .form-group select {
             width: 100%;
@@ -43,6 +53,7 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
+
         .btn-save {
             padding: 10px 20px;
             font-size: 16px;
@@ -52,19 +63,24 @@
             background-color: #4CAF50;
             color: white;
         }
+
         .btn-back {
-            background-color: #777;
+            background-color: #555;  /* Make the button more noticeable when banned */
             color: white;
             text-decoration: none;
             padding: 10px 20px;
             border-radius: 4px;
             margin-left: 10px;
+            font-weight: bold;  /* Make the button text stand out */
         }
+
         .display {
             display: flex;
             flex-direction: column;
         }
-        .book-details-panel, .borrower-details-panel {
+
+        .book-details-panel,
+        .borrower-details-panel {
             width: 800px;
             height: 230px;
             font-size: 12px;
@@ -76,24 +92,89 @@
             margin-top: 10px;
             margin-left: 20px;
         }
+
         .enlarged-text {
             font-size: 16px; /* Adjust the font size as needed */
             line-height: 1.6; /* Optional: Adjust line spacing for readability */
         }
-        strong{
+
+        strong {
             color: #ddd;
             text-shadow: 
-        -1px -1px 0 #323232, /* Top-left shadow */
-         1px -1px 0 #323232, /* Top-right shadow */
-        -1px  1px 0 #323232, /* Bottom-left shadow */
-         1px  1px 0 #323232; /* Bottom-right shadow */
+                -1px -1px 0 #323232, /* Top-left shadow */
+                1px -1px 0 #323232, /* Top-right shadow */
+                -1px  1px 0 #323232, /* Bottom-left shadow */
+                1px  1px 0 #323232; /* Bottom-right shadow */
         }
+
+        /* Style adjustments for banned borrower */
+/* Error overlay */
+.error-message {
+    position: fixed;        /* Fixed positioning to float over the content */
+    top: 0;                 /* Aligns to the top of the screen */
+    left: 0;                /* Aligns to the left edge of the screen */
+    width: 100%;            /* Full width of the viewport */
+    height: 100%;           /* Full height of the viewport */
+    background: rgba(0, 0, 0, 0.7);  /* Semi-transparent black background */
+    color: #ff6060;           /* Text color */
+    display: flex;          /* Flexbox to center the content */
+    justify-content: center;/* Centers the content horizontally */
+    align-items: center;    /* Centers the content vertically */
+    z-index: 9999;          /* Ensure it's on top of everything else */
+    opacity: 0;             /* Initially hidden */
+    pointer-events: none;   /* Prevents interactions when not visible */
+    transition: opacity 0.3s ease; /* Fade-in effect */
+}
+/* Disable form when the borrower is banned */
+.form-panel-disabled {
+    opacity: 0.5;
+    pointer-events: none; /* Disable interaction with the form */
+}
+.error-message.show {
+    opacity: 1;             /* Show overlay */
+    pointer-events: all;    /* Allow interactions when error is shown */
+}
+
+        
+.error-message p {
+    padding: 20px;
+    font-size: 18px;
+    text-align: center;
+    max-width: 80%;
+    background: rgba(255, 255, 255, 0.9); 
+    border-radius: 5px;
+    color: #ff6060;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+/* Styling for the back button inside the error message */
+.error-message .btn-back {
+    background-color: #777;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin-top: 20px; /* Ensure it's below the error message */
+    font-size: 16px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.error-message .btn-back:hover {
+    background-color: #555;
+}
+        
     </style>
 </head>
 <body>
+    <span class="error-message">
+        <p>{% if error_message %}{{ error_message }}{% endif %}</p>
+        
+    </span>
+    
     <div class="main-content">
-        <div class="form-panel">
+        <div class="form-panel {% if error_message %}form-panel-disabled{% endif %}">
             <h1>Create Borrow Slip</h1>
+    
             <form method="post" id="borrow-slip-form">
                 <div class="form-group">
                     {% csrf_token %}
@@ -103,116 +184,168 @@
                 </div>
             </form>
         </div>
+    
         <div class="display">
-        <div class="book-details-panel" style="height: 290px;">
-            <h1 style="margin: 0; padding: 0;">Book Details</h1>
-            <div id="book-details">
-                <!-- Book details will be dynamically inserted here -->
+            <div class="book-details-panel" style="height: 290px;">
+                <h1 style="margin: 0; padding: 0;">Book Details</h1>
+                <div id="book-details">
+                    <!-- Book details will be dynamically inserted here -->
+                </div>
             </div>
-        </div>
-
-        <div class="borrower-details-panel" style="height: 180px;">
-            <h1 style="margin: 0; padding: 0;">Borrower Details</h1>
-            <div id="borrower-details">
-                <!-- Borrower details will be dynamically inserted here -->
+    
+            <div class="borrower-details-panel" style="height: 180px;">
+                <h1 style="margin: 0; padding: 0;">Borrower Details</h1>
+                <div id="borrower-details">
+                    <!-- Borrower details will be dynamically inserted here -->
+                </div>
             </div>
         </div>
     </div>
-    </div>
-
+    
+    
+    
     <script>
-       document.addEventListener('DOMContentLoaded', function() {
-            var bookNumberField = document.querySelector('input[name="book_number"]');
-            var borrowerUidField = document.querySelector('input[name="borrower_uid_number"]');
-            var bookDetailsDiv = document.getElementById('book-details');
-            var borrowerDetailsDiv = document.getElementById('borrower-details');
-            var dueDateField = document.querySelector('input[name="due_date"]');  // Reference to the due_date field
-            
-            function maskUid(uid) {
-                // Mask all but the last 1 characters
-                return uid.slice(0, -1).replace(/\d/g, '*') + uid.slice(-1);
-            }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+    var bookNumberField = document.querySelector('input[name="book_number"]');
+    var borrowerUidField = document.querySelector('input[name="borrower_uid_number"]');
+    var bookDetailsDiv = document.getElementById('book-details');
+    var borrowerDetailsDiv = document.getElementById('borrower-details');
+    var dueDateField = document.querySelector('input[name="due_date"]');  // Reference to the due_date field
+    var dateBorrowField = document.querySelector('input[name="date_borrow"]');  // Reference to the date_borrow field
+    var borrowSlipForm = document.getElementById('borrow-slip-form');  // The borrow slip form
+    var errorMessageDiv = document.querySelector('.error-message');
+    var formPanel = document.querySelector('.form-panel');
 
-            function calculateDueDate(bookType) {
-                // Calculate due date and number of days based on the book type
-                let dueDate;
-                const today = new Date();
-                let borrowDays;
+    function maskUid(uid) {
+        return uid.slice(0, -1).replace(/\d/g, '*') + uid.slice(-1); // Mask all but last digit
+    }
 
-                switch (bookType) {
-                    case 'Circulation':
-                    case 'Reference':
-                        borrowDays = 3; // 3 days
-                        dueDate = new Date(today.setDate(today.getDate() + borrowDays));
-                        break;
-                    case 'Novel':
-                        borrowDays = 5; // 5 days
-                        dueDate = new Date(today.setDate(today.getDate() + borrowDays));
-                        break;
-                    case 'Research/Academic':
-                    case 'Encyclopedia':
-                    case 'Dictionary':
-                    case 'Year Book':
-                        borrowDays = 1; // 1 day
-                        dueDate = new Date(today.setDate(today.getDate() + borrowDays));
-                        break;
-                    default:
-                        borrowDays = 3; // Default 3 days if unknown
-                        dueDate = new Date(today.setDate(today.getDate() + borrowDays));
+    function calculateDueDate(borrowDate, bookType) {
+        let dueDate;
+        let borrowDays;
+
+        // Calculate due date based on book type
+        switch (bookType) {
+            case 'Circulation':
+            case 'Reference':
+                borrowDays = 3; // 3 days
+                break;
+            case 'Novel':
+                borrowDays = 5; // 5 days
+                break;
+            case 'Research/Academic':
+            case 'Encyclopedia':
+            case 'Dictionary':
+            case 'Year Book':
+                borrowDays = 1; // 1 day
+                break;
+            default:
+                borrowDays = 3; // Default 3 days
+        }
+
+        // Set the due date by adding the borrow days to the current date
+        dueDate = new Date(borrowDate);
+        dueDate.setDate(borrowDate.getDate() + borrowDays);
+        return { dueDate, borrowDays };
+    }
+
+    function fetchBookDetails(bookNumber) {
+        fetch(`/book-detail/${bookNumber}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    // Get the current date and time of borrowing
+                    const borrowDate = new Date();  // Current date and time
+                    const { dueDate, borrowDays } = calculateDueDate(borrowDate, data.book_type);
+
+                    // Display book details
+                    bookDetailsDiv.innerHTML = `
+                        <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>". <br><br>
+                        
+                        Book Type: ${data.book_type} book, can be borrowed for ${borrowDays} days.<br>
+                        Quantity: There are <strong>${data.quantity}</strong> copies available.
+                    `;
+
+                    // Update the due_date field in the form with the calculated due date
+                    if (dueDateField) {
+                        dueDateField.value = dueDate.toISOString().split('T')[0];  // Format the date to yyyy-mm-dd (for backend)
+                    }
+
+                    // Also update the borrow_date field (you can use the exact time for it)
+                    if (dateBorrowField) {
+                        dateBorrowField.value = borrowDate.toISOString().split('T')[0];  // Format it for backend or frontend display
+                    }
+                } else {
+                    bookDetailsDiv.innerHTML = '<p>No book details found.</p>';
                 }
-
-                return { dueDate, borrowDays };
-            }
-
-            function fetchBookDetails(bookNumber) {
-                fetch(`/book-detail/${bookNumber}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data) {
-                            // Now set the due date based on the book type
-                            const { dueDate, borrowDays } = calculateDueDate(data.book_type);
-
-                            // Display book details
-                            bookDetailsDiv.innerHTML = `
-                                <p class="enlarged-text">This book is entitled "<strong>${data.book_title}</strong>" and was authored by <strong>${data.author}</strong>. It has the book number <strong>${data.book_number}</strong>. The book falls under the class field of <strong>${data.class_field}</strong> and is published in the <strong>${data.edition}</strong> edition. It comprises <strong>${data.volume}</strong> volume/s and has <strong>${data.pages}</strong> pages. The book is funded through <strong>${data.fund_source}</strong> and is priced at <strong>${data.price}</strong>. It was published at the <strong>${data.publisher}</strong> in the year <strong>${data.year}</strong>. The category of this book is <strong>${data.category}</strong>, with remarks stating: "<strong>${data.remark}</strong>". <br><br>
-                                
-                                Book Type: ${data.book_type} book, can be borrowed for ${borrowDays} days.<br>
-                                Quantity: There are <strong>${data.quantity}</strong> copies available.
-                            `;
-            
-                            // Update the due_date field in the form
-                            if (dueDateField) {
-                                dueDateField.value = dueDate.toISOString().split('T')[0];  // Format the date to yyyy-mm-dd
-                            }
-                        } else {
-                            bookDetailsDiv.innerHTML = '<p>No book details found.</p>';
-                        }
-                    });
-            }
-
-            function fetchBorrowerDetails(borrowerUid) {
-                fetch(`/borrower-details/${borrowerUid}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data) {
-                            borrowerDetailsDiv.innerHTML = `
-                                <p class="enlarged-text">The borrower, <strong>${data.borrower_name}</strong>, with UID number <strong>${maskUid(data.borrower_uid)}</strong>, is currently in grade level <strong>${data.grade_level}</strong> and belongs to the section <strong>${data.section}</strong>. Their adviser is <strong>${data.adviser}</strong>.</p>
-                            `;
-                        } else {
-                            borrowerDetailsDiv.innerHTML = '<p>No borrower details found.</p>';
-                        }
-                    });
-            }
-
-            // Add event listeners for changes in book number and borrower UID
-            bookNumberField.addEventListener('change', function() {
-                fetchBookDetails(this.value);
             });
+    }
 
-            borrowerUidField.addEventListener('change', function() {
-                fetchBorrowerDetails(this.value);
+    function fetchBorrowerDetails(borrowerUid) {
+        fetch(`/borrower-details/${borrowerUid}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    borrowerDetailsDiv.innerHTML = `
+                        <p class="enlarged-text">The borrower, <strong>${data.borrower_name}</strong>, with UID number <strong>${maskUid(data.borrower_uid)}</strong>, is currently in grade level <strong>${data.grade_level}</strong> and belongs to the section <strong>${data.section}</strong>. Their adviser is <strong>${data.adviser}</strong>. <br><br><strong>Borrower Status: ${data.status}</strong></p>
+                    `;
+                    
+                    // If borrower is banned, disable the form and show error
+                    if (data.status === 'Banned') {
+                        // Disable form fields and buttons
+                        borrowSlipForm.querySelectorAll('input, button').forEach(function(element) {
+                            element.disabled = true;
+                        });
+
+                        if (errorMessageDiv) {
+                            errorMessageDiv.innerHTML = `<p>⚠  NOTICE!<br>This borrower is banned and cannot borrow books! <br><a href="{% url 'borrow-slip-create' %}" class="btn-back">Back to List</a></p>`;
+                            errorMessageDiv.classList.add('show'); // Show overlay error
+                        }
+
+                        // Disable form interaction
+                        formPanel.classList.add('form-panel-disabled');
+                        document.querySelector('.btn-back').style.display = 'inline-block';  // Ensure the back button is visible
+                    } else {
+                        // Enable form if the borrower is not banned
+                        borrowSlipForm.querySelectorAll('input, button').forEach(function(element) {
+                            element.disabled = false;
+                        });
+
+                        // Reset error message and hide the overlay
+                        if (errorMessageDiv) {
+                            errorMessageDiv.innerHTML = '';  // Clear the error message
+                            errorMessageDiv.classList.remove('show');  // Hide the overlay
+                        }
+
+                        formPanel.classList.remove('form-panel-disabled'); // Enable the form
+                        document.querySelector('.btn-back').style.display = 'inline-block';  // Keep the back button visible
+                    }
+                } else {
+                    borrowerDetailsDiv.innerHTML = '<p>No borrower details found.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching borrower details:', error);
             });
-        });
+    }
+
+    // Add event listener for the borrower UID field
+    var borrowerUidField = document.querySelector('input[name="borrower_uid_number"]');
+    borrowerUidField.addEventListener('change', function() {
+        fetchBorrowerDetails(this.value);
+    }); 
+
+    // Add event listeners for changes in book number and borrower UID
+    bookNumberField.addEventListener('change', function() {
+        fetchBookDetails(this.value);
+    });
+
+    borrowerUidField.addEventListener('change', function() {
+        fetchBorrowerDetails(this.value);
+    });
+});
+
 
     </script>
     

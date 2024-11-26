@@ -1392,9 +1392,12 @@ def borrow_slip_create(request):
             if timezone.is_naive(borrow_slip.date_borrow):
                 borrow_slip.date_borrow = timezone.make_aware(borrow_slip.date_borrow, timezone.get_current_timezone())
 
-            # Ensure due_date is timezone-aware (this is typically handled by JS)
+            # Ensure due_date is timezone-aware and set to 8:00 AM
             if timezone.is_naive(borrow_slip.due_date):
                 borrow_slip.due_date = timezone.make_aware(borrow_slip.due_date, timezone.get_current_timezone())
+                
+                # Set the time to 8:00 AM
+                borrow_slip.due_date = borrow_slip.due_date.replace(hour=8, minute=0, second=0, microsecond=0)
             
             # Optional: Convert to local time if you want to store it in local time zone (if needed)
             borrow_slip.date_borrow = timezone.localtime(borrow_slip.date_borrow)
@@ -1415,13 +1418,15 @@ def borrower_details(request, borrower_uid):
         data = {
             'borrower_name': borrower.borrower_name,
             'borrower_uid': borrower.borrower_uid,
-            'grade_level': borrower.grade_level if hasattr(borrower, 'grade_level') else '',  # Adjust if using a different field name
-            'section': borrower.section if hasattr(borrower, 'section') else '',  # Adjust if using a different field name
-            'adviser': borrower.adviser if hasattr(borrower, 'adviser') else '',  # Adjust if using a different field name
+            'grade_level': borrower.grade_level if hasattr(borrower, 'grade_level') else '',
+            'section': borrower.section if hasattr(borrower, 'section') else '',
+            'adviser': borrower.adviser if hasattr(borrower, 'adviser') else '',
+            'status': borrower.status,  # Include status here
         }
     except Borrower.DoesNotExist:
         data = {}
     return JsonResponse(data)
+
 
 
 @login_required
