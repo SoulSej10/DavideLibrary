@@ -289,9 +289,13 @@ class BorrowSlip(models.Model):
         # Now check for timezone-awareness
         if self.date_borrow and timezone.is_naive(self.date_borrow):
             self.date_borrow = timezone.make_aware(self.date_borrow, timezone.get_current_timezone())
-            
+        
         if self.due_date and timezone.is_naive(self.due_date):
             self.due_date = timezone.make_aware(self.due_date, timezone.get_current_timezone())
+
+        # Optionally convert to local time (not necessary unless you want to save local time instead of UTC)
+        self.date_borrow = timezone.localtime(self.date_borrow)
+        self.due_date = timezone.localtime(self.due_date)
 
         super().save(*args, **kwargs)
 

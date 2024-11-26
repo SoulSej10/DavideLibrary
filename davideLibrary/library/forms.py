@@ -265,15 +265,18 @@ class BorrowSlipForm(forms.ModelForm):
         # Make sure the `date_borrow` is timezone-aware before saving
         if timezone.is_naive(instance.date_borrow):
             instance.date_borrow = timezone.make_aware(instance.date_borrow, timezone.get_current_timezone())
-
-        # The `due_date` is handled by JS, so no need to modify it here
+        
+        # Make sure the `due_date` is timezone-aware before saving
         if timezone.is_naive(instance.due_date):
             instance.due_date = timezone.make_aware(instance.due_date, timezone.get_current_timezone())
+        
+        # If needed, adjust the `date_borrow` and `due_date` to local timezone for saving (optional)
+        instance.date_borrow = timezone.localtime(instance.date_borrow)  # Convert to local time zone (optional)
+        instance.due_date = timezone.localtime(instance.due_date)  # Convert to local time zone (optional)
 
         if commit:
             instance.save()
         return instance
-
 
 
 

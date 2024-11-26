@@ -1388,11 +1388,17 @@ def borrow_slip_create(request):
             # Ensure that date_borrow is timezone-aware
             if timezone.is_naive(borrow_slip.date_borrow):
                 borrow_slip.date_borrow = timezone.make_aware(borrow_slip.date_borrow, timezone.get_current_timezone())
+
+            # Ensure due_date is timezone-aware (this is typically handled by JS)
+            if timezone.is_naive(borrow_slip.due_date):
+                borrow_slip.due_date = timezone.make_aware(borrow_slip.due_date, timezone.get_current_timezone())
             
-            # The due_date is handled by JS, so it is already timezone-aware when submitted
-            
+            # Optional: Convert to local time if you want to store it in local time zone (if needed)
+            borrow_slip.date_borrow = timezone.localtime(borrow_slip.date_borrow)
+            borrow_slip.due_date = timezone.localtime(borrow_slip.due_date)
+
             borrow_slip.save()
-            return redirect('borrow-slip-list')
+            return redirect('borrow-slip-list')  # Assuming this is a URL that lists all borrow slips
     else:
         form = BorrowSlipForm(user=request.user)
     
@@ -1613,6 +1619,10 @@ def attendance_list(request):
     # Fetch attendance data for the table
     attendances = Attendance.objects.all().order_by('-date_time')
 
+    # Convert date_time to local time zone for each attendance record
+    for attendance in attendances:
+        attendance.date_time_local = timezone.localtime(attendance.date_time)  # Convert to local timezone
+
     # Calculate statistics by grade level
     grade_level_stats = Attendance.objects.values('grade_level') \
         .annotate(total_students=Count('borrower_uid_number', distinct=True)) \
@@ -1640,9 +1650,12 @@ def recent_attendance_stats(request):
             .annotate(total_students=Count('borrower_uid_number', distinct=True)) \
             .order_by('grade_level')
 
+        # Convert date to local time zone for display
+        local_date = timezone.localtime(date).strftime('%b %d, %Y')  # Convert to local time zone and format
+
         # Format each day's data for JSON serialization
         recent_data.append({
-            'date': date.strftime('%b %d, %Y'),
+            'date': local_date,  # Use the local time version of the date
             'data': {stat['grade_level']: stat['total_students'] for stat in day_data}
         })
 
