@@ -1437,10 +1437,17 @@ def reserve_book(request):
         if form.is_valid():
             reservation = form.save(commit=False)
 
-            # Populate borrower_name if borrower_uid_number is provided
+            # Get the borrower details
             if reservation.borrower_uid_number:
                 try:
                     borrower = Borrower.objects.get(borrower_uid=reservation.borrower_uid_number)
+                    
+                    # Check if borrower is banned
+                    if borrower.status == 'Banned':
+                        # If the borrower is banned, show an error message and disable form submission
+                        form.add_error(None, "⚠ This borrower is banned and cannot reserve books!")
+                        return render(request, 'library/reserve_book_form.html', {'form': form})
+                    
                     reservation.borrower_name = borrower.borrower_name  # Automatically set the name
                 except Borrower.DoesNotExist:
                     reservation.borrower_name = ""  # Set to empty string if borrower doesn't exist
@@ -1448,7 +1455,7 @@ def reserve_book(request):
             reservation.status = 'Reserved'
             reservation.save()
 
-            # Update book status to 'Reserved'
+            # Update the book status to 'Reserved'
             try:
                 book = BookInventory.objects.get(book_number=reservation.book_number)
                 book.status = 'Reserved'

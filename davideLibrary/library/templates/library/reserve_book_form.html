@@ -136,10 +136,68 @@
             padding: 8px;
             border-radius: 4px;
         }
+               /* Style adjustments for banned borrower */
+/* Error overlay */
+.error-message {
+    position: fixed;        /* Fixed positioning to float over the content */
+    top: 0;                 /* Aligns to the top of the screen */
+    left: 0;                /* Aligns to the left edge of the screen */
+    width: 100%;            /* Full width of the viewport */
+    height: 100%;           /* Full height of the viewport */
+    background: rgba(0, 0, 0, 0.7);  /* Semi-transparent black background */
+    color: #ff6060;           /* Text color */
+    display: flex;          /* Flexbox to center the content */
+    justify-content: center;/* Centers the content horizontally */
+    align-items: center;    /* Centers the content vertically */
+    z-index: 9999;          /* Ensure it's on top of everything else */
+    opacity: 0;             /* Initially hidden */
+    pointer-events: none;   /* Prevents interactions when not visible */
+    transition: opacity 0.3s ease; /* Fade-in effect */
+}
+/* Disable form when the borrower is banned */
+.form-panel-disabled {
+    opacity: 0.5;
+    pointer-events: none; /* Disable interaction with the form */
+}
+.error-message.show {
+    opacity: 1;             /* Show overlay */
+    pointer-events: all;    /* Allow interactions when error is shown */
+}
+
+        
+.error-message p {
+    padding: 20px;
+    font-size: 18px;
+    text-align: center;
+    max-width: 80%;
+    background: rgba(255, 255, 255, 0.9); 
+    border-radius: 5px;
+    color: #ff6060;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+/* Styling for the back button inside the error message */
+.error-message .btn-back {
+    background-color: #777;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin-top: 20px; /* Ensure it's below the error message */
+    font-size: 16px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.error-message .btn-back:hover {
+    background-color: #555;
+}
 
         </style>
 </head>
 <body>
+    <span class="error-message">
+        <p>{% if error_message %}{{ error_message }}{% endif %}</p>
+    </span>
     <div class="main-content">
         <div class="form-panel">
             <h1 style="margin: 0; padding: 0;">Reserve a Book</h1>
@@ -197,6 +255,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var reservationDateElement = document.getElementById('reservation-date');
     var borrowDurationDisplay = document.getElementById('borrow-duration-display');
     var dueDateDisplay = document.getElementById('due-date-display');
+
+    var reservationForm = document.getElementById('reserve-book-form');    
+    var errorMessageDiv = document.querySelector('.error-message');
+    var reserveButton = document.querySelector('.btn-save'); 
+
+    // Disable the reserve button initially
+    // reserveButton.disabled = false;
 
     function maskUid(uid) {
         // Mask all but the last 1 characters
@@ -290,14 +355,50 @@ document.addEventListener('DOMContentLoaded', function () {
                             <strong>${maskUid(data.borrower_uid)}</strong>, is currently in grade level 
                             <strong>${data.grade_level}</strong> and belongs to the section 
                             <strong>${data.section}</strong>. Their adviser is <strong>${data.adviser}</strong>.
+                             <br><br><strong>Borrower Status: ${data.status}</strong></p>
                         </p>
                     `;
+                // If the borrower is banned, disable the form and show an error message
+                if (data.status === 'Banned') {
+                        // Disable form fields and button
+                        reservationForm.querySelectorAll('input, button').forEach(function(element) {
+                            element.disabled = true;
+                        });
+
+                        // Show error message
+                        errorMessageDiv.innerHTML = `
+                            <p>⚠  NOTICE!<br>This borrower is banned and cannot reserve books! 
+                            <br><a href="{% url 'borrow-slip-create' %}" class="btn-back">Back to List</a></p>
+                        `;
+                        errorMessageDiv.classList.add('show'); // Show the error overlay
+
+                        // Disable the reserve button
+                        reserveButton.disabled = true;
+                    } else {
+                        // Enable form if borrower is not banned
+                        reservationForm.querySelectorAll('input, button').forEach(function(element) {
+                            element.disabled = false;
+                        });
+
+                        // Clear error message and hide overlay
+                        errorMessageDiv.innerHTML = '';
+                        errorMessageDiv.classList.remove('show');
+
+                        // Enable the reserve button
+                        reserveButton.disabled = false;
+                    }
                 } else {
                     borrowerDetailsDiv.innerHTML = '<p>No borrower details found.</p>';
                 }
+            })
+            .catch(error => {
+                console.error('Error fetching borrower details:', error);
             });
     }
-
+    // Add event listener for borrower UID change
+    borrowerUidField.addEventListener('change', function () {
+        fetchBorrowerDetails(this.value);
+    });
 
     // Add event listeners for changes in book number and borrower UID
     bookNumberField.addEventListener('change', function () {

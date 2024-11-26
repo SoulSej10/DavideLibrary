@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import Borrower, BookInventory, BorrowSlip, Attendance, CustomUser, Category, Location, BookReservation
+from django.contrib.admin import DateFieldListFilter
 
 # Borrower Admin
 class BorrowerAdmin(admin.ModelAdmin):
@@ -25,7 +26,11 @@ admin.site.register(BookInventory, BookInventoryAdmin)
 # Borrow Slip Admin
 class BorrowSlipAdmin(admin.ModelAdmin):
     list_display = ('pk_display', 'book_number', 'book_title', 'borrower_uid_number', 'borrower_name', 'date_borrow', 'due_date', 'status')
-    
+    list_filter = (
+        ('date_borrow'),  # Adds custom date filter
+        'borrower_uid_number',
+        'librarian_name',
+    )
     def pk_display(self, obj):
         return obj.slip_number
     pk_display.short_description = '[PK] Slip Number'
