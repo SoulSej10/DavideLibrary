@@ -1,0 +1,45 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Attendance</title>
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/create_attendance.css' %}">
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('/static/styles/Poppins/Poppins-Medium.ttf') format('truetype');
+        }
+    </style>
+    {% endblock %}
+</head>
+
+<body>
+    <div class="overlay-container">
+        <div class="min-h-screen">
+            <div class="card">
+                <div class="card-header">
+                    <div class="logo-container">
+                        <img src="{% static 'images/hpdslogo.png' %}" alt="logo" style="width: 150px; height: 150px; border-radius: 50%;">
+                    </div>
+                    <h1 class="card-title">Welcome to DavideLib Connect</h1>
+                    <p class="card-description">Here are the tutorials.</p>
+                </div>
+                <div class="card-content" style="display: flex; justify-content: center; align-items: center; height: 300px;">
+                    <video controls style="max-width: 100%; max-height: 100%; margin: auto;">
+                        <source src="/media/videos/TutorialVidQ1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>                    
+                </div>
+                <div class="card-footer">
+                    <p>Thank you for using our library services!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+{% endblock %}

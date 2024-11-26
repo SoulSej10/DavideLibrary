@@ -86,6 +86,9 @@ urlpatterns = [
 
     #Super Admin
     path('redirect-to-admin/', views.redirect_to_admin, name='redirect_to_admin'),
+
+    #Tutorial
+    path('tutorials/', views.VidTutorials, name='tutorials'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

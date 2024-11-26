@@ -281,7 +281,11 @@
         {% if user.role == 'Head Librarian' %}
         <a href="{% url 'redirect_to_admin' %}" class="hover-label-containers">
             <img src="{% static 'images/superadmin.png' %}" style="width: 55px; height: 55px; padding-left: 200px;" alt="">
-            <span class="hover-labels" style="margin-left: 100px;">Access Database <br> Login as SuperAdmin</span>
+            <span class="hover-labels">Access Database <br> Login as SuperAdmin</span>
+        </a>
+        <a href="{% url 'tutorials' %}" class="hover-label-containers">
+            <img src="{% static 'images/superadmin.png' %}" style="width: 55px; height: 55px; padding-left: 120px;" alt="">
+            <span class="hover-labels">Tutorials</span>
         </a>
         {% endif %}
         {% if messages %}

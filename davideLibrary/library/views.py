@@ -1916,3 +1916,9 @@ def get_borrower_status(request, borrower_uid):
 #MARK: Super Admin
 def redirect_to_admin(request):
     return HttpResponseRedirect('/admin')
+
+
+
+#MARK:Tutorial
+def VidTutorials(request):
+    return render(request, 'library/Tutorials.html')  
