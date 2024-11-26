@@ -83,6 +83,9 @@ urlpatterns = [
     path('return-book/<int:slip_number>/', views.return_book, name='return-book'),
     path('set-penalty/<str:slip_number>/', views.set_penalty, name='set-penalty'),
     path('get-borrower-status/<str:borrower_uid>/', views.get_borrower_status, name='get_borrower_status'),
+
+    #Super Admin
+    path('redirect-to-admin/', views.redirect_to_admin, name='redirect_to_admin'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

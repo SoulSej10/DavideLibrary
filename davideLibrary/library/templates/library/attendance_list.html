@@ -112,7 +112,7 @@
                         {% for attendance in attendances %}
                             <tr>
                                 <td>{{ attendance.attendance_number }}</td>
-                                <td>{{ attendance.date_time_local|date }}</td>
+                                <td>{{ attendance.date_time.date }}</td>
                                 <td>{{ attendance.borrower_uid_number|obfuscate }}</td>
                                 <td>{{ attendance.borrower_name }}</td>
                                 <td>{{ attendance.grade_level }}</td>

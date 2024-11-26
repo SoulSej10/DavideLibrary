@@ -31,7 +31,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from django.core.files.storage import default_storage
 from django.http import FileResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.http import HttpResponseRedirect
 import matplotlib
 matplotlib.use('Agg')  # Set the backend to 'Agg' for non-interactive plotting
 import matplotlib.pyplot as plt
@@ -293,7 +293,7 @@ class HeadLibrarianLoginView(LoginView):
 
     def form_valid(self, form):
         user = form.get_user()
-        if user.is_superuser:
+        if user.is_staff:
             login(self.request, user)
             messages.success(self.request, "Permission Granted, Account Authorized!")
             return redirect(self.success_url)
@@ -1888,3 +1888,9 @@ def get_borrower_status(request, borrower_uid):
     except Borrower.DoesNotExist:
         # If the borrower does not exist, return an error message
         return JsonResponse({'error': 'Borrower not found'}, status=404)
+
+
+
+#MARK: Super Admin
+def redirect_to_admin(request):
+    return HttpResponseRedirect('/admin')
