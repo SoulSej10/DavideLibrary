@@ -413,4 +413,14 @@ tbody tr:nth-child(even) {
     text-align: right; /* Align count to the right */
 }
 
+.status-returned {
+    color: green;
+}
 
+.penalty-status {
+    color: red;
+}
+
+.status-borrowed {
+    color: blue; /* Blue for borrowed */
+}

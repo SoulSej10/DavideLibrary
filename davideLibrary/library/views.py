@@ -204,6 +204,7 @@ def borrow_history(request):
     uid = request.GET.get('uid')
     response_data = {
         'full_name': '',
+        'status': '',  # Add status here
         'history': [],
         'qr_code': ''
     }
@@ -213,6 +214,7 @@ def borrow_history(request):
             # Fetch the borrower using the UID
             borrower = Borrower.objects.get(borrower_uid=uid)
             response_data['full_name'] = borrower.borrower_name
+            response_data['status'] = borrower.status  # Add the borrower's status to the response
             response_data['qr_code'] = borrower.qr_code.url  # Get QR code URL
 
             # Fetch all borrow slips associated with the UID
@@ -230,6 +232,7 @@ def borrow_history(request):
             response_data['full_name'] = 'UID not found'
 
     return JsonResponse(response_data)
+
 
 def landingLog(request):
     form = AttendanceForm()

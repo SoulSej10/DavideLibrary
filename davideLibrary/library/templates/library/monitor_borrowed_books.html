@@ -75,7 +75,7 @@
             <div class="UID_field">
                 <input type="password" id="uid-input" placeholder="Scan UID here..." oninput="fetchBorrowHistory()"
                     style="width: 95%; padding: 10px; border-radius: 5px; margin-bottom: 5px; font-family: 'Poppins', sans-serif;">
-                    <p style="font-size: 15px; color: white; margin: 0;">Below is your book borrowing history:</p>
+                    <p style="font-size: 15px; color: white; margin: 0;">Borrower Status: <span id="borrower-status"></span></p>  <!-- Display borrower status here -->
         </div>
 
     </div>
@@ -800,84 +800,119 @@ function getCookie(name) {
 
 
 
- // Function to fetch borrow history
- function fetchBorrowHistory() {
-        let uid = document.getElementById('uid-input').value;
+// Function to fetch borrow history
+function fetchBorrowHistory() {
+    let uid = document.getElementById('uid-input').value;
 
-        // Check if the UID length is exactly 13 characters
-        if (uid.length === 13) {
-            fetch(`/borrow-history/?uid=${uid}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                let historyContainer = document.getElementById('borrow-history-container');
-                let welcomeMessage = document.getElementById('welcome-message');
-                let qrCodeImage = document.getElementById('qr-code-image');
-                let exitButton = document.getElementById('exit-button');
-                let retryButton = document.getElementById('retry-button'); // Get the retry button
-                let uidInput = document.getElementById('uid-input');
+    // Check if the UID length is exactly 13 characters
+    if (uid.length === 13) {
+        fetch(`/borrow-history/?uid=${uid}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            let historyContainer = document.getElementById('borrow-history-container');
+            let welcomeMessage = document.getElementById('welcome-message');
+            let qrCodeImage = document.getElementById('qr-code-image');
+            let exitButton = document.getElementById('exit-button');
+            let retryButton = document.getElementById('retry-button'); // Get the retry button
+            let uidInput = document.getElementById('uid-input');
+            let statusContainer = document.getElementById('borrower-status'); // The status display element
 
-                historyContainer.innerHTML = ''; // Clear previous content
-                welcomeMessage.innerHTML = '';   // Clear previous welcome message
-                qrCodeImage.src = ''; // Clear previous QR code image
-                
-                // Disable the UID input field
-                uidInput.disabled = true;
+            historyContainer.innerHTML = ''; // Clear previous content
+            welcomeMessage.innerHTML = '';   // Clear previous welcome message
+            qrCodeImage.src = ''; // Clear previous QR code image
 
-                if (data.history.length > 0) {
-                    // Show the welcome message with the user's full name
-                    welcomeMessage.innerHTML = `Welcome ${data.full_name}!`;
+            // Disable the UID input field
+            uidInput.disabled = true;
 
-                    // Set QR code image source
-                    qrCodeImage.src = data.qr_code;
+            // Set the borrower's status in the status container
+            if (data.status) {
+                statusContainer.innerHTML = data.status; // Display status
+            } else {
+                statusContainer.innerHTML = 'No status available'; // If no status available
+            }
 
-                    // Build the list of borrowed books
-                    data.history.forEach(slip => {
-                        let statusClass = slip.status === 'Returned' ? 'status-returned' : 'penalty-status';
-                        historyContainer.innerHTML += `
-                            <div class="borrow-slip" style="margin: 0;">
-                                <p><strong>Book No.:</strong> ${slip.book_number}</p>
-                                <p><strong>Book Title:</strong> ${slip.book_title}</p>
-                                <p><strong>Borrow Date:</strong> ${slip.date_borrow}</p>
-                                <p><strong>Due Date:</strong> ${slip.due_date}</p>
-                                <p><strong>Status:</strong> <span class="${statusClass}">${slip.status}</span></p>
-                            </div><hr>`;
-                    });
+            if (data.history.length > 0) {
+                // Show the welcome message with the user's full name
+                welcomeMessage.innerHTML = `Welcome ${data.full_name}!`;
 
-                    // Show the exit button
-                    exitButton.style.display = 'block';
-                    retryButton.style.display = 'none'; // Hide the retry button
+                // Set QR code image source
+                qrCodeImage.src = data.qr_code;
 
-                    // Store the data in localStorage
-                    localStorage.setItem('uid', uid);
-                    localStorage.setItem('fullName', data.full_name);
-                    localStorage.setItem('qrCode', data.qr_code);
-                    localStorage.setItem('borrowHistory', JSON.stringify(data.history));
-                } else {
-                    welcomeMessage.innerHTML = "UID not found.";
-                    historyContainer.innerHTML = `
-                        <p style="color: #f5c6cb; font-size: 20px; text-align: center;">No books borrowed with this UID.</p>`;
-                        qrCodeImage.src = '{% static "images/hpdslogo.png" %}'; 
-                    // Show the retry button
-                    retryButton.style.display = 'block'; // Show the retry button
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        } else if (uid.length > 0) {
-            // Show a message if the UID is not 13 characters long
-            document.getElementById('welcome-message').innerHTML = "Please enter a valid UID (13 characters).";
-            document.getElementById('borrow-history-container').innerHTML = ''; // Clear previous history
+                // Categorize records: returned books at the bottom
+                let nonReturnedHistory = [];
+                let returnedHistory = [];
 
-            // Show the retry button
-            document.getElementById('retry-button').style.display = 'block'; // Show the retry button
-        }
+                // Split history into two categories
+                data.history.forEach(slip => {
+                    if (slip.status === 'Returned') {
+                        returnedHistory.push(slip);
+                    } else {
+                        nonReturnedHistory.push(slip);
+                    }
+                });
+
+                // Combine the two categories with non-returned first
+                let finalHistory = [...nonReturnedHistory, ...returnedHistory];
+
+                // Build the list of borrowed books in the correct order
+                finalHistory.forEach(slip => {
+                    let statusClass = '';
+                        if (slip.status === 'Returned') {
+                            statusClass = 'status-returned';
+                        } else if (slip.status === 'Borrowed') {
+                            statusClass = 'status-borrowed';
+                        } else {
+                            statusClass = 'penalty-status';
+                        }
+                    historyContainer.innerHTML += `
+                        <div class="borrow-slip" style="margin: 0;">
+                            <p><strong>Book No.:</strong> ${slip.book_number}</p>
+                            <p><strong>Book Title:</strong> ${slip.book_title}</p>
+                            <p><strong>Borrow Date:</strong> ${slip.date_borrow}</p>
+                            <p><strong>Due Date:</strong> ${slip.due_date}</p>
+                            <p><strong>Status:</strong> <span class="${statusClass}">${slip.status}</span></p>
+                        </div><hr>`;
+                });
+
+                // Show the exit button
+                exitButton.style.display = 'block';
+                retryButton.style.display = 'none'; // Hide the retry button
+
+                // Store the data in localStorage
+                localStorage.setItem('uid', uid);
+                localStorage.setItem('fullName', data.full_name);
+                localStorage.setItem('qrCode', data.qr_code);
+                localStorage.setItem('borrowHistory', JSON.stringify(data.history));
+                localStorage.setItem('borrowerStatus', data.status); // Store the borrower's status
+
+            } else {
+                welcomeMessage.innerHTML = "UID not found.";
+                historyContainer.innerHTML = `
+                    <p style="color: #f5c6cb; font-size: 20px; text-align: center;">No books borrowed with this UID.</p>`;
+                qrCodeImage.src = '{% static "images/hpdslogo.png" %}'; 
+                // Show the retry button
+                retryButton.style.display = 'block'; // Show the retry button
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    } else if (uid.length > 0) {
+        // Show a message if the UID is not 13 characters long
+        document.getElementById('welcome-message').innerHTML = "Please enter a valid UID (13 characters).";
+        document.getElementById('borrow-history-container').innerHTML = ''; // Clear previous history
+
+        // Show the retry button
+        document.getElementById('retry-button').style.display = 'block'; // Show the retry button
     }
+}
+
+
 
 
         // Function to reset the input for retrying
@@ -892,39 +927,73 @@ function getCookie(name) {
 
 
 // Function to load data from localStorage when the page loads
-    function loadStoredData() {
-        const uid = localStorage.getItem('uid');
-        const fullName = localStorage.getItem('fullName');
-        const qrCode = localStorage.getItem('qrCode');
-        const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
+function loadStoredData() {
+    const uid = localStorage.getItem('uid');
+    const fullName = localStorage.getItem('fullName');
+    const qrCode = localStorage.getItem('qrCode');
+    const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
+    const status = localStorage.getItem('borrowerStatus'); // Retrieve status from localStorage
 
-        if (uid && fullName && qrCode) {
-            document.getElementById('uid-input').value = uid; // Set the UID input
-            document.getElementById('uid-input').disabled = true; // Disable the input
+    if (uid && fullName && qrCode) {
+        document.getElementById('uid-input').value = uid; // Set the UID input
+        document.getElementById('uid-input').disabled = true; // Disable the input
 
-            // Update the UI with the stored data
-            document.getElementById('welcome-message').innerHTML = `Welcome ${fullName}!`;
-            document.getElementById('qr-code-image').src = qrCode;
+        // Update the UI with the stored data
+        document.getElementById('welcome-message').innerHTML = `Welcome ${fullName}!`;
+        document.getElementById('qr-code-image').src = qrCode;
 
-            const historyContainer = document.getElementById('borrow-history-container');
-            historyContainer.innerHTML = ''; // Clear previous content
-            history.forEach(slip => {
-                let statusClass = slip.status === 'Returned' ? 'status-returned' : 'penalty-status';
-                historyContainer.innerHTML += `
-                    <div class="borrow-slip" style="margin: 0;">
-                        <p><strong>Book No.:</strong> ${slip.book_number}</p>
-                        <p><strong>Book Title:</strong> ${slip.book_title}</p>
-                        <p><strong>Borrow Date:</strong> ${slip.date_borrow}</p>
-                        <p><strong>Due Date:</strong> ${slip.due_date}</p>
-                        <p><strong>Status:</strong> <span class="${statusClass}">${slip.status}</span></p>
-                    </div><hr>`;
-            });
-
-            // Show the exit button
-            document.getElementById('exit-button').style.display = 'block';
+        // Set the borrower's status
+        const statusContainer = document.getElementById('borrower-status');
+        if (status) {
+            statusContainer.innerHTML = status; // Display stored status
+        } else {
+            statusContainer.innerHTML = 'No status available'; // If no status stored
         }
-    }
 
+        const historyContainer = document.getElementById('borrow-history-container');
+        historyContainer.innerHTML = ''; // Clear previous content
+
+        // Categorize records: non-returned first, then returned at the bottom
+        let nonReturnedHistory = [];
+        let returnedHistory = [];
+
+        // Split history into two categories
+        history.forEach(slip => {
+            if (slip.status === 'Returned') {
+                returnedHistory.push(slip);
+            } else {
+                nonReturnedHistory.push(slip);
+            }
+        });
+
+        // Combine the two categories with non-returned first
+        let finalHistory = [...nonReturnedHistory, ...returnedHistory];
+
+        // Build the list of borrowed books in the correct order
+        finalHistory.forEach(slip => {
+            let statusClass = '';
+            if (slip.status === 'Returned') {
+                statusClass = 'status-returned';
+            } else if (slip.status === 'Borrowed') {
+                statusClass = 'status-borrowed';
+            } else {
+                statusClass = 'penalty-status';
+            }
+
+            historyContainer.innerHTML += `
+                <div class="borrow-slip" style="margin: 0;">
+                    <p><strong>Book No.:</strong> ${slip.book_number}</p>
+                    <p><strong>Book Title:</strong> ${slip.book_title}</p>
+                    <p><strong>Borrow Date:</strong> ${slip.date_borrow}</p>
+                    <p><strong>Due Date:</strong> ${slip.due_date}</p>
+                    <p><strong>Status:</strong> <span class="${statusClass}">${slip.status}</span></p>
+                </div><hr>`;
+        });
+
+        // Show the exit button
+        document.getElementById('exit-button').style.display = 'block';
+    }
+}
     // Function to exit view and clear data
     function exitView() {
         // Re-enable the UID input field and clear its value
@@ -957,6 +1026,25 @@ function getCookie(name) {
         }
     }
 
+    document.addEventListener("DOMContentLoaded", function() {
+        const bookNumber = "{{ book_detail.book_number }}";  // Ensure this value is passed from the context
+
+        // Fetch the book details dynamically using AJAX
+        fetch(`/book-details/${bookNumber}/`)
+            .then(response => response.json())
+            .then(data => {
+                // Update the page with the fetched data
+                document.getElementById('book-title').style.display = 'none';
+                document.getElementById('available-count').textContent = data.status_counts.Available;
+                document.getElementById('borrowed-count').textContent = data.status_counts.Borrowed;
+                document.getElementById('reserved-count').textContent = data.status_counts.Reserved;
+                document.getElementById('overdue-count').textContent = data.status_counts.Overdue;
+                document.getElementById('lost-count').textContent = data.status_counts.Lost;
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    });
 
 
     
