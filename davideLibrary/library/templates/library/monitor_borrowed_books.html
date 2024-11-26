@@ -11,7 +11,7 @@
     <div class="half" style="display: flex; flex-direction: row;">
         <div class="stat-display" style="display: flex; flex-direction: column; width: 60%;">
             <div class="statistics-container">
-                <h3 style="font-weight: bold; margin: 0;">Statistics in the month of:  {{ current_month_name }}</h3>
+                <h3 style="font-weight: bold; margin: 0; justify-content: space-between;">Statistics in the month of:  {{ current_month_name }} <span style="font-size: 10px; color: gray; margin-top: 15px;"> <strong style="color: #ff4d4d;">⚠</strong> Notice: <strong style="color: black;">ONLY</strong> accounts with records are shown in the History.</span></h3>
                     <div class="first" style="display: flex; flex-direction: row; gap: 10px;">
                         <div class="most-borrowed">
                             <h5 style="margin: 0;">Top Books</h5>
@@ -91,7 +91,24 @@
     </div>
 </div>
 </div>
+
 <div style="background-color: #e0ffff; display:inline ; "><h2 style="margin: 0; text-align: center;">Monitor Borrowed Books</h2></div>
+
+<div class="filter-form-container">
+    <form method="GET" action="" class="filter-form">
+        <div>
+            <label for="book_number">Book Number:</label>
+            <input type="text" id="book_numberid" name="book_number" class="form-control" placeholder="Enter book number" value="{{ request.GET.book_number }}">
+
+            <label for="borrower_uid">Borrower UID:</label>
+            <input type="text" id="borrower_uidid" name="borrower_uid" class="form-control" placeholder="Enter borrower UID" value="{{ request.GET.borrower_uid }}">
+
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{% url 'monitor-borrowed-books' %}" class="btn btn-primary" style="background-color:#D6B980 ;">Reset</a>
+        </div>
+    </form>
+</div>
+
     <div class="table-container">
         
         <!-- Borrowed Books Table -->
@@ -163,7 +180,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>Book No.</th>
+                    <!-- <th>Book No.</th> -->
                     <th>Book Title</th>
                     <th>Borrower</th>
                     <!-- <th>Borrow Date</th> -->
@@ -176,7 +193,7 @@
                 {% for slip in borrow_slips %}
                     {% if slip.status == "Overdue" %}
                         <tr id="row-{{ slip.slip_number }}">
-                            <td>{{ slip.book_number }}</td>
+                            <!-- <td>{{ slip.book_number }}</td> -->
                             <td>{{ slip.book_title }}</td>
                             <td>{{ slip.borrower_name }}</td>
                             <!-- <td>{{ slip.date_borrow|date }}</td>/ -->
@@ -433,6 +450,7 @@ function verifyBookNumber() {
     var errorMessage = document.getElementById('errorMessage');
     var lostBookCheckbox = document.getElementById('lostBookCheckbox');
     var submitButton = document.getElementById('submit-return-btn');
+    var cancelButton = document.getElementById('cancel-return-btn');
 
     // Reset messages and enable submit button after processing
     function handleResponse(success, message) {
@@ -442,12 +460,16 @@ function verifyBookNumber() {
             errorMessage.classList.add('d-none');
 
             // Disable further interactions after successful submission
-            submitButton.disabled = true;
+            submitButton.style.display = 'none'; // Hide the submit button
+            cancelButton.style.display = 'none'; // Hide the cancel button
             inputBookNumberField.disabled = true;
             lostBookCheckbox.disabled = true;
 
             // Optionally close the modal after a short delay
-            setTimeout(() => closeReturnModal(), 2000);
+            setTimeout(() => {
+                closeReturnModal();  // Close modal first
+                location.reload();   // Then reload the page
+            }, 2000); // Adjust this delay as needed
         } else {
             errorMessage.textContent = message;
             errorMessage.classList.remove('d-none');

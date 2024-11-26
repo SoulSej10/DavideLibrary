@@ -63,7 +63,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
 from .forms import CustomPasswordResetForm
 from django.db.models import ExpressionWrapper, F, IntegerField, DurationField
-
+import datetime
+from datetime import datetime 
 #MARK: Landing Page
 # ============================================================================================================================================
 # ==================================================___LANDING PAGE VIEW___===============================================================
@@ -1658,8 +1659,12 @@ def recent_attendance_stats(request):
             .annotate(total_students=Count('borrower_uid_number', distinct=True)) \
             .order_by('grade_level')
 
-        # Convert date to local time zone for display
-        local_date = timezone.localtime(date).strftime('%b %d, %Y')  # Convert to local time zone and format
+        # Convert date to local time zone for display, ensuring it works for both date and datetime
+        if isinstance(date, datetime):
+            local_date = timezone.localtime(date).strftime('%b %d, %Y')  # Convert datetime to local time and format
+        else:
+            # If it's just a date (no time component), handle it differently
+            local_date = date.strftime('%b %d, %Y')
 
         # Format each day's data for JSON serialization
         recent_data.append({
@@ -1668,7 +1673,6 @@ def recent_attendance_stats(request):
         })
 
     return JsonResponse(recent_data, safe=False)
-
 
 
 
@@ -1691,17 +1695,25 @@ def monitor_borrowed_books(request):
     # Get the name of the current month
     current_month_name = calendar.month_name[current_month]
 
-    # Filter borrow_slips by the current month and year
+    # Get filter parameters from GET request
+    book_number = request.GET.get('book_number', '').strip()
+    borrower_uid = request.GET.get('borrower_uid', '').strip()
+
+    # Base filter for the current month and year
     borrow_slips = BorrowSlip.objects.filter(date_borrow__year=current_year, date_borrow__month=current_month)
+
+    # Apply filtering based on book number and borrower UID
+    if book_number:
+        borrow_slips = borrow_slips.filter(book_number__icontains=book_number)
+    if borrower_uid:
+        borrow_slips = borrow_slips.filter(borrower_uid_number__icontains=borrower_uid)
 
     # Update status of borrow slips based on due date and return status
     for slip in borrow_slips:
-        # Skip updating the status if the book is marked as 'Lost'
         if slip.status == 'Lost':
-            continue  # Skip this slip, don't modify its status
+            continue  # Skip updating the status if the book is lost
 
         slip_due_date = slip.due_date.date() if isinstance(slip.due_date, datetime) else slip.due_date
-
         if slip_due_date < current_date and not slip.returned:
             slip.status = 'Overdue'
         elif slip.returned:
@@ -1761,10 +1773,13 @@ def monitor_borrowed_books(request):
         "borrow_slips": borrow_slips,
         "overdue_previous_months": overdue_previous_months,  # Pass overdue books from previous months
         "statistics_data": json.dumps(statistics_data),  # Add the statistics data to context
-        "current_month_name": current_month_name  # Add the current month name to context
+        "current_month_name": current_month_name,  # Add the current month name to context
+        "book_number": book_number,
+        "borrower_uid": borrower_uid,
     }
 
     return render(request, 'library/monitor_borrowed_books.html', context)
+
 
 
 

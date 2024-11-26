@@ -138,7 +138,7 @@
         <h1>Book Reservations</h1>
         <div style="margin-top: 20px;">
         <a href="{% url 'reserve-book' %}" class="btn-back" style="background-color: #4CAF50;">Reserve a Book</a>
-        <a href="javascript:void(0);" class="btn-back" onclick="history.back();">Back to List</a>
+        <a href="javascript:void(0);" class="btn-back" onclick="goBackSkippingReservePage();">Back to List</a>
         </div>
         </div>
 
@@ -409,6 +409,19 @@
             .catch(error => console.error('Error:', error));
         }
 
+        function goBackSkippingReservePage() {
+            // Get the previous URL from the browser history
+            let previousUrl = document.referrer; // The URL of the previous page
+
+            // Check if the previous URL matches the one you want to skip
+            if (previousUrl.includes('/reserve-book/')) {
+                // If it matches, go back 2 steps
+                history.go(-2);
+            } else {
+                // Otherwise, just go back 1 step
+                history.back();
+            }
+        }
     </script>
 </body>
 </html>
