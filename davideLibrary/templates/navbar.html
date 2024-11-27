@@ -252,8 +252,8 @@
 
         .hover-labels {
             position: absolute;
-            bottom: -30px; /* Adjusts label position below the image */
-            left: 50%;
+            bottom: -35px; /* Adjusts label position below the image */
+            left: 85%;
             transform: translateX(-50%);
             background-color: rgba(0, 0, 0, 0.7);
             color: white;
@@ -266,9 +266,10 @@
             pointer-events: none;
         }
 
-        .hover-label-containers:hover .hover-label s{
+        .hover-label-containers:hover .hover-labels {
             opacity: 1; /* Shows label on hover */
         }
+
     </style>
 </head>
 <body>
@@ -278,16 +279,17 @@
         <img src="{% static 'images/Codesynlogo.png' %}" alt="logo" style="width: 58px; height: 68px; padding-left: 6px;">
         
         <p class="title">HPDSNHSLib Connect: Colawin Library Management System</p>
-        {% if user.role == 'Head Librarian' %}
-        <a href="{% url 'redirect_to_admin' %}" class="hover-label-containers">
-            <img src="{% static 'images/superadmin.png' %}" style="width: 55px; height: 55px; padding-left: 200px;" alt="">
-            <span class="hover-labels">Access Database <br> Login as SuperAdmin</span>
-        </a>
         <a href="{% url 'tutorials' %}" class="hover-label-containers">
-            <img src="{% static 'images/superadmin.png' %}" style="width: 55px; height: 55px; padding-left: 120px;" alt="">
-            <span class="hover-labels">Tutorials</span>
+            <img src="{% static 'images/TV2.png' %}" style="width: 55px; height: 55px; padding-left: 210px;" alt="">
+            <span class="hover-labels" style="bottom: -20px; margin-left: 15px;">Tutorials</span>
         </a>
+        {% if user.role == 'Head Librarian' %}
+            <a href="{% url 'redirect_to_admin' %}" class="hover-label-containers">
+                <img src="{% static 'images/SA1.png' %}" style="width: 55px; height: 55px; padding-left: 140px;" alt="">
+                <span class="hover-labels">Access Database <br> Login as SuperAdmin</span>
+            </a>
         {% endif %}
+
         {% if messages %}
             <div class="message-container">
                 {% for message in messages %}

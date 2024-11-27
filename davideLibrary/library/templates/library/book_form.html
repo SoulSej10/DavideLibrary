@@ -312,6 +312,10 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="id_category">Category</label>
+                {{ form.category }}
+            </div>
+            <div class="form-group">
                 <label for="id_class_field">Class Field <span style="color: #555;">(Optional)</span></label>
                 {{ form.class_field }}
             </div>
@@ -358,10 +362,6 @@
                 {{ form.year }}
             </div>
             <div class="form-group">
-                <label for="id_category">Category</label>
-                {{ form.category }}
-            </div>
-            <div class="form-group">
                 <label for="id_remark">Remark</label>
                 {{ form.remark }}
             </div>
@@ -385,7 +385,7 @@
             </div>
             
             <div class="form-actions">
-                <button class="btncategory" id="categoryBtn" type="button" style="font-family: 'Poppins', sans-serif; margin-top: 28px;">Categories</button>
+                <button class="btncategory" id="categoryBtn" type="button" style="font-family: 'Poppins', sans-serif; margin-top: 28px;"> Add New Category</button>
                 <div class="buttns" style="display: flex; flex-direction: row; margin-top: 10px;">
                 <button type="submit" class="btn-save" style="font-family: 'Poppins', sans-serif; width: 195px;" >{{ form.instance.pk|yesno:"Save,Create" }}</button>
                 <a href="{% url 'book-list' %}" class="btn-back" >Back to List</a>
