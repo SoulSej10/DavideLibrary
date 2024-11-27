@@ -231,6 +231,8 @@
     </div>
         
     </div>
+
+    <div class="table-container">
     <!-- Returned Books Table -->
     <div class="returned-table-container">
         <div class="table-header">
@@ -284,6 +286,46 @@
             </table>
         </div>
     </div>
+
+    <!-- Lost Books Table -->
+    <div class="returned-table-container">
+        <div class="table-header">
+            <span>Returned Books</span>
+        </div>
+        <div class="table-content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book No.</th>
+                        <th>Book Title</th>
+                        <th>Borrower</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for slip in borrow_slips %}
+                        {% if slip.status == "Lost" %}
+                            <tr>
+                                <td>{{ slip.book_number }}</td>
+                                <td>{{ slip.book_title }}</td>
+                                <td>{{ slip.borrower_name }}</td>
+                                <td class="status-cell" data-status="{{ slip.status }}">
+                                    {% if slip.penalty %}
+                                        <span class="penalty-status">UNRETURNED ({{ slip.penalty }})</span>
+                                    {% elif slip.status == "Returned" %}
+                                        <span class="status-returned">RETURNED</span>
+                                    {% else %}
+                                        {{ slip.status }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
     <!-- Books Overdue for More Than 2 Weeks Table -->
 <!-- Overdue Books from Previous Months -->
