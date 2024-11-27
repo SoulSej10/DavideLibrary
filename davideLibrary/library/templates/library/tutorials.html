@@ -204,12 +204,48 @@
     video {
         max-width: 100%; 
         margin: auto;
+        /* margin-top: 100px; */
+    }
+    .content-1{
+        margin-top: 100px;
+    }
+    .content-2{
+        font-size: 15px;
     }
 
     .content-2 p {
         line-height: 1.6;
         text-align: justify;
         margin: 0;
+    }
+    .images {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 15px;
+    }
+
+    .images figure {
+        text-align: center;
+        margin: 0;
+    }
+
+    .images img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .images img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .images figcaption {
+        margin-top: 8px;
+        font-size: 0.9em;
+        color: #555;
     }
 
     </style>
@@ -257,20 +293,77 @@
         <div class="min-h-screen blank-container">
             <div class="card answer" id="answer-1">
                 <div>
-                    <h1 class="card-title answer">Q1:I forgot my password, how can I retrieve my account?</h1>
+                    <h1 class="card-title answer">Q1: I forgot my password, how can I retrieve my account?</h1>
                     <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
                 </div>
                 <div class="card-content answer">
                     <div class="content-1">
-                        <video controls>
+                        <video controls style="margin-top: 940px;">
                             <source src="/media/videos/forgotpassword.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="content-2">
                         <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
+                            If you’ve forgotten your password, don’t worry! You can easily reset it using the <strong>Forgot Password</strong> feature located in the bottom corner of the Login page.
+                        </p>
+                        <ol>
+                            <li>
+                                <strong>Enter Your Username:</strong> Start by entering your account username for validation. This step ensures that the system can locate your account.
+                            </li>
+                            <li>
+                                <strong>Request a Temporary Password:</strong> Once your username is validated, you can request a temporary password. This temporary password can only be used <strong>once</strong>, so ensure you copy it using the provided <strong>Copy</strong> button.
+                            </li>
+                            <li>
+                                <strong>Provide Your UID:</strong> After obtaining the temporary password, you will be prompted to enter your UID (Unique ID). Your UID is included with the printed QR code issued to you when your account was created. 
+                                <ul>
+                                    <li>Scan the QR code using the scanner provided.</li>
+                                    <li>If the code is valid, the system will confirm it.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Change Your Password:</strong> Once the QR code is validated, you will be redirected to the <strong>Change Password</strong> page. Here, you can securely set a new password for your account.
+                            </li>
+                        </ol>
+                        <p>
+                            <strong>The steps below will guide you.</strong>    
+                        </p>
+                        <div class="images">
+                            <figure>
+                                <img src="{% static 'images/FP1.png' %}" alt="Step 1: Enter Username">
+                                <figcaption>Step 1: Click Forgot Password button</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/FP2.png' %}" alt="Step 2: Request Temporary Password">
+                                <figcaption>Step 2: Enter Account Username</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/FP3.png' %}" alt="Step 3: Copy Temporary Password">
+                                <figcaption>Step 3: Validating Username</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/FP4.png' %}" alt="Step 4: Enter UID">
+                                <figcaption>Step 4: Copy Temporary Password</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/FP5.png' %}" alt="Step 5: Scan QR Code">
+                                <figcaption>Step 5: Validating User QrCode</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/FP6.png' %}" alt="Step 6: Validation Success">
+                                <figcaption>Step 6: Validating Qrcode</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/FP7.png' %}" alt="Step 7: Redirect to Change Password">
+                                <figcaption>Step 7: Use the Temporary Copied Password</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/FP8.png' %}" alt="Step 8: Set New Password">
+                                <figcaption>Step 8: Set New Password</figcaption>
+                            </figure>
+                        </div>
+                        <p>
+                            <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
                     </div>
                 </div>
@@ -278,20 +371,122 @@
 
             <div class="card answer" id="answer-2" style="display: none;">
                 <div>
-                    <h1 class="card-title answer">Q1: How do I set up an Assistant Librarian account?</h1>
+                    <h1 class="card-title answer">Q2: How do I set up an Assistant Librarian account?</h1>
                     <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
                 </div>
                 <div class="card-content answer">
                     <div class="content-1">
-                        <video controls>
+                        <video controls style="margin-top: 1300px;">
                             <source src="/media/videos/assistantLibAccountCreation.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="content-2">
                         <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
+                            To create an Assistant Librarian account, follow these steps:
+                        </p>
+                        <ol>
+                            <li>
+                                <strong>Navigate to the Registration Page</strong>
+                                <ul>
+                                    <li>Hover over the <strong>Account Registry</strong> button, which will redirect you to the <strong>Account Registration</strong> page.</li>
+                                    <li>On this page, you can view existing accounts and create new accounts exclusively for Assistant Librarians.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Fill Out the Registration Form</strong>
+                                <ul>
+                                    <li>Complete the required fields in the registration form.</li>
+                                    <li>
+                                        Ensure the <strong>Username</strong> and <strong>Password</strong> meet the following requirements:
+                                        <ul>
+                                            <li><strong>Username Requirements:</strong>
+                                                <ul>
+                                                    <li>At least 8 characters long.</li>
+                                                    <li>Must contain at least one number (e.g., <code>123</code>).</li>
+                                                    <li>Must include at least one uppercase letter (e.g., <code>A</code>).</li>
+                                                </ul>
+                                            </li>
+                                            <li><strong>Password Requirements:</strong>
+                                                <ul>
+                                                    <li>At least 8 characters long.</li>
+                                                    <li>Must include at least one letter and one number.</li>
+                                                    <li>A password can't be a commonly used password.</li>
+                                                    <li>A password can't be entirely numeric.</li>
+                                                    <li>You can use special characters (e.g., <code>@, $, %</code>).</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Pre-Filled Fields</strong>
+                                <ul>
+                                    <li>The <strong>Admin ID</strong> and <strong>Role</strong> fields will be automatically populated.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Confirm the Password</strong>
+                                <ul>
+                                    <li>Enter the password again in the <strong>Confirm Password</strong> field to ensure accuracy.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Submit the Form</strong>
+                                <ul>
+                                    <li>Once the form is successfully submitted, the account will be created and listed in the table below.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Download the Account UID</strong>
+                                <ul>
+                                    <li>The account's UID (Unique Identifier) will be generated and available for download as a PDF.</li>
+                                    <li>
+                                        <strong>Important:</strong> Ensure the Assistant Librarian securely stores the UID, as it will be needed for account management.
+                                    </li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <p>
+                            <strong>The steps below will guide you.</strong>    
+                        </p>
+                        <div class="images">
+                            <figure>
+                                <img src="{% static 'images/AR1.png' %}" alt="Step 1: Enter Username">
+                                <figcaption>Step 1: Click Account Registry button</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AR2.png' %}" alt="Step 2: Request Temporary Password">
+                                <figcaption>Step 2: Fill out Registration form</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AR3.png' %}" alt="Step 3: Copy Temporary Password">
+                                <figcaption>Step 3: Take Note of Username requirements</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AR4.png' %}" alt="Step 4: Enter UID">
+                                <figcaption>Step 4: Admin ID and Role are automatic fields</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AR5.png' %}" alt="Step 5: Scan QR Code">
+                                <figcaption>Step 5: Enter password and Confirm Registration</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AR6.png' %}" alt="Step 6: Validation Success">
+                                <figcaption>Step 6: View account details</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AR7.png' %}" alt="Step 7: Redirect to Change Password">
+                                <figcaption>Step 7: Download account's pdf copy</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AR8.png' %}" alt="Step 8: Set New Password">
+                                <figcaption>Step 8: Print Account with Qrcode Copy</figcaption>
+                            </figure>
+                        </div>
+                        <p>
+                            <strong>Need More Help?</strong> If you encounter any issues during this process, please refer a software maintainance.
                         </p>
                     </div>
                 </div>
@@ -300,20 +495,123 @@
 
             <div class="card answer" id="answer-3" style="display: none;">
                 <div>
-                    <h1 class="card-title answer">Q1: How do I make a student account with printed Qrcode ID?</h1>
+                    <h1 class="card-title answer">Q3: How do I make a student account with printed Qrcode ID?</h1>
                     <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
                 </div>
                 <div class="card-content answer">
                     <div class="content-1">
-                        <video controls>
+                        <video controls style="margin-top: 1350px;">
                             <source src="/media/videos/studentAccountCreation.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="content-2">
                         <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
+                            To create a Borrower (Student) account, follow these steps:
+                        </p>
+                        <ol>
+                            <li><strong>Navigate to the 'Student Management' Page</strong>
+                                <ul>
+                                    <li>Hover over the <strong>Student Management</strong> page.</li>
+                                    <li>This page will allow you to monitor existing student/borrower accounts.</li>
+                                    <li>On the left side, you will find the <strong>Search and Filter Container</strong>, where you can:
+                                        <ul>
+                                            <li>Search for a student/borrower by scanning their <strong>UID</strong> (Unique ID).</li>
+                                            <li>Filter records by grade level.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Understanding the UID</strong>
+                                <ul>
+                                    <li>A <strong>UID</strong> is issued when the account is created and is used to identify the borrower/student.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Fill Out the Student/Borrower Registration Form</strong>
+                                <ul>
+                                    <li>On the right side of the page, you'll find the form for creating a new borrower account.</li>
+                                    <li>Enter the following required credentials:
+                                        <ul>
+                                            <li><strong>Borrower's Name</strong> (First Name, Middle Initial, Last Name)</li>
+                                            <li><strong>Grade Level</strong> (Choose from 7, 8, 9, 10, 11, or 12)</li>
+                                            <li><strong>Age</strong></li>
+                                            <li><strong>Section</strong></li>
+                                            <li><strong>Adviser</strong></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Submit the Form</strong>
+                                <ul>
+                                    <li>Once you’ve filled out the form, click <strong>Save</strong> and then <strong>Submit</strong>.</li>
+                                    <li>The new account will be listed at the top of the records, indicating a successful submission.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Viewing and Editing Borrower Details</strong>
+                                <ul>
+                                    <li>After the account is saved, you can view the borrower details in the records table.</li>
+                                    <li>If you need to make changes, click the <strong>'Edit'</strong> button in the <strong>Actions</strong> field.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Download Borrower Data</strong>
+                                <ul>
+                                    <li>To download a PDF copy of the borrower’s data:
+                                        <ul>
+                                            <li>Check the checkbox next to the <strong>UID</strong> column.</li>
+                                            <li>Once checked, a <strong>'Download PDF'</strong> button will appear.</li>
+                                            <li>Click the button to start the download.</li>
+                                        </ul>
+                                    </li>
+                                    <li>After downloading, you can print the file and give it to the borrower.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Filter and Download Multiple Records</strong>
+                                <ul>
+                                    <li>You can filter the records by grade level.</li>
+                                    <li>Once filtered, you can select <strong>all</strong> the records in the filtered list and download them in a single PDF file.</li>
+                                    <li>Alternatively, you can choose to <strong>download all records</strong> without any filtering.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <p>
+                            <strong>The steps below will guide you.</strong>    
+                        </p>
+                        <div class="images">
+                            <figure>
+                                <img src="{% static 'images/SM1.png' %}" alt="Step 1: Enter Username">
+                                <figcaption>Step 1: Click Forgot Password button</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/SM2.png' %}" alt="Step 2: Request Temporary Password">
+                                <figcaption>Step 2: Enter Account Username</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/SM3.png' %}" alt="Step 3: Copy Temporary Password">
+                                <figcaption>Step 3: Validating Username</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/SM4.png' %}" alt="Step 4: Enter UID">
+                                <figcaption>Step 4: Copy Temporary Password</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/SM5.png' %}" alt="Step 5: Scan QR Code">
+                                <figcaption>Step 5: Validating User QrCode</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/SM6.png' %}" alt="Step 6: Validation Success">
+                                <figcaption>Step 6: Validating Qrcode</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/SM7.png' %}" alt="Step 7: Redirect to Change Password">
+                                <figcaption>Step 7: Use the Temporary Copied Password</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/SM8.png' %}" alt="Step 8: Set New Password">
+                                <figcaption>Step 8: Set New Password</figcaption>
+                            </figure>
+                        </div>
+                        <p>
+                            <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
                     </div>
                 </div>
@@ -322,42 +620,216 @@
 
             <div class="card answer" id="answer-4" style="display: none;">
                 <div>
-                    <h1 class="card-title answer">Q1: How do I add or edit a book record?</h1>
+                    <h1 class="card-title answer">Q4: How do I add or edit a book record?</h1>
                     <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
                 </div>
                 <div class="card-content answer">
                     <div class="content-1">
-                        <video controls>
+                        <video controls style="margin-top: 1200px;">
                             <source src="/media/videos/bookCreation.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="content-2">
                         <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
+                            To <strong>Add a Book to the Inventory:</strong>
                         </p>
-                    </div>
+                        <ol>
+                            <li><strong>Navigate to the 'Book Inventory' Page:</strong>  
+                                First, go to the <strong>'Book Inventory'</strong> button. This page is responsible for recording books across various categories and types.
+                            </li>
+                            <li><strong>Add a New Book:</strong>  
+                                To add a new book, click the <strong>'Add New Book'</strong> button located in the actions menu on the right side of the page. This will redirect you to a new page with a form.
+                            </li>
+                            <li><strong>Fill Out the Book Details Form:</strong>  
+                                On the form page, you’ll need to fill out the following fields:
+                                <ul>
+                                    <li><strong>Category:</strong> You can add new categories by clicking the <strong>'Add New Category'</strong> button located at the bottom-right corner of the page. The newly added categories will then appear in the category dropdown list.</li>
+                                    <li><strong>Book Type:</strong> The book type field is located in the upper-right corner of the form. Note that you cannot add new book types. You can only select from pre-existing types.</li>
+                                    <li><strong>Location:</strong> The location field also has an <strong>'Add Location'</strong> button. You can use this to add new locations if needed.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Submit the Book Information:</strong>  
+                                Once you have completed all required fields, click the <strong>'Create'</strong> button to submit the form. You will then be redirected back to the <strong>Book Inventory</strong> page, where the new record will be listed at the top of the table, indicating successful submission.
+                            </li>
+                            <li><strong>Search, Filter, and View Books:</strong>  
+                                Back on the <strong>Book Inventory</strong> page, you can:
+                                <ul>
+                                    <li><strong>Search for a Book:</strong> Use the search field to find a book by its <strong>book number</strong> or <strong>title</strong>.</li>
+                                    <li><strong>Filter Books:</strong> Filter the book records by category.</li>
+                                    <li><strong>View Detailed Information:</strong> To view detailed information about a book, click the <strong>'Details'</strong> button in the actions column.</li>
+                                    <li><strong>Edit Book Record:</strong> To edit a book record, click the <strong>'Edit'</strong> button in the actions column. Please note that there are some constraints:
+                                        <ul>
+                                            <li>If the book has been borrowed, the <strong>Category</strong> field will be non-editable. All other fields remain editable.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Download or Delete Book Records:</strong>  
+                                - <strong>Download PDF:</strong> To download a copy of the book record, check the box next to the book(s) you want to download in the <strong>'Select'</strong> field on the table. Two buttons will appear:
+                                    <ul>
+                                        <li><strong>'Download PDF':</strong> Clicking this will download the selected book's data in PDF format.</li>
+                                        <li><strong>'Delete':</strong> Clicking this will permanently delete the selected book record(s) from the inventory.</li>
+                                    </ul>
+                            </li>
+                        </ol>
+                        <p>
+                            <strong>The steps below will guide you.</strong>    
+                        </p>
+                        <div class="images">
+                            <figure>
+                                <img src="{% static 'images/IM1.png' %}" alt="Step 1: Enter Username">
+                                <figcaption>Step 1: Click Book Inventory button</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/IM2.png' %}" alt="Step 2: Request Temporary Password">
+                                <figcaption>Step 2: Click Add New Book from the Action Menu</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/IM3.png' %}" alt="Step 3: Copy Temporary Password">
+                                <figcaption>Step 3: Fill out the Book Form</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/IM4.png' %}" alt="Step 4: Enter UID">
+                                <figcaption>Step 4: Click 'Create' to submit the form</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/IM5.png' %}" alt="Step 5: Scan QR Code">
+                                <figcaption>Step 5: Successful submision when the record is added on the table</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/IM6.png' %}" alt="Step 6: Validation Success">
+                                <figcaption>Step 6: Buttons to edit the book, see the book details, download pdf copy, and delete record</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/IM7.png' %}" alt="Step 7: Redirect to Change Password">
+                                <figcaption>Step 7: Downloaded Copy of the book record</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/IM8.png' %}" alt="Step 8: Set New Password">
+                                <figcaption>Step 8: Delete the record is necessary</figcaption>
+                            </figure>
+                        </div>
+                        <p>
+                            <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
+                        </p>
+                    </div>                    
                 </div>
             </div>
 
 
             <div class="card answer" id="answer-5" style="display: none;">
                 <div>
-                    <h1 class="card-title answer">Q1: How do I add a book borrowing record?</h1>
+                    <h1 class="card-title answer">Q5: How do I add a book borrowing record?</h1>
                     <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
                 </div>
                 <div class="card-content answer">
                     <div class="content-1">
-                        <video controls>
+                        <video controls style="margin-top: 1500px;">
                             <source src="/media/videos/bookBorrowingCreation.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="content-2">
+                        To create a record for a borrow Slip:
+                        <ol>
+                            <li><strong>Navigate to the 'Borrowing Records' Page</strong>:
+                                <ul>
+                                    <li>Go to the <strong>'Borrowing Records'</strong> section in the navigation bar. This page keeps track of all the books that have been borrowed by students/borrowers.</li>
+                                    <li>You will see a table listing all borrowing records, along with an action menu on the right side of the table.</li>
+                                    <li><strong>Search Options</strong>: You can search for a book by:
+                                        <ul>
+                                            <li><strong>Book Number</strong></li>
+                                            <li><strong>Borrower UID</strong></li>
+                                            <li><strong>Librarian</strong> who assisted with the borrowing.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Filter Options</strong>: You can filter the books by <strong>borrowed date</strong>.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Create a New Borrowing Record</strong>:
+                                <ul>
+                                    <li>Click the <strong>'Create New Slip'</strong> button. This will redirect you to a form for borrowing.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Fill Out the Borrowing Form</strong>:
+                                <ul>
+                                    <li>The form is located on the <strong>right side</strong> of the page.</li>
+                                    <li><strong>Book Number</strong>: Scan the book's <strong>QR code</strong> to enter the book number. The system will automatically calculate the <strong>due date</strong> based on the <strong>book type</strong>.</li>
+                                    <li><strong>Book Type</strong>: This determines the borrowing duration.</li>
+                                    <li>The <strong>book details</strong> will automatically display in the <strong>'Book Details'</strong> panel at the top of the form.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Enter Borrower Details</strong>:
+                                <ul>
+                                    <li><strong>Borrower Number</strong>: Scan the <strong>UID</strong> of the borrower to enter their borrower number.</li>
+                                    <li>The <strong>borrower details</strong> will automatically display in the <strong>'Borrower Details'</strong> panel at the lower part of the form.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Check Borrower Status</strong>:
+                                <ul>
+                                    <li>The <strong>borrower's status</strong> will automatically be displayed. Borrowers' status can be:
+                                        <ul>
+                                            <li><strong>Normal</strong>: Eligible to borrow.</li>
+                                            <li><strong>1st Violation</strong>: Eligible to borrow.</li>
+                                            <li><strong>2nd Violation</strong>: Eligible to borrow, but requires community service as a penalty.</li>
+                                            <li><strong>3rd Violation</strong>: Not eligible to borrow, but can access books within the library premises. A popup will appear to halt the borrowing process and display a message stating that the borrower is no longer eligible to borrow.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Submit the Borrowing Record</strong>:
+                                <ul>
+                                    <li>If the borrower is eligible, click the <strong>'Save'</strong> button.</li>
+                                    <li>You will be redirected back to the <strong>Borrowing Records</strong> page, and the new record will be listed at the top of the table, confirming a successful submission.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Download a Copy of the Record</strong>:
+                                <ul>
+                                    <li>To download a copy of the record, simply check the box next to the <strong>slip number</strong> in the table.</li>
+                                    <li>A <strong>'Download'</strong> button will appear in the action menu. Click this button to download a copy of the record.</li>
+                                </ul>
+                            </li>
+                        </ol>
                         <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
+                            <strong>The steps below will guide you.</strong>    
+                        </p>
+                        <div class="images">
+                            <figure>
+                                <img src="{% static 'images/BR1.png' %}" alt="Step 1: Enter Username">
+                                <figcaption>Step 1: Click Borrowing Records button</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BR2.png' %}" alt="Step 2: Request Temporary Password">
+                                <figcaption>Step 2: The table list</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BR3.png' %}" alt="Step 3: Copy Temporary Password">
+                                <figcaption>Step 3: The action Menu, Click 'Create New Slip'</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BR4.png' %}" alt="Step 4: Enter UID">
+                                <figcaption>Step 4:The borrow slip form</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BR5.png' %}" alt="Step 5: Scan QR Code">
+                                <figcaption>Step 5: Panels for Book Details and Borrower Details</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BR6.png' %}" alt="Step 6: Validation Success">
+                                <figcaption>Step 6: Notice for Banned Borrowers</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BR7.png' %}" alt="Step 7: Redirect to Change Password">
+                                <figcaption>Step 7: Download Pdf button </figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BR8.png' %}" alt="Step 8: Set New Password">
+                                <figcaption>Step 8: Downloaded Copy of the book slip records</figcaption>
+                            </figure>
+                        </div>
+                        <p>
+                            <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
                     </div>
                 </div>
@@ -366,42 +838,260 @@
 
             <div class="card answer" id="answer-6" style="display: none;">
                 <div>
-                    <h1 class="card-title answer">Q1: How do I track all borrowed books?</h1>
+                    <h1 class="card-title answer">Q6: How do I track all borrowed books?</h1>
                     <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
                 </div>
                 <div class="card-content answer">
                     <div class="content-1">
-                        <video controls>
+                        <video controls style="margin-top: 1500px;">
                             <source src="/media/videos/trackingBorrowedBooks.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="content-2">
+                        To track book records, go to the Book Monitoring in the Navigation bar:
+                        <ol>
+                            <li>
+                                <strong>Overview of the Statistics Section</strong>
+                                <ul>
+                                    <li><strong>Books Borrowed in the Current Month:</strong> Displays the total books borrowed during the current month.</li>
+                                    <li><strong>Ongoing Borrows:</strong> Lists books currently with borrowers but not yet returned.</li>
+                                    <li><strong>Returned Books:</strong> Shows the count of books that have been successfully returned.</li>
+                                    <li><strong>Overdue Books:</strong> Highlights books that have exceeded their borrowing duration.</li>
+                                    <li><strong>Lost Books:</strong> Displays the number of books reported as lost.</li>
+                                    <li><strong>Reserved Books:</strong> Shows books that have been reserved by borrowers.</li>
+                                    <li><strong>Top Books of the Month:</strong> Lists the most borrowed books during the current month.</li>
+                                    <li>
+                                        <strong>3-Month Line Graph:</strong> A visual representation of book borrowing trends over the past three months.
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Borrower History Panel</strong>
+                                <ul>
+                                    <li>
+                                        <strong>Current Borrowed Books:</strong> Displays books the borrower is currently borrowing.
+                                    </li>
+                                    <li><strong>Returned Books:</strong> Lists books successfully returned by the borrower.</li>
+                                    <li><strong>Overdue Records:</strong> Highlights overdue books linked to the borrower.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Record Tables</strong>
+                                <ul>
+                                    <li><strong>Borrowed Books Table:</strong> Lists all books currently on loan.</li>
+                                    <li><strong>Overdue Books Table:</strong> Displays books that have exceeded their borrowing period.</li>
+                                    <li><strong>Returned Books Table:</strong> Shows books that have been successfully returned.</li>
+                                    <li><strong>Lost Books Table:</strong> Highlights books that have been marked as lost.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Filtering Records</strong>
+                                <p>
+                                    Use the filter fields at the top of the page to quickly locate specific records. Filters include:
+                                </p>
+                                <ul>
+                                    <li><strong>Book Number:</strong> Scan or manually input the book's unique number.</li>
+                                    <li><strong>Borrower UID:</strong> Scan or input the borrower's unique identifier.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Returning Books</strong>
+                                <ol>
+                                    <li>Click the <strong>'Return Book'</strong> button.</li>
+                                    <li>A return form will prompt you to:
+                                        <ul>
+                                            <li>Enter the <strong>Book Number</strong> for validation.</li>
+                                            <li>Mark the book as <strong>lost</strong> if applicable.</li>
+                                        </ul>
+                                    </li>
+                                    <li>Upon successful return:
+                                        <ul>
+                                            <li>The record moves to the <strong>Returned Books Table</strong>.</li>
+                                            <li>If marked lost, it is added to the <strong>Lost Books Table</strong>.</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <strong>Overdue Books</strong>
+                                <ul>
+                                    <li>
+                                        Overdue books are listed in the <strong>Overdue Table</strong>. Actions include:
+                                        <ul>
+                                            <li>
+                                                <strong>Return Book:</strong> Follow the standard return process.
+                                            </li>
+                                            <li>
+                                                <strong>Set Penalty:</strong> Assign penalties based on the borrower's violation level:
+                                                <ul>
+                                                    <li><strong>Normal:</strong> Issue a warning.</li>
+                                                    <li><strong>1st Violation:</strong> Issue another warning.</li>
+                                                    <li><strong>2nd Violation:</strong> Assign community service.</li>
+                                                    <li><strong>3rd Violation:</strong> Ban the borrower from borrowing books but allow in-library access.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Overdue Books from Previous Months</strong>
+                                <p>
+                                    This section lists books that were not returned in earlier months, ensuring long-term monitoring and follow-up actions.
+                                </p>
+                            </li>
+                        </ol>
                         <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
+                            <strong>The steps below will guide you.</strong>    
+                        </p>
+                        <div class="images">
+                            <figure>
+                                <img src="{% static 'images/BM1.png' %}" alt="Step 1: Enter Username">
+                                <figcaption>Step 1: Book Monitoring Button</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BM2.png' %}" alt="Step 2: Request Temporary Password">
+                                <figcaption>Step 2: The Statistics Panel</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BM3.png' %}" alt="Step 3: Copy Temporary Password">
+                                <figcaption>Step 3: The Borrower History Panel</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BM4.png' %}" alt="Step 4: Enter UID">
+                                <figcaption>Step 4:The Borrowed Book List</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BM5.png' %}" alt="Step 5: Scan QR Code">
+                                <figcaption>Step 5: The Overdue Book List</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BM6.png' %}" alt="Step 6: Validation Success">
+                                <figcaption>Step 6:The reuturned and lost book list</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BM7.png' %}" alt="Step 7: Redirect to Change Password">
+                                <figcaption>Step 7: Overdue book in previous months </figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/BM8.png' %}" alt="Step 8: Set New Password">
+                                <figcaption>Step 8: Penalty form</figcaption>
+                            </figure>
+                        </div>
+                        <p>
+                            <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
                     </div>
+                    
                 </div>
             </div>
 
 
             <div class="card answer" id="answer-7" style="display: none;">
                 <div>
-                    <h1 class="card-title answer">Q1: How do I make a reservation for books?</h1>
+                    <h1 class="card-title answer">Q7: How do I make a reservation for books?</h1>
                     <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
                 </div>
                 <div class="card-content answer">
                     <div class="content-1">
-                        <video controls>
+                        <video controls style="margin-top: 1100px;">
                             <source src="/media/videos/bookReservation.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="content-2">
+                        <ol>
+                            <li>
+                                <strong>Navigate to the Borrowing Records Page</strong>
+                                <ul>
+                                    <li>Click the <strong>'Borrowing Records'</strong> button in the navigation bar.</li>
+                                    <li>On this page, you will find a list of records for books that have been borrowed.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Initiate a Reservation</strong>
+                                <ul>
+                                    <li>In the action menu, click the <strong>'Reserve Book'</strong> button.</li>
+                                    <li>You will be redirected to the <strong>Reservation Form</strong> page, which is similar in structure to the <strong>Borrow Slip Creation Form</strong>.</li>
+                                    <li>The key difference is that submitted reservations will not appear in the Borrowing Records table but will instead be temporarily stored on the <strong>'Book Reservation List'</strong> page.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Borrower Status Check</strong>
+                                <ul>
+                                    <li>If the borrower’s status is marked as <strong>banned</strong>, they cannot proceed with the reservation process.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Submit the Reservation Form</strong>
+                                <ul>
+                                    <li>Once the form is completed and submitted:</li>
+                                    <ul>
+                                        <li>You will be redirected to the <strong>'Book Reservation List'</strong> page.</li>
+                                        <li>This page monitors books that have been reserved.</li>
+                                    </ul>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Reservation Collection Process</strong>
+                                <ul>
+                                    <li>
+                                        To collect a reserved book:
+                                        <ul>
+                                            <li>The borrower must verify their identity by entering or scanning their <strong>UID</strong>.</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        A reservation is valid for <strong>24 hours</strong> from the time it is made:
+                                        <ul>
+                                            <li>If collected within this time, the record will:
+                                                <ul>
+                                                    <li>Move to the <strong>'Collected Table'</strong> in the Reservation List.</li>
+                                                    <li>Be automatically transferred to the <strong>Borrowed Book Records</strong> table on the Borrowing Records page.</li>
+                                                </ul>
+                                            </li>
+                                            <li>If not collected within 24 hours, the reservation will:
+                                                <ul>
+                                                    <li>Be recorded in the <strong>'Expired Reservation Table'</strong> on the Reservation List page.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ol>
                         <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
+                            <strong>The steps below will guide you.</strong>    
+                        </p>
+                        <div class="images">
+                            <figure>
+                                <img src="{% static 'images/RB1.png' %}" alt="Step 1: Enter Username">
+                                <figcaption>Step 1: Borrowing Records Button</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/RB2.png' %}" alt="Step 2: Request Temporary Password">
+                                <figcaption>Step 2: Reserve Book and Reservation List buttons</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/RB3.png' %}" alt="Step 3: Copy Temporary Password">
+                                <figcaption>Step 3: Reservation form</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/RB4.png' %}" alt="Step 4: Enter UID">
+                                <figcaption>Step 4: Detail Panels</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/RB5.png' %}" alt="Step 5: Scan QR Code">
+                                <figcaption>Step 5: Banned Notice</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/RB6.png' %}" alt="Step 6: Validation Success">
+                                <figcaption>Step 6: Reservation Page</figcaption>
+                            </figure>
+                        </div>
+                        <p>
+                            <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
                     </div>
                 </div>
@@ -410,63 +1100,87 @@
 
             <div class="card answer" id="answer-8" style="display: none;">
                 <div>
-                    <h1 class="card-title answer">Q1: How can I track all the students entering the library premises?</h1>
+                    <h1 class="card-title answer">Q8: How can I track all the students entering the library premises?</h1>
                     <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
                 </div>
                 <div class="card-content answer">
                     <div class="content-1">
-                        <video controls>
+                        <video controls style="margin-top: 1000px;">
                             <source src="/media/videos/studentLogOrAtttendance.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="content-2">
+                        <ol>
+                            <li>
+                                <strong>Navigate to the Activity Logs Page</strong>
+                                <ul>
+                                    <li>Click the <strong>'Activity Logs'</strong> button in the navigation bar.</li>
+                                    <li>This page provides a comprehensive list of students who have logged into the library, including details such as their <strong>name, grade level</strong>, and other relevant information.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>View Statistical Insights</strong>
+                                <ul>
+                                    <li>On the <strong>right side of the page</strong>, you will find:
+                                        <ul>
+                                            <li>A <strong>Pie Chart</strong>, which visualizes the proportion of students logged into the library categorized by their grade levels.</li>
+                                            <li>A <strong>Bar Graph</strong>, which displays a comparative analysis of library usage across different grades.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Add a New Log Entry</strong>
+                                <ul>
+                                    <li>At the <strong>top right corner</strong> of the page, there is a <strong>'New Log'</strong> button.</li>
+                                    <li>Clicking this button redirects you to the <strong>'Log Entry'</strong> page.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Logging a Borrower's Entry</strong>
+                                <ul>
+                                    <li>On the <strong>'Log Entry'</strong> page, you can:
+                                        <ul>
+                                            <li>Enter or scan the <strong>UID</strong> of the borrower to create a log entry.</li>
+                                        </ul>
+                                    </li>
+                                    <li>Upon successful entry:
+                                        <ul>
+                                            <li>A <strong>confirmation window</strong> will appear, displaying the borrower’s name along with a message indicating a successful log.</li>
+                                            <li>The log will then automatically be added to the activity records table on the <strong>Activity Logs</strong> page.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ol>
                         <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
+                            <strong>The steps below will guide you.</strong>    
                         </p>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="card answer" id="answer-9" style="display: none;">
-                <div>
-                    <h1 class="card-title answer">Q1: How can I reset my password?</h1>
-                    <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
-                </div>
-                <div class="card-content answer">
-                    <div class="content-1">
-                        <video controls>
-                            <source src="/media/videos/TutorialVidQ2.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div class="content-2">
+                        <div class="images">
+                            <figure>
+                                <img src="{% static 'images/AL1.png' %}" alt="Step 1: Enter Username">
+                                <figcaption>Step 1: Activity Log Button</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AL2.png' %}" alt="Step 2: Request Temporary Password">
+                                <figcaption>Step 2: Student/Borrower Log list</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AL3.png' %}" alt="Step 3: Copy Temporary Password">
+                                <figcaption>Step 3: Statistics and New log button</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AL4.png' %}" alt="Step 4: Enter UID">
+                                <figcaption>Step 4: Log entry form</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="{% static 'images/AL5.png' %}" alt="Step 5: Scan QR Code">
+                                <figcaption>Step 5: Successful Log entry window</figcaption>
+                            </figure>
+                        </div>
                         <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card answer" id="answer-10" style="display: none;">
-                <div>
-                    <h1 class="card-title answer">Q1: How can I reset my password?</h1>
-                    <p class="card-description answer">To answer this question, please watch the video tutorial and read the text below.</p>
-                </div>
-                <div class="card-content answer">
-                    <div class="content-1">
-                        <video controls>
-                            <source src="/media/videos/TutorialVidQ2.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div class="content-2">
-                        <p>
-                            This is a sample description to demonstrate scrolling. Add more text here to see the scroll behavior. 
-                            Repeat or add content as needed. Ensure that the content overflows the container to test scrolling properly.
+                            <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
                     </div>
                 </div>
