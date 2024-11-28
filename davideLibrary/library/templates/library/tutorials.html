@@ -224,11 +224,6 @@
         gap: 15px;
     }
 
-    .images figure {
-        text-align: center;
-        margin: 0;
-    }
-
     .images img {
         width: 100%;
         height: auto;
@@ -242,11 +237,13 @@
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
     }
 
-    .images figcaption {
+    .images .caption {
+        text-align: center;
         margin-top: 8px;
         font-size: 0.9em;
         color: #555;
     }
+
 
     </style>
     {% endblock %}
@@ -273,14 +270,14 @@
                 Frequently Asked Questions:
                 <div class="card-content" style="height: 370px; border: solid 1px black; border-radius: 4px;">
                     <ul class="faq-list">
-                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-1')">I forgot my password, how can I retrieve my account?</a></li>
-                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-2')">How do I set up an Assistant Librarian account?</a></li>
-                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-3')">How do I make a student account with printed Qrcode ID?</a></li>
-                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-4')">How do I add or edit a book record?</a></li>
-                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-5')">How do I add a book borrowing record?</a></li>
-                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-6')">How do I track all borrowed books?</li>
-                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-7')">How do I make a reservation for books?</li>
-                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-8')">How can I track all the students entering the library premises?</a></li>
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-1')">Q1: I forgot my password, how can I retrieve my account?</a></li>
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-2')">Q2: How do I set up an Assistant Librarian account?</a></li>
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-3')">Q3: How do I make a student account with printed Qrcode ID?</a></li>
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-4')">Q4: How do I add or edit a book record?</a></li>
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-5')">Q5: How do I add a book borrowing record?</a></li>
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-6')">Q6: How do I track all borrowed books?</li>
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-7')">Q7: How do I make a reservation for books?</li>
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-8')">Q8 How can I track all the students entering the library premises?</a></li>
                     </ul>            
                 </div>
                 <div class="card-footer">
@@ -329,39 +326,39 @@
                             <strong>The steps below will guide you.</strong>    
                         </p>
                         <div class="images">
-                            <figure>
+                            <div>
                                 <img src="{% static 'images/FP1.png' %}" alt="Step 1: Enter Username">
-                                <figcaption>Step 1: Click Forgot Password button</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 1: Click Forgot Password button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/FP2.png' %}" alt="Step 2: Request Temporary Password">
-                                <figcaption>Step 2: Enter Account Username</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 2: Enter Account Username</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/FP3.png' %}" alt="Step 3: Copy Temporary Password">
-                                <figcaption>Step 3: Validating Username</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 3: Validating Username</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/FP4.png' %}" alt="Step 4: Enter UID">
-                                <figcaption>Step 4: Copy Temporary Password</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 4: Copy Temporary Password</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/FP5.png' %}" alt="Step 5: Scan QR Code">
-                                <figcaption>Step 5: Validating User QrCode</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 5: Validating User QrCode</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/FP6.png' %}" alt="Step 6: Validation Success">
-                                <figcaption>Step 6: Validating Qrcode</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 6: Validating Qrcode</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/FP7.png' %}" alt="Step 7: Redirect to Change Password">
-                                <figcaption>Step 7: Use the Temporary Copied Password</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 7: Use the Temporary Copied Password</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/FP8.png' %}" alt="Step 8: Set New Password">
-                                <figcaption>Step 8: Set New Password</figcaption>
-                            </figure>
-                        </div>
+                                <div class="caption">Step 8: Set New Password</div>
+                            </div>
+                        </div>                        
                         <p>
                             <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
@@ -452,39 +449,39 @@
                             <strong>The steps below will guide you.</strong>    
                         </p>
                         <div class="images">
-                            <figure>
+                            <div>
                                 <img src="{% static 'images/AR1.png' %}" alt="Step 1: Enter Username">
-                                <figcaption>Step 1: Click Account Registry button</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 1: Click Account Registry button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AR2.png' %}" alt="Step 2: Request Temporary Password">
-                                <figcaption>Step 2: Fill out Registration form</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 2: Fill out Registration form</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AR3.png' %}" alt="Step 3: Copy Temporary Password">
-                                <figcaption>Step 3: Take Note of Username requirements</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 3: Take Note of Username requirements</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AR4.png' %}" alt="Step 4: Enter UID">
-                                <figcaption>Step 4: Admin ID and Role are automatic fields</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 4: Admin ID and Role are automatic fields</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AR5.png' %}" alt="Step 5: Scan QR Code">
-                                <figcaption>Step 5: Enter password and Confirm Registration</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 5: Enter password and Confirm Registration</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AR6.png' %}" alt="Step 6: Validation Success">
-                                <figcaption>Step 6: View account details</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 6: View account details</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AR7.png' %}" alt="Step 7: Redirect to Change Password">
-                                <figcaption>Step 7: Download account's pdf copy</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 7: Download account's pdf copy</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AR8.png' %}" alt="Step 8: Set New Password">
-                                <figcaption>Step 8: Print Account with Qrcode Copy</figcaption>
-                            </figure>
-                        </div>
+                                <div class="caption">Step 8: Print Account with Qrcode Copy</div>
+                            </div>
+                        </div>                        
                         <p>
                             <strong>Need More Help?</strong> If you encounter any issues during this process, please refer a software maintainance.
                         </p>
@@ -577,39 +574,39 @@
                             <strong>The steps below will guide you.</strong>    
                         </p>
                         <div class="images">
-                            <figure>
+                            <div>
                                 <img src="{% static 'images/SM1.png' %}" alt="Step 1: Enter Username">
-                                <figcaption>Step 1: Click Forgot Password button</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 1: Click Forgot Password button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/SM2.png' %}" alt="Step 2: Request Temporary Password">
-                                <figcaption>Step 2: Enter Account Username</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 2: Enter Account Username</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/SM3.png' %}" alt="Step 3: Copy Temporary Password">
-                                <figcaption>Step 3: Validating Username</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 3: Validating Username</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/SM4.png' %}" alt="Step 4: Enter UID">
-                                <figcaption>Step 4: Copy Temporary Password</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 4: Copy Temporary Password</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/SM5.png' %}" alt="Step 5: Scan QR Code">
-                                <figcaption>Step 5: Validating User QrCode</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 5: Validating User QrCode</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/SM6.png' %}" alt="Step 6: Validation Success">
-                                <figcaption>Step 6: Validating Qrcode</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 6: Validating Qrcode</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/SM7.png' %}" alt="Step 7: Redirect to Change Password">
-                                <figcaption>Step 7: Use the Temporary Copied Password</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 7: Use the Temporary Copied Password</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/SM8.png' %}" alt="Step 8: Set New Password">
-                                <figcaption>Step 8: Set New Password</figcaption>
-                            </figure>
-                        </div>
+                                <div class="caption">Step 8: Set New Password</div>
+                            </div>
+                        </div>                        
                         <p>
                             <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
@@ -677,39 +674,39 @@
                             <strong>The steps below will guide you.</strong>    
                         </p>
                         <div class="images">
-                            <figure>
+                            <div>
                                 <img src="{% static 'images/IM1.png' %}" alt="Step 1: Enter Username">
-                                <figcaption>Step 1: Click Book Inventory button</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 1: Click Book Inventory button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/IM2.png' %}" alt="Step 2: Request Temporary Password">
-                                <figcaption>Step 2: Click Add New Book from the Action Menu</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 2: Click Add New Book from the Action Menu</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/IM3.png' %}" alt="Step 3: Copy Temporary Password">
-                                <figcaption>Step 3: Fill out the Book Form</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 3: Fill out the Book Form</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/IM4.png' %}" alt="Step 4: Enter UID">
-                                <figcaption>Step 4: Click 'Create' to submit the form</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 4: Click 'Create' to submit the form</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/IM5.png' %}" alt="Step 5: Scan QR Code">
-                                <figcaption>Step 5: Successful submision when the record is added on the table</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 5: Successful submission when the record is added on the table</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/IM6.png' %}" alt="Step 6: Validation Success">
-                                <figcaption>Step 6: Buttons to edit the book, see the book details, download pdf copy, and delete record</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 6: Buttons to edit the book, see the book details, download pdf copy, and delete record</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/IM7.png' %}" alt="Step 7: Redirect to Change Password">
-                                <figcaption>Step 7: Downloaded Copy of the book record</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 7: Downloaded Copy of the book record</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/IM8.png' %}" alt="Step 8: Set New Password">
-                                <figcaption>Step 8: Delete the record is necessary</figcaption>
-                            </figure>
-                        </div>
+                                <div class="caption">Step 8: Delete the record if necessary</div>
+                            </div>
+                        </div>                        
                         <p>
                             <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
@@ -795,39 +792,39 @@
                             <strong>The steps below will guide you.</strong>    
                         </p>
                         <div class="images">
-                            <figure>
+                            <div>
                                 <img src="{% static 'images/BR1.png' %}" alt="Step 1: Enter Username">
-                                <figcaption>Step 1: Click Borrowing Records button</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 1: Click Borrowing Records button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BR2.png' %}" alt="Step 2: Request Temporary Password">
-                                <figcaption>Step 2: The table list</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 2: The table list</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BR3.png' %}" alt="Step 3: Copy Temporary Password">
-                                <figcaption>Step 3: The action Menu, Click 'Create New Slip'</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 3: The action Menu, Click 'Create New Slip'</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BR4.png' %}" alt="Step 4: Enter UID">
-                                <figcaption>Step 4:The borrow slip form</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 4: The borrow slip form</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BR5.png' %}" alt="Step 5: Scan QR Code">
-                                <figcaption>Step 5: Panels for Book Details and Borrower Details</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 5: Panels for Book Details and Borrower Details</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BR6.png' %}" alt="Step 6: Validation Success">
-                                <figcaption>Step 6: Notice for Banned Borrowers</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 6: Notice for Banned Borrowers</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BR7.png' %}" alt="Step 7: Redirect to Change Password">
-                                <figcaption>Step 7: Download Pdf button </figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 7: Download Pdf button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BR8.png' %}" alt="Step 8: Set New Password">
-                                <figcaption>Step 8: Downloaded Copy of the book slip records</figcaption>
-                            </figure>
-                        </div>
+                                <div class="caption">Step 8: Downloaded Copy of the book slip records</div>
+                            </div>
+                        </div>                        
                         <p>
                             <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
@@ -946,39 +943,39 @@
                             <strong>The steps below will guide you.</strong>    
                         </p>
                         <div class="images">
-                            <figure>
+                            <div>
                                 <img src="{% static 'images/BM1.png' %}" alt="Step 1: Enter Username">
-                                <figcaption>Step 1: Book Monitoring Button</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 1: Book Monitoring Button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BM2.png' %}" alt="Step 2: Request Temporary Password">
-                                <figcaption>Step 2: The Statistics Panel</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 2: The Statistics Panel</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BM3.png' %}" alt="Step 3: Copy Temporary Password">
-                                <figcaption>Step 3: The Borrower History Panel</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 3: The Borrower History Panel</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BM4.png' %}" alt="Step 4: Enter UID">
-                                <figcaption>Step 4:The Borrowed Book List</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 4: The Borrowed Book List</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BM5.png' %}" alt="Step 5: Scan QR Code">
-                                <figcaption>Step 5: The Overdue Book List</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 5: The Overdue Book List</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BM6.png' %}" alt="Step 6: Validation Success">
-                                <figcaption>Step 6:The reuturned and lost book list</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 6: The returned and lost book list</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BM7.png' %}" alt="Step 7: Redirect to Change Password">
-                                <figcaption>Step 7: Overdue book in previous months </figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 7: Overdue book in previous months</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/BM8.png' %}" alt="Step 8: Set New Password">
-                                <figcaption>Step 8: Penalty form</figcaption>
-                            </figure>
-                        </div>
+                                <div class="caption">Step 8: Penalty form</div>
+                            </div>
+                        </div>                        
                         <p>
                             <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
@@ -1065,31 +1062,32 @@
                             <strong>The steps below will guide you.</strong>    
                         </p>
                         <div class="images">
-                            <figure>
+                            <div>
                                 <img src="{% static 'images/RB1.png' %}" alt="Step 1: Enter Username">
-                                <figcaption>Step 1: Borrowing Records Button</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 1: Borrowing Records Button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/RB2.png' %}" alt="Step 2: Request Temporary Password">
-                                <figcaption>Step 2: Reserve Book and Reservation List buttons</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 2: Reserve Book and Reservation List buttons</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/RB3.png' %}" alt="Step 3: Copy Temporary Password">
-                                <figcaption>Step 3: Reservation form</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 3: Reservation form</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/RB4.png' %}" alt="Step 4: Enter UID">
-                                <figcaption>Step 4: Detail Panels</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 4: Detail Panels</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/RB5.png' %}" alt="Step 5: Scan QR Code">
-                                <figcaption>Step 5: Banned Notice</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 5: Banned Notice</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/RB6.png' %}" alt="Step 6: Validation Success">
-                                <figcaption>Step 6: Reservation Page</figcaption>
-                            </figure>
+                                <div class="caption">Step 6: Reservation Page</div>
+                            </div>
                         </div>
+                        
                         <p>
                             <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
@@ -1158,27 +1156,27 @@
                             <strong>The steps below will guide you.</strong>    
                         </p>
                         <div class="images">
-                            <figure>
+                            <div>
                                 <img src="{% static 'images/AL1.png' %}" alt="Step 1: Enter Username">
-                                <figcaption>Step 1: Activity Log Button</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 1: Activity Log Button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AL2.png' %}" alt="Step 2: Request Temporary Password">
-                                <figcaption>Step 2: Student/Borrower Log list</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 2: Student/Borrower Log list</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AL3.png' %}" alt="Step 3: Copy Temporary Password">
-                                <figcaption>Step 3: Statistics and New log button</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 3: Statistics and New log button</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AL4.png' %}" alt="Step 4: Enter UID">
-                                <figcaption>Step 4: Log entry form</figcaption>
-                            </figure>
-                            <figure>
+                                <div class="caption">Step 4: Log entry form</div>
+                            </div>
+                            <div>
                                 <img src="{% static 'images/AL5.png' %}" alt="Step 5: Scan QR Code">
-                                <figcaption>Step 5: Successful Log entry window</figcaption>
-                            </figure>
-                        </div>
+                                <div class="caption">Step 5: Successful Log entry window</div>
+                            </div>
+                        </div>                        
                         <p>
                             <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
                         </p>
