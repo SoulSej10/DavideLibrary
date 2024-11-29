@@ -142,7 +142,7 @@
     .faq-list {
         list-style-type: none;
         padding: 0;
-        margin: 0 0 -130px 0px;
+        margin: 0 0 -185px 0px;
         font-size: 15px;
         color: #555;
         font-family: 'Poppins', sans-serif;
@@ -277,7 +277,10 @@
                         <li><a href="javascript:void(0);" onclick="showAnswer('answer-5')">Q5: How do I add a book borrowing record?</a></li>
                         <li><a href="javascript:void(0);" onclick="showAnswer('answer-6')">Q6: How do I track all borrowed books?</li>
                         <li><a href="javascript:void(0);" onclick="showAnswer('answer-7')">Q7: How do I make a reservation for books?</li>
-                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-8')">Q8 How can I track all the students entering the library premises?</a></li>
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-8')">Q8: How can I track all the students entering the library premises?</a></li>
+                        {% if user.role == 'Head Librarian' %}
+                        <li><a href="javascript:void(0);" onclick="showAnswer('answer-9')">Q9: How can add a new Head Librarian account?</a></li>
+                        {% endif %}
                     </ul>            
                 </div>
                 <div class="card-footer">
@@ -1184,6 +1187,138 @@
                 </div>
             </div>
 
+            <div class="card answer" id="answer-9" style="display: none;">
+                <div>
+                    <h1 class="card-title answer">Q8: How can i add a new Head Librarian Account?</h1>
+                    <p class="card-description answer">To answer this question, please read the text below.</p>
+                </div>
+                <div class="card-content answer">
+                    <div class="content-2" style="margin-top: 1230px;">
+                        <ol>
+                            <li>
+                                <strong>Log in as the Super Admin</strong>
+                                <ul>
+                                    <li>Use the <em>Super Admin account</em> provided by the developers.</li>
+                                    <li>
+                                        The <em>Super Admin account</em> is the <strong>key account</strong> with full access to manipulate core system data.
+                                    </li>
+                                    <li>
+                                        <strong>Caution:</strong> This account holds significant power. Use it responsibly to avoid unintended system issues.
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Navigate to the Database</strong>
+                                <ul>
+                                    <li>Once logged in, click the <strong>gear icon</strong> in the top-right corner of the page.</li>
+                                    <li>
+                                        This will take you to the <strong>Database Page</strong>, which is the system's core data storage and management hub.
+                                    </li>
+                                    <li>
+                                        <em>Note:</em> The database page provides access to advanced system capabilities that are not available on regular system pages.
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Access the "Custom Users" Section</strong>
+                                <ul>
+                                    <li>On the database page, go to the <strong>"Custom Users"</strong> section.</li>
+                                    <li>Here, you’ll see records of existing user accounts (e.g., assistant librarians).</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Add a New User</strong>
+                                <ul>
+                                    <li>Click the <strong>"Add Custom User"</strong> button in the top-right corner of the "Custom Users" page.</li>
+                                    <li>Fill out the user creation form with the following details:</li>
+                                    <ul>
+                                        <li>
+                                            <strong>Username Requirements:</strong>
+                                            <ul>
+                                                <li>Must be at least 8 characters long.</li>
+                                                <li>Must include at least <strong>one number</strong>.</li>
+                                                <li>Must include at least <strong>one uppercase letter</strong>.</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <strong>Password Requirements:</strong>
+                                            <ul>
+                                                <li>At least 8 characters long.</li>
+                                                <li>Must include at least <strong>one letter</strong> and <strong>one number</strong>.</li>
+                                                <li>Cannot be a commonly used password or entirely numeric.</li>
+                                                <li>Can include special characters (e.g., <code>@</code>, <code>$</code>, <code>%</code>).</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <strong>Admin ID Field:</strong>
+                                            <ul>
+                                                <li>The Admin ID is not automated.</li>
+                                                <li>
+                                                    Refer to the <strong>Admin ID</strong> of the first Head Librarian account, then add <strong>(+1)</strong> to its value.
+                                                    <br>Example: If the first account's Admin ID is <code>hpdsnhsAdmin01</code>, the new Admin ID will be <code>hpdsnhsAdmin02</code>.
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <strong>Role Selection:</strong>
+                                            <ul>
+                                                <li>Check <strong>"Is Staff"</strong> and <strong>"Is Active"</strong>.</li>
+                                                <li>Do NOT check <strong>"Is Superuser"</strong>—this will prevent the new account from gaining full Super Admin privileges.</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Save the Record</strong>
+                                <ul>
+                                    <li>Once the form is complete, click <strong>Save</strong>.</li>
+                                    <li>The new Head Librarian account will be automatically added to the user list.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <ul>
+                            <li>
+                                <strong>Important Notes:</strong>
+                                <ul>
+                                    <li>The <strong>Super Admin account</strong> is a critical asset. Limit its use to essential administrative actions only.</li>
+                                    <li>The <strong>Database Page</strong> is a powerful tool. Handle data with precision and care to maintain system integrity.</li>
+                                    <li>For assistance, consult the system developers for clarification on sensitive actions.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>                    
+                        <p>
+                            <strong>The steps below will guide you.</strong>    
+                        </p>
+                        <div class="images">
+                            <div>
+                                <img src="{% static 'images/AL1.png' %}" alt="Step 1: Enter Username">
+                                <div class="caption">Step 1: Activity Log Button</div>
+                            </div>
+                            <div>
+                                <img src="{% static 'images/AL2.png' %}" alt="Step 2: Request Temporary Password">
+                                <div class="caption">Step 2: Student/Borrower Log list</div>
+                            </div>
+                            <div>
+                                <img src="{% static 'images/AL3.png' %}" alt="Step 3: Copy Temporary Password">
+                                <div class="caption">Step 3: Statistics and New log button</div>
+                            </div>
+                            <div>
+                                <img src="{% static 'images/AL4.png' %}" alt="Step 4: Enter UID">
+                                <div class="caption">Step 4: Log entry form</div>
+                            </div>
+                            <div>
+                                <img src="{% static 'images/AL5.png' %}" alt="Step 5: Scan QR Code">
+                                <div class="caption">Step 5: Successful Log entry window</div>
+                            </div>
+                        </div>                        
+                        <p>
+                            <strong>Need More Help?</strong> If you encounter any issues during this process, please contact your <strong>Head Librarian</strong> to assist you or issue a new account if necessary.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>        
     </div>
 
